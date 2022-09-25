@@ -1,5 +1,6 @@
 import FriendScreen from './screens/Friends';
-import PlateLookupScreen from './screens/PlateLookup'
+import PlateLookupScreen from './screens/PlateLookup';
+import Profile from './screens/Profile';
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -19,8 +20,8 @@ const Tab = createBottomTabNavigator();
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={PlateLookupScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen name="Plate Lookup" component={PlateLookupScreen} />
+      <Tab.Screen name="Profile" component={Profile} />
       <Tab.Screen name="Friends" component={FriendScreen} />
     </Tab.Navigator>
   );
