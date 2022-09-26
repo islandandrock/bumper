@@ -17,7 +17,7 @@ venv\Scripts\activate.bat
 python -m pip install -r requirements.txt
 ```
 
-**How to reactivate venv**
+**How to reactivate venv (Linux)**
 ```
 cd server
 source venv/bin/activate
