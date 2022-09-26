@@ -1,4 +1,4 @@
-import {View, Text, TextInput} from 'react-native';
+import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {useState} from 'react'
 
 const SearchBar = (props) => {
@@ -20,3 +20,7 @@ export default function FriendScreen () {
         </View>
     )
 }
+
+const styles = StyleSheet.create(
+    
+)
