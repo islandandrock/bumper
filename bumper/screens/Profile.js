@@ -1,10 +1,11 @@
-import {View, Text, Button} from 'react-native';
-import { StyleSheet } from 'react-native';
+import {View, Text} from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import {TouchableOpacity, Linking} from 'react-native';
 
 const SocialMedia = (props) => {
     return (
-        <TouchableOpacity style={{width: '100%',flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start'}} onPress={() => Linking.openURL(props.link)}>
+        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', flexDirection: 'row', padding: 10}} onPress={() => Linking.openURL(props.link)}>
+            <Image source={require('../assets/favicon.png')}/>
             <View>
                 <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
             </View>
@@ -22,7 +23,9 @@ export default function ProfileScreen () {
                     <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>Your Name</Text>
                 </View>
             </View>
-            <View style={{alignItems: 'flex-start'}}>
+            <View style={{width: '100%'}}>
+                <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
                 <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
             </View>
         </View>
