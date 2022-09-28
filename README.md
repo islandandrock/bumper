@@ -22,3 +22,8 @@ python -m pip install -r requirements.txt
 cd server
 source venv/bin/activate
 ```
+
+**How to run server**
+```
+python wsgi.py
+```
