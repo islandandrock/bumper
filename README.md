@@ -1,6 +1,14 @@
 # bumper
 A cool app to help you meet new friends
 
+**How to run the app**
+1. Install dependencies for js (`npm install`) and python (see below)
+2. Start the backend server and get IP address (see below)
+3. Create the file `/bumper/util/server.json`
+4. Paste the following into the file: `{"ip" : "REPLACEME"}`
+5. Replace the placeholder text with the IP given by the Flask server.
+6. Start the expo server
+
 **How to install backend (Linux)**
 ```
 cd server
@@ -23,7 +31,7 @@ cd server
 source venv/bin/activate
 ```
 
-**How to run server**
+**How to run backend server**
 ```
 python wsgi.py
 ```

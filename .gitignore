@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 
 # js-related
+server.json
 
 # python-related
 venv
