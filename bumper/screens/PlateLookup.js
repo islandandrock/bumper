@@ -1,9 +1,11 @@
 import { useLinkProps } from '@react-navigation/native';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
+import {getFromWeb} from "../util/requests"
+
 function PlateButton (props) {
   return (
-    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}}>
+    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={()=>getFromWeb()}>
       <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>{props.text}</Text>
     </TouchableOpacity>
   )
