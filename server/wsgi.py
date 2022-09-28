@@ -1,7 +1,6 @@
-from flask import Flask
+from app import init_app
 
-app = Flask(__name__)
+app = init_app()
 
-@app.route("/")
-def hello_world():
-    return {"info":"successful!"}
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
