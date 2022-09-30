@@ -1,5 +1,6 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
 import {useState} from 'react'
+import MapView from 'react-native-maps';
 
 const SearchBar = (props) => {
     return (
@@ -15,6 +16,7 @@ const SearchBar = (props) => {
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
+    const friends = [dude, dude, dude]
 
     return (
         <View>
@@ -28,16 +30,34 @@ export default function FriendScreen () {
             </View>
             {ListMode ? 
             (
-                <View>
-                    <Text>list</Text>
+
+                <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
+                    <FlatList data={[
+                        {key: 'thing'},
+                        {key: 'though'},
+                        {key: 'thos'},
+                        {key: 'other'}
+                    ]} 
+                    renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.key}</Text></TouchableOpacity>}/>
                 </View>
             ):(
                 <View>
-                    <Text>map</Text>
+                    <MapView     initialRegion={{
+                                    latitude: 37.78825,
+                                    longitude: -122.4324,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                    }}style={styles.map}/>
                 </View>
             )}
         </View>
     )
+}
+
+const dude = {
+    name:'dude',
+    age:'100',
+    socialMedias:'https//something'
 }
 
 const styles = StyleSheet.create({
@@ -57,5 +77,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderWidth:1,
         borderColor: 'pink'
+    },
+
+    map: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+    },
+
+    friend: {
+        width: '100%',
+        fontSize: 20,
+        fontWeight: 'bold',
+        padding:10,
+        paddingLeft:20,
+        backgroundColor: '#FFDADA',
+        borderBottomColor: 'black',
     }
 })
