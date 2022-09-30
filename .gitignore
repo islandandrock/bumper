@@ -14,6 +14,7 @@ web-build/
 server.json
 
 # python-related
+project.db
 venv
 __pycache__
 

@@ -1,11 +1,14 @@
 import json
 from flask import Flask
 from werkzeug.exceptions import HTTPException
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=False)
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):
@@ -21,10 +24,14 @@ def init_app():
         response.content_type = "application/json"
         return response
 
+    db.init_app(app)
+
     with app.app_context():
         # Include our Routes
-        #from .posts import routes
+        from .auth import routes
+        db.create_all()
+        
         # Register Blueprints
-        #app.register_blueprint(posts.routes.posts_bp)
+        app.register_blueprint(auth.routes.auth_bp)
 
         return app
