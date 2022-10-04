@@ -1,6 +1,6 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
 import {useState} from 'react'
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 
 const SearchBar = (props) => {
     return (
@@ -11,6 +11,14 @@ const SearchBar = (props) => {
     )
 
 }
+
+let Friends = [
+    {name: "brian", lat: 2, lon: 2, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 1},
+    {name: "theo", lat: 1, lon: 1, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 2},
+]
+
+const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>
+    <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{Friends.name}</Text></Marker>)
 
 
 export default function FriendScreen () {
@@ -41,13 +49,15 @@ export default function FriendScreen () {
                     renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.key}</Text></TouchableOpacity>}/>
                 </View>
             ):(
-                <View>
+                <View style={{justifyContent: 'center', flexDirection: 'column'}}>
                     <MapView     initialRegion={{
                                     latitude: 37.78825,
                                     longitude: -122.4324,
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
-                                    }}style={styles.map}/>
+                                    }} style={styles.map}>
+                                {Pins}
+                    </MapView>
                 </View>
             )}
         </View>
@@ -65,6 +75,10 @@ const styles = StyleSheet.create({
         margin: 10
     },
 
+    marker: {
+        backgroundColor: 'pink',
+    },
+
     toggle: {
         backgroundColor:'pink',
         padding: 10,
@@ -80,8 +94,11 @@ const styles = StyleSheet.create({
     },
 
     map: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
+        borderRadius:10,
+        marginRight:10,
+        justifyContent:'center'
     },
 
     friend: {
