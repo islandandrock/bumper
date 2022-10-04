@@ -30,7 +30,7 @@ export function isCode(e, codes) {
   return (e instanceof ServerError && codes.includes(e.code))
 }
 
-export const signUp = async (username, email, password) => {
+export const signUp = async (email, username, password) => {
   await handledFetch(server + '/signup', {
     method: 'POST',
     body: JSON.stringify({
@@ -39,4 +39,15 @@ export const signUp = async (username, email, password) => {
       password: password
     })
   });
+}
+
+export const signIn = async (email, password) => {
+  const username = await handledFetch(server + '/signin', {
+    method: 'POST',
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  });
+  return "testusername";
 }

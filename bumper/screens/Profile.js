@@ -1,6 +1,8 @@
 import {View, Text} from 'react-native';
 import { StyleSheet, Image } from 'react-native';
 import {TouchableOpacity, Linking} from 'react-native';
+import { useState, useEffect } from 'react';
+import { getData } from '../util/storage';
 
 const SocialMedia = (props) => {
     return (
@@ -15,12 +17,21 @@ const SocialMedia = (props) => {
 
 
 export default function ProfileScreen () {
+    const [username, setUsername] = useState("Your Name")
+
+    useEffect(() => {
+        const asyncFunc = async () => {
+          setUsername(await getData("username"));
+        }
+        asyncFunc();
+    }, [])
+    
     return (
         <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
             <View style={{justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', width: '100%', height: 220, backgroundColor: 'pink'}}>
                 <Text style={{fontSize: 40, fontWeight: 'bold', padding: 40}}>License Plate</Text>
                 <View style={{flexDirection: 'row', width: '100%', backgroundColor: 'pink', justifyContent: 'center'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>Your Name</Text>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>{username}</Text>
                 </View>
             </View>
             <View style={{width: '100%'}}>
