@@ -2,13 +2,15 @@ import json
 from flask import Flask
 from werkzeug.exceptions import HTTPException
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 def init_app():
     """Initialize the core application."""
     app = Flask(__name__, instance_relative_config=False)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+    app.config.from_object('config.Config')
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):
@@ -25,6 +27,8 @@ def init_app():
         return response
 
     db.init_app(app)
+    login_manager.init_app(app)
+
 
     with app.app_context():
         # Include our Routes
