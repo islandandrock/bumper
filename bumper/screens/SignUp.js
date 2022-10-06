@@ -18,7 +18,7 @@ function BigButton (props) {
   )
 }
 
-export default function SignUpScreen () {
+export default function SignUpScreen ({ navigation }) {
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -36,8 +36,8 @@ export default function SignUpScreen () {
         async () => {
           try {
             await signUp(email, username, password);
-            Alert.alert("Sign up was successful!");
-            //navigation.navigate('Sign In');
+            Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
+            navigation.goBack();
           } catch (e) {
             if (isCode(e, [422])) {
               Alert.alert("Sign up failed!", "Enter a username, email, and password.")

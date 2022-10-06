@@ -1,6 +1,5 @@
 import {useState} from 'react'
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signIn, isCode } from '../util/requests';
 import { storeData, getData } from '../util/storage';
 
@@ -20,7 +19,7 @@ function BigButton (props) {
   )
 }
 
-export default function SignInScreen () {
+export default function SignInScreen ({ navigation }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -37,18 +36,22 @@ export default function SignInScreen () {
             const username = await signIn(email, password);
             await storeData("username", username);
             Alert.alert("Sign in was successful!");
-            //navigation.navigate('Sign In');
+            navigation.navigate('TabPages');
           } catch (e) {
             if (isCode(e, [422])) {
-              Alert.alert("Sign up failed!", "Enter a username, email, and password.")
-            } else if (isCode(e, [409])) {
-              Alert.alert("Sign up failed!", e.description);
+              Alert.alert("Sign in failed!", "Enter a username, email, and password.")
+            } else if (isCode(e, [401])) {
+              Alert.alert("Sign in failed!", "Check your email and password.");
             } else {
               throw(e);
             }
           }
         }
       }/>
+      <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 40}}>Don't have an account?</Text>
+      <TouchableOpacity style={{width:"50%", height:80, backgroundColor:"pink", justifyContent:"center", borderRadius:20}} onPress={()=>navigation.navigate("Sign Up")}>
+        <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>{"Create Account"}</Text>
+      </TouchableOpacity>
     </View>
   )
 }

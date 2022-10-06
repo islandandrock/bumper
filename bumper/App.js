@@ -7,6 +7,7 @@ import * as React from 'react';
 import { Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 function SettingsScreen() {
@@ -18,6 +19,7 @@ function SettingsScreen() {
 }
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 function MyTabs() {
   return (
@@ -115,7 +117,25 @@ function MyTabs() {
 export default function App() {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Sign In"
+          component={SignInScreen}
+          options={{
+            title: "Sign In",
+            headerShown: true
+          }}
+        />
+        <Stack.Screen
+          name="Sign Up"
+          component={SignUpScreen}
+          options={{
+            title: "Sign Up",
+            headerShown: true
+          }}
+        />
+        <Stack.Screen name="TabPages" component={MyTabs} options={{headerShown: false}}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -2,7 +2,7 @@ from datetime import datetime as dt
 
 from flask import Blueprint, request, render_template, make_response, abort, make_response
 from flask import current_app as app
-from flask_login import login_user
+from flask_login import login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict
 

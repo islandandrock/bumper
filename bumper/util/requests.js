@@ -42,12 +42,13 @@ export const signUp = async (email, username, password) => {
 }
 
 export const signIn = async (email, password) => {
-  const username = await handledFetch(server + '/signin', {
+  const response = await handledFetch(server + '/signin', {
     method: 'POST',
     body: JSON.stringify({
       email: email,
       password: password
     })
   });
-  return "testusername";
+  data = await response.json();
+  return data.username;
 }
