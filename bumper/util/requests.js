@@ -52,3 +52,13 @@ export const signIn = async (email, password) => {
   data = await response.json();
   return data.username;
 }
+
+export const addConnection = async (app_name, link) => {
+  await handledFetch(server + "/connections/add", {
+    method: 'POST',
+    body: JSON.stringify({
+      app_name: app_name,
+      link: link
+    })
+  })
+}

@@ -28,14 +28,21 @@ def init_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    
+    from .models import User
 
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
     with app.app_context():
         # Include our Routes
         from .auth import routes
+        from .connections import routes
         db.create_all()
         
         # Register Blueprints
         app.register_blueprint(auth.routes.auth_bp)
+        app.register_blueprint(connections.routes.connections_bp)
 
         return app

@@ -1,12 +1,24 @@
-import {View, Text} from 'react-native';
-import { StyleSheet, Image } from 'react-native';
-import {TouchableOpacity, Linking} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
+import { ScrollView } from 'react-native-gesture-handler';
+
+import { addConnection } from '../util/requests';
 
 const SocialMedia = (props) => {
     return (
-        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', flexDirection: 'row', padding: 10}} onPress={() => Linking.openURL(props.link)}>
+        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', flexDirection: 'row', padding: 10}} onPress={async () => {
+            try {
+                await addConnection("Instagram", "instagram.com");
+                Alert.alert("App connected!");
+            } catch (e) {
+                if (isCode(e, [422])) {
+                Alert.alert("Connection failed!", "Link a valid account.")
+                } else {
+                throw(e);
+                }
+            } 
+        }}>
             <Image source={require('../assets/favicon.png')}/>
             <View>
                 <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
@@ -17,7 +29,7 @@ const SocialMedia = (props) => {
 
 
 export default function ProfileScreen () {
-    const [username, setUsername] = useState("Your Name")
+    const [username, setUsername] = useState("")
 
     useEffect(() => {
         const asyncFunc = async () => {
@@ -34,11 +46,13 @@ export default function ProfileScreen () {
                     <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>{username}</Text>
                 </View>
             </View>
-            <View style={{width: '100%'}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>My Connections</Text>
+
+            <ScrollView style={{width: "100%", height: "100%"}}>
                 <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
                 <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
                 <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-            </View>
+            </ScrollView>
         </View>
     )
 }
