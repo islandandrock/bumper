@@ -75,41 +75,6 @@ function MyTabs() {
           )
         }
       }}/>
-      <Tab.Screen name="Signup" component={SignUpScreen} options={{
-        title: 'Sign Up',
-        headerShown: true,
-        tabBarLabel:() => {return null},
-        tabBarIcon: ({ focused }) => {
-          const image = focused
-          ? require('./assets/people_filled.png')
-          : require('./assets/people.png')
-          
-          return (
-              <Image
-                  source={image}
-                  style={{height:38, width:38}}
-              />
-          )
-        }
-      }}/>
-      <Tab.Screen name="Signin" component={SignInScreen} options={{
-        title: 'Sign In',
-        headerShown: true,
-        tabBarLabel:() => {return null},
-        tabBarIcon: ({ focused }) => {
-          const image = focused
-          ? require('./assets/people_filled.png')
-          : require('./assets/people.png')
-          
-          return (
-              <Image
-                  source={image}
-                  style={{height:38, width:38}}
-              />
-          )
-        }
-      }}/>
-
     </Tab.Navigator>
   );
 }
