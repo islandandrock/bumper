@@ -4,24 +4,26 @@ import Profile from './screens/Profile';
 import SignUpScreen from './screens/SignUp';
 import SignInScreen from './screens/SignIn';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
-
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-function MyTabs() {
+function MyTabs( {navigation} ) {
+
+  useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+        // Prevent default behavior of leaving the screen (disabled for ease of troubleshooting)
+        // e.preventDefault();
+      }),
+    [navigation]
+  );
+
   return (
     <Tab.Navigator>
       <Tab.Screen name="Plate Lookup" component={PlateLookupScreen} options={{
