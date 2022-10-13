@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
 
 class Connection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    app_name = db.Column(db.String(80), unique=True, nullable=False)
+    app_name = db.Column(db.String(80), unique=False, nullable=False)
     link = db.Column(db.Text, index=False, unique=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
