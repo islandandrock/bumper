@@ -50,3 +50,11 @@ def signin():
         login_user(user)
         return {"username":user.username}, 200
     raise Unauthorized("Username or Password doesn't match.")
+
+
+@auth_bp.route('/addfriend', methods=['POST'])
+def addfriend():
+    friend_username = request.json['friend_username']
+    username = request.json['username']
+
+    
