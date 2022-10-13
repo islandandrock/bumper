@@ -17,22 +17,12 @@ class User(UserMixin, db.Model):
    bio = db.Column(db.Text, index=False, unique=False, nullable=True)
    admin = db.Column( db.Boolean, index=False, unique=False, nullable=False)
    connections = db.relationship('Connection', backref='user', lazy=True)
-  
-  
+   friends = db.relationship('User', secondary=friendship, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
+   
    def __repr__(self):
-       return '<User %r>' % self.username
+        return '<User %r>' % self.username
+
  
-friendship_union = select([
-                       friendship.c.user1_id,
-                       friendship.c.user2_id
-                       ]).union(
-                           select([
-                               friendship.c.user2_id,
-                               friendship.c.user1_id]
-                           )
-                   ).alias()
- 
-User.friends = friends = db.relationship('User', secondary=friendship_union, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
  
 class Connection(db.Model):
    id = db.Column(db.Integer, primary_key=True)

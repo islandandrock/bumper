@@ -4,6 +4,7 @@ from werkzeug.exceptions import HTTPException
 from flask_login import LoginManager
 from .extensions import db
 from .models import User
+from datetime import datetime as dt
 
 login_manager = LoginManager()
 
@@ -40,16 +41,12 @@ def init_app():
         from .auth import routes
         from .connections import routes
         db.create_all()
-        u1, u2, u3, u4, u5 = User(name='u1'), User(name='u2'), User(name='u3'), User(name='u4'), User(name='u5')
- 
-        u1.friends = [u2, u3]
-        u4.friends = [u2, u5]
-        u3.friends.append(u5)
-        db.session.add_all([u1, u2, u3, u4, u5])
-        db.session.commit()
- 
+        u1 = User.query.filter_by(username='u1').first()
+        u2 = User.query.filter_by(username='u2').first()
+        u1.friends.append(u2)
+        print(u1.friends)
         print(u2.friends)
-        print(u5.friends)
+        db.session.commit()
         
         # Register Blueprints
         app.register_blueprint(auth.routes.auth_bp)
