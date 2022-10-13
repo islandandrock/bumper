@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from flask_login import UserMixin
 from flask import current_app as app
-from . import db, login_manager
+from .extensions import db
  
 friendship = db.Table('friendship',
                        db.Column('user1_id', db.Integer, db.ForeignKey('user.id')),
@@ -32,7 +32,7 @@ friendship_union = select([
                            )
                    ).alias()
  
-User.friends = friends = db.relationship('User', secondary=friendship_union, primaryjoin=id==friendship.c.user1_id, secondaryjoin=id==friendship.c.user2_id)
+User.friends = friends = db.relationship('User', secondary=friendship_union, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
  
 class Connection(db.Model):
    id = db.Column(db.Integer, primary_key=True)
@@ -42,9 +42,11 @@ class Connection(db.Model):
  
    def __repr__(self):
        return '<Connection %r>' % self.link
- 
+
+''' 
 db.create_all()
-u1, u2, u3, u4, u5 = User(name='u1'), User(name='u2'), \
+
+u1, u2, u3, u4, u5 = User(name='u1'), User(name='u2'), 
                    User(name='u3'), User(name='u4'), User(name='u5')
  
 u1.friends = [u2, u3]
@@ -55,3 +57,4 @@ db.session.commit()
  
 print(u2.friends)
 print(u5.friends)
+'''
