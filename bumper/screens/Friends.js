@@ -1,6 +1,8 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
-import {useState} from 'react'
+import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
+import { getData } from '../util/storage';
+
 
 const SearchBar = (props) => {
     return (
@@ -24,7 +26,7 @@ const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('ht
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
-    const friends = [dude, dude, dude]
+
 
     return (
         <View>

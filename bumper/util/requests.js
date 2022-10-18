@@ -62,3 +62,13 @@ export const addConnection = async (app_name, link) => {
     })
   })
 }
+
+export const addFriend = async (friend_username, username) => {
+  await handledFetch(server + '/addfriend', {
+    method: 'POST',
+    body: JSON.stringify({
+      username: username,
+      friend_username: friend_username
+    })
+  });
+}
