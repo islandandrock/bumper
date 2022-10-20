@@ -34,8 +34,9 @@ export default function SignInScreen ({ navigation }) {
         async () => {
           try {
             const [username, id] = await signIn(email, password);
+            console.log(username, id)
             await storeData("username", username);
-            await storeData("user_id", id);
+            await storeData("user_id", id.toString());
             Alert.alert("Sign in was successful!");
             navigation.navigate('TabPages');
           } catch (e) {

@@ -41,7 +41,7 @@ def init_app():
         from .auth import routes
         from .connections import routes
         db.create_all()
-        u1 = User.query.filter_by(username='u1').first()
+        u1 = User.query.filter_by(username='K').first()
         u2 = User.query.filter_by(username='u2').first()
         u1.friends.append(u2)
         print(u1.friends)

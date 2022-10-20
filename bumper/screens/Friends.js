@@ -15,7 +15,7 @@ const SearchBar = (props) => {
 }
 
 let Friends = [
-    {name: 'thing', }
+    {name: 'thing', lat:37.78825, lon:-122.4324, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 1}
 ]
 
 const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>

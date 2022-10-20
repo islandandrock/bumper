@@ -50,7 +50,8 @@ export const signIn = async (email, password) => {
     })
   });
   data = await response.json();
-  return data.username, data.id;
+  console.log(data)
+  return [data.username, data.user_id];
 }
 
 export const addConnection = async (app_name, link) => {
