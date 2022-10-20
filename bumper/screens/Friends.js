@@ -1,7 +1,7 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { getData } from '../util/storage';
+import getFriend from '../util/requests';
 
 
 const SearchBar = (props) => {
@@ -15,8 +15,7 @@ const SearchBar = (props) => {
 }
 
 let Friends = [
-    {name: "brian", lat: 2, lon: 2, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 1},
-    {name: "theo", lat: 1, lon: 1, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 2},
+    {name: 'thing', }
 ]
 
 const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>
@@ -26,6 +25,17 @@ const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('ht
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
+    const [user_id, setUser_id] = useState("")
+    const [friends, setFriends] = useState([])
+
+    useEffect(() => {
+        const asyncFunc = async () => {
+          setUser_id(await getData("user_id"));
+          setFriends(await getFriend(user_id))
+        }
+        asyncFunc();
+        console.log(friends)
+    }, [])
 
 
     return (
@@ -42,12 +52,7 @@ export default function FriendScreen () {
             (
 
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-                    <FlatList data={[
-                        {key: 'thing'},
-                        {key: 'though'},
-                        {key: 'thos'},
-                        {key: 'other'}
-                    ]} 
+                    <FlatList data={friends} 
                     renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.key}</Text></TouchableOpacity>}/>
                 </View>
             ):(

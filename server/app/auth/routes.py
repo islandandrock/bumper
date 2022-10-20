@@ -48,21 +48,7 @@ def signin():
     user = User.query.filter_by(email=email).first()
     if user and check_password_hash(user.password, password):
         login_user(user)
-        return {"username":user.username}, 200
+        return {"username":user.username}, {"user_id":user.id}, 200
     raise Unauthorized("Username or Password doesn't match.")
-
-
-@auth_bp.route('/addfriend', methods=['POST'])
-def addfriend():
-    friend_username = request.json['friend_username']
-    username = request.json['username']
-    for i in User.query.filter_by(username=username).first().friends: # makes sure there are no duplicate friends
-        if i.friend_username == friend_username:
-            raise Conflict('They are already your friend.')
-
-    User1 = User.query.filter_by(username=username).first()
-    User2 = User.query.filter_by(username=friend_username).first()
-    User1.friends.append(User2)
-    User2.friends.append(User1)
 
     
