@@ -4,22 +4,29 @@ import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { addConnection } from '../util/requests';
+import getIcon from '../util/icons';
+
+const x = async () => {
+    try {
+        await addConnection("Instagram", "instagram.com");
+        Alert.alert("App connected!");
+    } catch (e) {
+        if (isCode(e, [422])) {
+        Alert.alert("Connection failed!", "Link a valid account.")
+        } else {
+        throw(e);
+        }
+    } 
+}
 
 const SocialMedia = (props) => {
+    app = props.app;
+    if (!app) {
+        app = "instagram"
+    }
     return (
-        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}} onPress={async () => {
-            try {
-                await addConnection("Instagram", "instagram.com");
-                Alert.alert("App connected!");
-            } catch (e) {
-                if (isCode(e, [422])) {
-                Alert.alert("Connection failed!", "Link a valid account.")
-                } else {
-                throw(e);
-                }
-            } 
-        }}>
-            <Image source={require('../assets/favicon.png')}/>
+        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}}>
+            <Image source={getIcon(app)} style={{height:48, width:48}} resizeMode="contain"/>
             <View>
                 <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
             </View>
@@ -41,7 +48,8 @@ const NewAppModal = (props) => {
             style={{alignContent:"center", alignItems:"center", justifyContent:"center"}}
         >
             <View style={{justifyContent:"center", alignItems:"center", height:"100%", width:"100%"}}>
-            <View style={{width:"80%", height:"70%", backgroundColor:"lightpink", borderRadius:10}}>
+            <View style={{width:"80%", height:"70%", backgroundColor:"lightpink", borderRadius:10, overflow:"hidden"}}>
+                <TouchableOpacity style={{height:40, width:40, backgroundColor:"red", alignSelf:"flex-end", marginBottom:-40}} onPress={() => props.setModalVisible(!props.modalVisible)}></TouchableOpacity>
                 <Text style={{textAlign:"center", fontWeight:"bold", fontSize:20, marginVertical:10}}>Link a New App</Text>
                 <TouchableOpacity
                     style={{}}
@@ -50,12 +58,13 @@ const NewAppModal = (props) => {
                 </TouchableOpacity>
                 <View style={{width:"100%", flexGrow:1, flexShrink:1, backgroundColor:"mistyrose"}}>
                     <ScrollView style={{width:"100%"}}>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='@Placeholder' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Instagram' app="instagram" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Facebook' app="facebook" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Twitter' app="twitter" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
                     </ScrollView>
                 
                 </View>
