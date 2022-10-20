@@ -24,8 +24,12 @@ const SocialMedia = (props) => {
     if (!app) {
         app = "instagram"
     }
+    console.log(app,props.selectedApp)
     return (
-        <TouchableOpacity style={{width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}}>
+        <TouchableOpacity style={{backgroundcolor: (props.selectedApp==app)?"red":null, width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}} onclick={() => {
+            props.setSelectedApp(app)
+            console.log(props.selectedApp);
+        }}>
             <Image source={getIcon(app)} style={{height:48, width:48}} resizeMode="contain"/>
             <View>
                 <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
@@ -35,6 +39,7 @@ const SocialMedia = (props) => {
 }
 
 const NewAppModal = (props) => {
+    const [selectedApp, setSelectedApp] = useState(null);
 
     return (
         <Modal
@@ -42,31 +47,30 @@ const NewAppModal = (props) => {
             transparent={true}
             visible={props.modalVisible}
             onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-                setModalVisible(!props.modalVisible);
+                props.setModalVisible(!props.modalVisible);
             }}
             style={{alignContent:"center", alignItems:"center", justifyContent:"center"}}
         >
             <View style={{justifyContent:"center", alignItems:"center", height:"100%", width:"100%"}}>
-            <View style={{width:"80%", height:"70%", backgroundColor:"lightpink", borderRadius:10, overflow:"hidden"}}>
-                <TouchableOpacity style={{height:40, width:40, backgroundColor:"red", alignSelf:"flex-end", marginBottom:-40}} onPress={() => props.setModalVisible(!props.modalVisible)}></TouchableOpacity>
+            <View style={{width:"80%", height:"70%", backgroundColor:"#ffbab3", borderRadius:10, overflow:"hidden"}}>
                 <Text style={{textAlign:"center", fontWeight:"bold", fontSize:20, marginVertical:10}}>Link a New App</Text>
-                <TouchableOpacity
-                    style={{}}
-                    onPress={() => props.setModalVisible(!props.modalVisible)}>
-                    <Text>Hide Modal</Text>
-                </TouchableOpacity>
+                <TouchableOpacity style={{height:40, width:40, backgroundColor:"red", alignSelf:"flex-end", marginTop:-40}} onPress={() => props.setModalVisible(!props.modalVisible)}></TouchableOpacity>
                 <View style={{width:"100%", flexGrow:1, flexShrink:1, backgroundColor:"mistyrose"}}>
                     <ScrollView style={{width:"100%"}}>
-                    <SocialMedia name='Instagram' app="instagram" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Facebook' app="facebook" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Twitter' app="twitter" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-                    <SocialMedia name='Youtube' app="youtube" link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Instagram' app="instagram" selectedApp={selectedApp} setSelectedApp={setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Facebook' app="facebook" selectedApp={selectedApp} setSelectedApp={setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Twitter' app="twitter" selectedApp={selectedApp} setSelectedApp={setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+                    <SocialMedia name='Youtube' app="youtube" selectedApp={selectedApp} setSelectedApp={setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
                     </ScrollView>
                 
+                </View>
+                <View style={{width:"100%", backgroundColor:"#ffbab3", flexDirection:"row"}}>
+                    <TouchableOpacity style={{width:"50%", height:"100%"}}>
+                        <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10}}>Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{width:"50%", height:"100%", backgroundColor:"lightgrey"}} disabled={true}>
+                        <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10, color:"grey"}}>Choose App</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             </View>
