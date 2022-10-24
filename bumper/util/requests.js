@@ -65,8 +65,8 @@ export const addConnection = async (app_name, link) => {
 }
 
 export const addFriend = async (friend_username, friend_id, username, user_id) => {
-  await handledFetch(server + 'friend/add', {
-    method: 'GET',
+  await handledFetch(server + 'friends/add', {
+    method: 'POST',
     body: JSON.stringify({
       username: username,
       user_id: user_id,
@@ -78,10 +78,7 @@ export const addFriend = async (friend_username, friend_id, username, user_id) =
 
 
 export const getFriend = async (user_id) => {
-  await handledFetch(server + 'friend/get', {
-    method: 'GET',
-    body: JSON.stringify({
-      user_id: user_id    
-    })
+  await handledFetch(server + 'friends/get', {
+    method: 'GET'
   });
 }

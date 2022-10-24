@@ -29,4 +29,4 @@ def addfriend():
 def getfriends():
     user_id = request.json['user_id']
 
-    return User.filter_by(id=user_id).first().friends
+    return User.query.filter_by(id=user_id).first().friends
