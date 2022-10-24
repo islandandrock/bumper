@@ -1,7 +1,8 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import getFriend from '../util/requests';
+import { getFriend } from '../util/requests';
+import { getData } from '../util/storage'
 
 
 const SearchBar = (props) => {
@@ -21,7 +22,6 @@ let Friends = [
 const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>
     <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{Friends.name}</Text></Marker>)
 
-
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
@@ -30,8 +30,10 @@ export default function FriendScreen () {
 
     useEffect(() => {
         const asyncFunc = async () => {
-          setUser_id(await getData("user_id"));
-          setFriends(await getFriend(user_id))
+          let user_id_temp = await getData("user_id");
+          setUser_id(user_id_temp);
+          let temp = await getFriend(user_id_temp)
+          setFriends(temp)
         }
         asyncFunc();
         console.log(friends)
@@ -53,7 +55,7 @@ export default function FriendScreen () {
 
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
                     <FlatList data={friends} 
-                    renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.key}</Text></TouchableOpacity>}/>
+                    renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.username}</Text></TouchableOpacity>}/>
                 </View>
             ):(
                 <View style={{justifyContent: 'center', flexDirection: 'column'}}>

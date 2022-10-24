@@ -8,8 +8,9 @@ from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict
 
 from ..models import db, User
 
+friends_bp = Blueprint('friends_bp', __name__)
 
-@auth_bp.route('friends/add', methods=['POST'])
+@friends_bp.route('/friends/add', methods=['POST'])
 def addfriend():
     friend_username = request.json['friend_username']
     friend_id = request.json['friend_id']
@@ -25,8 +26,12 @@ def addfriend():
     User2.friends.append(User1)
 
 
-@auth_bp.route('friends/get', methods=['GET'])
+@friends_bp.route('/friends/get', methods=['GET'])
 def getfriends():
-    user_id = request.json['user_id']
+    args = request.args
+    user_id = args.get('user_id')
 
-    return User.query.filter_by(id=user_id).first().friends
+    user_friends = User.query.filter_by(id=user_id).first().friends
+    friends = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]
+
+    return friends
