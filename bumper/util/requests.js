@@ -50,7 +50,8 @@ export const signIn = async (email, password) => {
     })
   });
   data = await response.json();
-  return data.username;
+  console.log(data)
+  return [data.username, data.user_id];
 }
 
 export const addConnection = async (app_name, link) => {
@@ -61,4 +62,25 @@ export const addConnection = async (app_name, link) => {
       link: link
     })
   })
+}
+
+export const addFriend = async (friend_username, friend_id, username, user_id) => {
+  await handledFetch(server + '/friends/add', {
+    method: 'POST',
+    body: JSON.stringify({
+      username: username,
+      user_id: user_id,
+      friend_username: friend_username,
+      friend_id: friend_id
+    })
+  });
+}
+
+
+export const getFriend = async (user_id) => {
+  const response = await handledFetch(server + '/friends/get?user_id=' + user_id, {
+    method: 'GET'
+  });
+  data = await response.json();
+  return data
 }

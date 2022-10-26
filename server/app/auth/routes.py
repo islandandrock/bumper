@@ -48,5 +48,7 @@ def signin():
     user = User.query.filter_by(email=email).first()
     if user and check_password_hash(user.password, password):
         login_user(user)
-        return {"username":user.username}, 200
+        return {"username":user.username, "user_id":user.id}, 200
     raise Unauthorized("Username or Password doesn't match.")
+
+    

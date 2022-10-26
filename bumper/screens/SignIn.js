@@ -33,8 +33,10 @@ export default function SignInScreen ({ navigation }) {
       <BigButton text="SIGN IN" onPress={
         async () => {
           try {
-            const username = await signIn(email, password);
+            const [username, id] = await signIn(email, password);
+            console.log(username, id)
             await storeData("username", username);
+            await storeData("user_id", id.toString());
             Alert.alert("Sign in was successful!");
             navigation.navigate('TabPages');
           } catch (e) {

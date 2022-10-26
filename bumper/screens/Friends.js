@@ -1,6 +1,9 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
-import {useState} from 'react'
+import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
+import { getFriend } from '../util/requests';
+import { getData } from '../util/storage'
+
 
 const SearchBar = (props) => {
     return (
@@ -12,19 +15,27 @@ const SearchBar = (props) => {
 
 }
 
-let Friends = [
-    {name: "brian", lat: 2, lon: 2, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 1},
-    {name: "theo", lat: 1, lon: 1, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 2},
-]
-
-const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>
-    <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{Friends.name}</Text></Marker>)
 
 
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
-    const friends = [dude, dude, dude]
+    const [user_id, setUser_id] = useState("")
+    const [friends, setFriends] = useState([])
+
+    useEffect(() => {
+        const asyncFunc = async () => {
+          let user_id_temp = await getData("user_id");
+          setUser_id(user_id_temp);
+          let temp = await getFriend(user_id_temp)
+          setFriends(temp)
+        }
+        asyncFunc();
+        console.log(friends)
+    }, [])
+
+    const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: 37.78825, longitude: -122.4324}} pinColor={'pink'}>
+    <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
 
     return (
         <View>
@@ -40,13 +51,8 @@ export default function FriendScreen () {
             (
 
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-                    <FlatList data={[
-                        {key: 'thing'},
-                        {key: 'though'},
-                        {key: 'thos'},
-                        {key: 'other'}
-                    ]} 
-                    renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.key}</Text></TouchableOpacity>}/>
+                    <FlatList data={friends} 
+                    renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.username}</Text></TouchableOpacity>}/>
                 </View>
             ):(
                 <View style={{justifyContent: 'center', flexDirection: 'column'}}>
