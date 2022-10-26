@@ -64,6 +64,14 @@ export const addConnection = async (app_name, link) => {
   })
 }
 
+export const getConnections = async (user_id) => {
+  const response = await handledFetch(server + "/connections/get/"+user_id, {
+    method: 'GET'
+  })
+  let data = await response.json()
+  return data
+}
+
 export const addFriend = async (friend_username, friend_id, username, user_id) => {
   await handledFetch(server + '/friends/add', {
     method: 'POST',

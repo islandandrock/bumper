@@ -27,6 +27,12 @@ def add_connection():
     db.session.commit()  # Commits all changes
     return "", 201
 
+@connections_bp.route('/connections/get/<user_id>', methods=['GET'])
+def get_connections(user_id):
+    connections = User.query.filter_by(id=user_id).first().connections
+    data = [{"id":connection.id, "app_name":connection.app_name, "link":connection.link} for connection in connections]
+    return data, 200
+
 @connections_bp.route('/connections/remove')
 @login_required
 def remove_connection():
