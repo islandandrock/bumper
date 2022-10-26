@@ -14,9 +14,8 @@ friends_bp = Blueprint('friends_bp', __name__)
 def addfriend():
     friend_username = request.json['friend_username']
     friend_id = request.json['friend_id']
-    username = request.json['username']
-    user_id = request.json['user_id']
-    for i in User.query.filter_by(id=user_id).first().friends: # makes sure there are no duplicate friends
+    User1 = current_user
+    for i in User1.friends: # makes sure there are no duplicate friends
         if i.friend_username == friend_username:
             raise Conflict('They are already your friend.')
 
