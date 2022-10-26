@@ -15,12 +15,7 @@ const SearchBar = (props) => {
 
 }
 
-let Friends = [
-    {name: 'thing', lat:37.78825, lon:-122.4324, link: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', key: 1}
-]
 
-const Pins = Friends.map((Friends) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={Friends.key} coordinate={{latitude: Friends.lat, longitude: Friends.lon}} pinColor={'pink'}>
-    <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{Friends.name}</Text></Marker>)
 
 export default function FriendScreen () {
     const [SearchText, SetSearchText] = useState('');
@@ -39,6 +34,8 @@ export default function FriendScreen () {
         console.log(friends)
     }, [])
 
+    const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: 37.78825, longitude: -122.4324}} pinColor={'pink'}>
+    <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
 
     return (
         <View>
