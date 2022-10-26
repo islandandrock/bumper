@@ -33,18 +33,3 @@ class Connection(db.Model):
    def __repr__(self):
        return '<Connection %r>' % self.link
 
-''' 
-db.create_all()
-
-u1, u2, u3, u4, u5 = User(name='u1'), User(name='u2'), 
-                   User(name='u3'), User(name='u4'), User(name='u5')
- 
-u1.friends = [u2, u3]
-u4.friends = [u2, u5]
-u3.friends.append(u5)
-db.session.add_all([u1, u2, u3, u4, u5])
-db.session.commit()
- 
-print(u2.friends)
-print(u5.friends)
-'''
