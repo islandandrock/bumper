@@ -51,4 +51,14 @@ def signin():
         return {"username":user.username, "user_id":user.id}, 200
     raise Unauthorized("Username or Password doesn't match.")
 
+@auth_bp.route('/users/search', methods=['GET'])
+def usersearch():
+    args = request.args
+    search = args.get('search')
+
+    users = User.query.filter_by(username=search)
+    user_list = [{'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin} for user in users]
+    print(user_list)
+    return user_list
+
     

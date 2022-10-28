@@ -31,7 +31,6 @@ export default function FriendScreen () {
           setFriends(temp)
         }
         asyncFunc();
-        console.log(friends)
     }, [])
 
     const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: 37.78825, longitude: -122.4324}} pinColor={'pink'}>
@@ -70,11 +69,6 @@ export default function FriendScreen () {
     )
 }
 
-const dude = {
-    name:'dude',
-    age:'100',
-    socialMedias:'https//something'
-}
 
 const styles = StyleSheet.create({
     container: {

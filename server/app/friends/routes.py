@@ -29,6 +29,7 @@ def addfriend():
 def getfriends():
     args = request.args
     user_id = args.get('user_id')
+    print("user id: ", user_id)
 
     user_friends = User.query.filter_by(id=user_id).first().friends
     friends = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]

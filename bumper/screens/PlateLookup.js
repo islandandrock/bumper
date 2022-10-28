@@ -1,9 +1,9 @@
 import { useLinkProps } from '@react-navigation/native';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList} from 'react-native';
 import { useState, useEffect } from 'react';
 
 
-import {signUp} from "../util/requests"
+import {signUp, search} from "../util/requests"
 
 function PlateButton (props) {
   return (
@@ -24,7 +24,16 @@ const SearchBar = (props) => {
 }
 
 export default function PlateLookupScreen () {
-  const [SearchText, SetSearchText] = useState('');
+  const [SearchText, SetSearchText] = useState('u1');
+  const [SearchUsers, SetSearchUsers] = useState([])
+
+  useEffect(() => {
+    const asyncFunc = async () => {
+      SetSearchUsers(await search(SearchText))
+    }
+    asyncFunc();
+}, [])
+
   return (
     <View style={{width:"100%"}}>
       <View style={{flexDirection:"row"}}>
@@ -33,6 +42,9 @@ export default function PlateLookupScreen () {
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
+      </View>
+      <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
+        <FlatList data={SearchUsers} renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.user}>{item.username}</Text></TouchableOpacity>}/>
       </View>
     </View>
   )
@@ -59,5 +71,15 @@ const styles = StyleSheet.create({
   backgroundColor: '#fff',
   borderWidth:1,
   borderColor: 'pink'
-  }
+  },
+  
+  user: {
+    width: '100%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding:10,
+    paddingLeft:20,
+    backgroundColor: '#FFDADA',
+    borderBottomColor: 'black',
+}
 })
