@@ -1,4 +1,4 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button} from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriend } from '../util/requests';
@@ -17,7 +17,7 @@ const SearchBar = (props) => {
 
 
 
-export default function FriendScreen () {
+export default function FriendScreen ( {navigation} ) {
     const [SearchText, SetSearchText] = useState('');
     const [ListMode, SetListMode] = useState(true)
     const [user_id, setUser_id] = useState("")
@@ -66,6 +66,7 @@ export default function FriendScreen () {
                     </MapView>
                 </View>
             )}
+            <Button style={{height:50, width:50, backgroundColor:"red"}} title="hi" onPress={() => navigation.navigate("Profile", {username:"bbb"})}></Button>
         </View>
     )
 }

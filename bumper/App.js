@@ -1,6 +1,6 @@
 import FriendScreen from './screens/Friends';
 import PlateLookupScreen from './screens/PlateLookup';
-import Profile from './screens/Profile';
+import ProfileScreen from './screens/Profile';
 import SignUpScreen from './screens/SignUp';
 import SignInScreen from './screens/SignIn';
 import * as React from 'react';
@@ -11,7 +11,46 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const BaseStack = createNativeStackNavigator();
+
+
+const PlateLookupStack = createNativeStackNavigator();
+
+function PlateLookupStackScreen() {
+  return (
+    <PlateLookupStack.Navigator>
+      <PlateLookupStack.Screen name="Plate Lookup" component={PlateLookupScreen} options={{
+        title: 'Plate Lookup',
+        headerShown: true,
+      }}/>
+      <PlateLookupStack.Screen name="Profile" component={ProfileScreen} />
+    </PlateLookupStack.Navigator>
+  );
+}
+
+const FriendsStack = createNativeStackNavigator();
+
+function FriendsStackScreen() {
+  return (
+    <FriendsStack.Navigator>
+      <FriendsStack.Screen name="Friends" component={FriendScreen} options={{
+        title: 'Friends',
+        headerShown: true,
+      }}/>
+      <FriendsStack.Screen name="Profile" component={ProfileScreen}/>
+    </FriendsStack.Navigator>
+  )
+}
+
+const ProfileStack = createNativeStackNavigator();
+
+function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
+    </ProfileStack.Navigator>
+  )
+}
 
 function MyTabs( {navigation} ) {
 
@@ -26,9 +65,8 @@ function MyTabs( {navigation} ) {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Plate Lookup" component={PlateLookupScreen} options={{
-        title: 'Plate Lookup',
-        headerShown: true,
+      <Tab.Screen name="PlateLookupTab" component={PlateLookupStackScreen} options={{
+        headerShown: false,
         tabBarLabel:() => {return null},
         tabBarIcon: ({ focused }) => {
           const image = focused
@@ -43,7 +81,7 @@ function MyTabs( {navigation} ) {
           )
         }
       }}/>
-      <Tab.Screen name="Profile" component={Profile} options={{
+      <Tab.Screen name="ProfileTab" component={ProfileScreen} options={{
         title: 'Profile',
         headerShown: true,
         tabBarLabel:() => {return null},
@@ -60,9 +98,8 @@ function MyTabs( {navigation} ) {
           )
         }
       }}/>
-      <Tab.Screen name="Friends" component={FriendScreen} options={{
-        title: 'Friends',
-        headerShown: true,
+      <Tab.Screen name="FriendsTab" component={FriendsStackScreen} options={{
+        headerShown: false,
         tabBarLabel:() => {return null},
         tabBarIcon: ({ focused }) => {
           const image = focused
@@ -84,8 +121,8 @@ function MyTabs( {navigation} ) {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
+      <BaseStack.Navigator>
+        <BaseStack.Screen
           name="Sign In"
           component={SignInScreen}
           options={{
@@ -93,7 +130,7 @@ export default function App() {
             headerShown: true
           }}
         />
-        <Stack.Screen
+        <BaseStack.Screen
           name="Sign Up"
           component={SignUpScreen}
           options={{
@@ -101,8 +138,8 @@ export default function App() {
             headerShown: true
           }}
         />
-        <Stack.Screen name="TabPages" component={MyTabs} options={{headerShown: false}}/>
-      </Stack.Navigator>
+        <BaseStack.Screen name="TabPages" component={MyTabs} options={{headerShown: false}}/>
+      </BaseStack.Navigator>
     </NavigationContainer>
   );
 }
