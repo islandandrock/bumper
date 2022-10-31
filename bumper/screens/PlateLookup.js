@@ -24,7 +24,7 @@ const SearchBar = (props) => {
 }
 
 export default function PlateLookupScreen () {
-  const [SearchText, SetSearchText] = useState('u1');
+  const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
 
   useEffect(() => {
@@ -38,7 +38,9 @@ export default function PlateLookupScreen () {
     <View style={{width:"100%"}}>
       <View style={{flexDirection:"row"}}>
         <PlateButton text={"ENTER USERNAME"}/>
-        <PlateButton text={"ENTER PLATE"}/>
+        <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
+          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>ENTER PLATE</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>

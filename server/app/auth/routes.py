@@ -54,9 +54,13 @@ def signin():
 @auth_bp.route('/users/search', methods=['GET'])
 def usersearch():
     args = request.args
-    search = args.get('search')
+    userN = args.get('search')
+    if userN == '':
+        search = ''
+    else:
+        search = '%{}%'.format(userN)
 
-    users = User.query.filter_by(username=search)
+    users = User.query.filter(User.username.like(search)).all()
     user_list = [{'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin} for user in users]
     print(user_list)
     return user_list
