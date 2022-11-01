@@ -15,15 +15,14 @@ function PlateButton (props) {
 
 const SearchBar = (props) => {
   return (
-      <View>
-          <TextInput style={styles.input} placeholder='Search' value={props.SearchText} onChangeText={(text)=>props.SetSearchText(text)}/>
-      </View>
+    <TextInput style={[styles.input]} placeholder='Search' value={props.SearchText} onChangeText={(text)=>props.SetSearchText(text)}/>
+
 
   )
 
 }
 
-export default function PlateLookupScreen () {
+export default function PlateLookupScreen ({ navigation }) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
 
@@ -35,7 +34,7 @@ export default function PlateLookupScreen () {
 }, [])
 
   return (
-    <View style={{width:"100%"}}>
+    <View style={{width:"100%", height:"100%"}}>
       <View style={{flexDirection:"row"}}>
         <PlateButton text={"ENTER USERNAME"}/>
         <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
@@ -43,10 +42,13 @@ export default function PlateLookupScreen () {
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
+        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
+          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
+        </TouchableOpacity>
       </View>
       <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-        <FlatList data={SearchUsers} renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.user}>{item.username}</Text></TouchableOpacity>}/>
+        <FlatList data={SearchUsers} renderItem={({item}) => <TouchableOpacity onPress={() => navigation.navigate("Profile", {id:item.id})}><Text style={styles.user}>{item.username}</Text></TouchableOpacity>}/>
       </View>
     </View>
   )
@@ -54,7 +56,10 @@ export default function PlateLookupScreen () {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10
+    margin: 10,
+    flexDirection:'row',
+    width:300,
+    height:100
   },  
 
   marker: {
@@ -72,7 +77,9 @@ const styles = StyleSheet.create({
   padding:10,
   backgroundColor: '#fff',
   borderWidth:1,
-  borderColor: 'pink'
+  borderColor: 'pink',
+  alignSelf:'flex-start',
+  width:250
   },
   
   user: {
