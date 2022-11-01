@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { addConnection, getConnections } from '../util/requests';
+import { addConnection, getConnections, getUser } from '../util/requests';
 import getIcon from '../util/icons';
 
 const TextBar = (props) => {
@@ -103,7 +103,7 @@ const NewAppModal = (props) => {
                         <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10}}>Cancel</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={{width:"50%", height:"100%", backgroundColor:selectedApp?null:"lightgrey"}} onPress={async ()=>{setNextText("Link App");
-                        if (step < 2) {setStep(step+1)} else {connectApp(selectedApp, usernameToLink(selectedApp, username)); props.setModalVisible(!props.modalVisible)};}} disabled={selectedApp?false:true}>
+                        if (step < 2) {setStep(step+1)} else {connectApp(selectedApp, usernameToLink(selectedApp, username)); props.setModalVisible(!props.modalVisible)}; props.forceReload(!props.reload)}} disabled={selectedApp?false:true}>
                         <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10, color:selectedApp?null:"grey"}}>{nextText}</Text>
                     </TouchableOpacity>
                 </View>
@@ -116,36 +116,40 @@ const NewAppModal = (props) => {
 
 export default function ProfileScreen ( {navigation, route} ) {
     const [username, setUsername] = useState("")
+    const [userId, setUserId] = useState(null)
     const [modalVisible, setModalVisible] = useState(false);
     const [connectedApps, setConnectedApps] = useState([]);
     const [isOwnProfile, setIsOwnProfile] = useState(false);
+    const [reload, forceReload] = useState(false)
 
     useEffect(() => {
         const asyncFunc = async () => {
-            console.log("1")
+            let signedInId = await getData("user_id")
             let signedInUser = await getData("username")
-            console.log(route)
-            console.log(route.params)
-            console.log(route.params?.username)
-            if (!route.params?.username) {
+            if (!route.params?.id) {
                 if (!route.params) {route.params = {}}
-                route.params.username = signedInUser;
+                route.params.id = signedInId;
             }
-            if (route.params.username == signedInUser) {
+            if (route.params.id == signedInId) {
                 setIsOwnProfile(true);
+                route.params.username = signedInUser;
             } else {
+                let user = await getUser(route.params.id);
+                route.params.username = user.username;
                 navigation.setOptions({title:`${route.params.username}'s Profile`})
             }
             setUsername(route.params.username);
-            setConnectedApps(await getConnections(route.params.username))
+            setUserId(route.params.id)
+            let temp = await getConnections(route.params.id)
+            setConnectedApps(temp)
         }
         asyncFunc();
-    }, [route.params])
+    }, [route.params, reload])
     
     return (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             
-            {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible}/> : null}
+            {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
             <View style={{justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', width: '100%', height: 220, backgroundColor: 'pink'}}>
                 <Text style={{fontSize: 40, fontWeight: 'bold', padding: 40}}>License Plate</Text>

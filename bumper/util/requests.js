@@ -90,6 +90,14 @@ export const getFriend = async (user_id) => {
   return data
 }
 
+export const getUser = async (user_id) => {
+  const response = await handledFetch(server + '/users/get?id=' + user_id, {
+    method: 'GET'
+  });
+  data = await response.json()
+  return data
+}
+
 export const search = async (search) => {
   const response = await handledFetch(server + '/users/search?search=' + search, {
     method: 'GET'

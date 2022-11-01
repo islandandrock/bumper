@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, make_response, abort, mak
 from flask import current_app as app
 from flask_login import login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict
+from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict, NotFound
 
 from ..models import db, User
 
@@ -50,6 +50,19 @@ def signin():
         login_user(user)
         return {"username":user.username, "user_id":user.id}, 200
     raise Unauthorized("Username or Password doesn't match.")
+
+@auth_bp.route('/users/get', methods=['GET'])
+def getuser():
+    args = request.args
+    user_id = args.get("id")
+    try:
+        user_id = int(user_id)
+    except:
+        raise UnprocessableEntity("Please specify ID")
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        raise NotFound("User not found")
+    return {'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin}
 
 @auth_bp.route('/users/search', methods=['GET'])
 def usersearch():

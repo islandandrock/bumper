@@ -81,9 +81,8 @@ function MyTabs( {navigation} ) {
           )
         }
       }}/>
-      <Tab.Screen name="ProfileTab" component={ProfileScreen} options={{
-        title: 'Profile',
-        headerShown: true,
+      <Tab.Screen name="ProfileTab" component={ProfileStackScreen} options={{
+        headerShown: false,
         tabBarLabel:() => {return null},
         tabBarIcon: ({ focused }) => {
           const image = focused

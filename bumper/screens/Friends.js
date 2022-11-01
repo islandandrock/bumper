@@ -65,7 +65,7 @@ export default function FriendScreen ( {navigation} ) {
                     </MapView>
                 </View>
             )}
-            <Button style={{height:50, width:50, backgroundColor:"red"}} title="hi" onPress={() => navigation.navigate("Profile", {username:"bbb"})}></Button>
+            <Button style={{height:50, width:50, backgroundColor:"red"}} title="hi" onPress={() => navigation.navigate("Profile", {id:2})}></Button>
         </View>
     )
 }
