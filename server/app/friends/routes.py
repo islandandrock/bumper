@@ -12,17 +12,20 @@ friends_bp = Blueprint('friends_bp', __name__)
 
 @friends_bp.route('/friends/add', methods=['POST'])
 def addfriend():
-    friend_username = request.json['friend_username']
     friend_id = request.json['friend_id']
-    User1 = current_user
-    for i in User1.friends: # makes sure there are no duplicate friends
-        if i.friend_username == friend_username:
+    friend = User.query.filter_by(id=friend_id).first()
+    if not friend_id or not friend:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    for i in current_user.friends: # makes sure there are no duplicate friends
+        if i.username == friend.username:
             raise Conflict('They are already your friend.')
 
-    User1 = User.query.filter_by(id=user_id).first()
-    User2 = User.query.filter_by(id=friend_id).first()
-    User1.friends.append(User2)
-    User2.friends.append(User1)
+    current_user.friends.append(friend)
+    friend.friends.append(current_user)
+
+    db.session.commit()
+
+    return {}, 200
 
 
 @friends_bp.route('/friends/get', methods=['GET'])

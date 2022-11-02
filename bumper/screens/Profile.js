@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput, Button } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
 
-import { addConnection, getConnections, getUser } from '../util/requests';
+import { addConnection, addFriend, getConnections, getUser } from '../util/requests';
 import getIcon from '../util/icons';
 
 const TextBar = (props) => {
@@ -143,6 +143,13 @@ export default function ProfileScreen ( {navigation, route} ) {
             let temp = await getConnections(route.params.id)
             setConnectedApps(temp)
         }
+
+        navigation.setOptions({
+            headerRight: () => (
+              <Button onPress={() => addFriend(userId)} title="Add friend" />
+            ),
+          });
+
         asyncFunc();
     }, [route.params, reload])
     
