@@ -137,18 +137,17 @@ export default function ProfileScreen ( {navigation, route} ) {
                 let user = await getUser(route.params.id);
                 route.params.username = user.username;
                 navigation.setOptions({title:`${route.params.username}'s Profile`})
+                navigation.setOptions({
+                    headerRight: () => (
+                    <Button onPress={() => addFriend(userId)} title="Add friend" />
+                    ),
+                });
             }
             setUsername(route.params.username);
             setUserId(route.params.id)
             let temp = await getConnections(route.params.id)
             setConnectedApps(temp)
         }
-
-        navigation.setOptions({
-            headerRight: () => (
-              <Button onPress={() => addFriend(userId)} title="Add friend" />
-            ),
-          });
 
         asyncFunc();
     }, [route.params, reload])
