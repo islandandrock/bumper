@@ -43,7 +43,7 @@ export default function PlateLookupScreen ({ navigation }) {
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
-        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
+        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10, alignItems:'center', justifyContent:'center', margin:10}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexDirection:'row',
     width:300,
-    height:100
+    height:60
   },  
 
   marker: {
@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
   borderWidth:1,
   borderColor: 'pink',
   alignSelf:'flex-start',
-  width:250
+  width:250,
+  marginTop:10
   },
   
   user: {
