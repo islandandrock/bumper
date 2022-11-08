@@ -138,6 +138,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       if (route.params.id == signedInId) {
         setIsOwnProfile(true);
+        navigation.setOptions({title:"My Profile"})
         route.params.username = signedInUser;
       } else {
         let user = await getUser(route.params.id);
@@ -164,10 +165,10 @@ export default function ProfileScreen ( {navigation, route} ) {
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
       <View style={{alignItems: 'center', width: '100%', backgroundColor: 'pink'}}>
-        <Text style={[styles.bigText, {padding: 40, fontSize:40}]}>License Plate</Text>
-        <Text style={[styles.bigText, {padding: 20}]}>{username}</Text>
+        <Text style={[styles.bigText, {marginVertical: 40, fontSize:40}]}>License Plate</Text>
+        <Text style={[styles.bigText, {marginVertical: 20}]}>{username}</Text>
       </View>
-      <Text style={[styles.bigText, {padding: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
+      <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
 
       <ScrollView style={{width: "100%"}}>
         {isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
