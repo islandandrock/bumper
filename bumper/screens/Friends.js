@@ -22,6 +22,7 @@ export default function FriendScreen ( {navigation} ) {
     const [ListMode, SetListMode] = useState(true)
     const [user_id, setUser_id] = useState("")
     const [friends, setFriends] = useState([])
+    const [refresh, forceRefresh] = useState(false)
 
     useEffect(() => {
         const asyncFunc = async () => {
@@ -31,7 +32,7 @@ export default function FriendScreen ( {navigation} ) {
           setFriends(temp)
         }
         asyncFunc();
-    }, [])
+    }, [refresh])
 
     const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: 37.78825, longitude: -122.4324}} pinColor={'pink'}>
     <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
@@ -48,8 +49,9 @@ export default function FriendScreen ( {navigation} ) {
             </View>
             {ListMode ? 
             (
-
+                
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
+                    <Button style={{height:50, width:50, backgroundColor:"red"}} title="RELOAD" onPress={() => forceRefresh(!refresh)}></Button>
                     <FlatList data={friends} 
                     renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.username}</Text></TouchableOpacity>}/>
                 </View>
@@ -65,7 +67,6 @@ export default function FriendScreen ( {navigation} ) {
                     </MapView>
                 </View>
             )}
-            <Button style={{height:50, width:50, backgroundColor:"red"}} title="hi" onPress={() => navigation.navigate("Profile", {id:2})}></Button>
         </View>
     )
 }

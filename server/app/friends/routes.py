@@ -14,6 +14,7 @@ friends_bp = Blueprint('friends_bp', __name__)
 def addfriend():
     friend_id = request.json['friend_id']
     friend = User.query.filter_by(id=friend_id).first()
+    print(friend_id, friend)
     if not friend_id or not friend:
         return UnprocessableEntity("You must specify a valid friend_id.")
     for i in current_user.friends: # makes sure there are no duplicate friends

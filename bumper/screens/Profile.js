@@ -139,7 +139,7 @@ export default function ProfileScreen ( {navigation, route} ) {
                 navigation.setOptions({title:`${route.params.username}'s Profile`})
                 navigation.setOptions({
                     headerRight: () => (
-                    <Button onPress={() => addFriend(userId)} title="Add friend" />
+                    <Button onPress={() => addFriend(route.params.id)} title="Add friend" />
                     ),
                 });
             }
