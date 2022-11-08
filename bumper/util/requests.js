@@ -97,8 +97,16 @@ export const getUser = async (user_id) => {
   return data
 }
 
-export const search = async (search) => {
+export const userSearch = async (search) => {
   const response = await handledFetch(server + '/users/search?search=' + search, {
+    method: 'GET'
+  });
+  data = await response.json();
+  return data
+}
+
+export const friendSearch = async (search) => {
+  const response = await handledFetch(server + '/friends/search?search=' + search, {
     method: 'GET'
   });
   data = await response.json();
