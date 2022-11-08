@@ -39,10 +39,10 @@ const SocialMedia = (props) => {
 const StepOne = (props) => {
   return (<View style={{width:"100%", flexGrow:1, flexShrink:1, backgroundColor:"mistyrose"}}>
     <ScrollView style={{width:"100%"}}>
-      <SocialMedia selectable={true} name='Instagram' app="instagram" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-      <SocialMedia selectable={true} name='Facebook' app="facebook" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-      <SocialMedia selectable={true} name='Twitter' app="twitter" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
-      <SocialMedia selectable={true} name='Youtube' app="youtube" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp} link='https://www.youtube.com/watch?v=dQw4w9WgXcQ'/>
+      <SocialMedia selectable={true} name='Instagram' app="instagram" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp}/>
+      <SocialMedia selectable={true} name='Facebook' app="facebook" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp}/>
+      <SocialMedia selectable={true} name='Twitter' app="twitter" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp}/>
+      <SocialMedia selectable={true} name='Youtube' app="youtube" selectedApp={props.selectedApp} setSelectedApp={props.setSelectedApp}/>
     </ScrollView>
   </View>)
 }
@@ -87,24 +87,30 @@ const NewAppModal = (props) => {
       onRequestClose={() => {
         props.setModalVisible(!props.modalVisible);
       }}
-      style={{alignContent:"center", alignItems:"center", justifyContent:"center"}}
     >
-      <View style={{justifyContent:"center", alignItems:"center", height:"100%", width:"100%"}}>
-      <View style={{width:"80%", height:"70%", backgroundColor:"#ffbab3", borderRadius:10, overflow:"hidden"}}>
-        <Text style={{textAlign:"center", fontWeight:"bold", fontSize:20, marginVertical:10}}>Link a New App</Text>
-        <TouchableOpacity style={{height:40, width:40, backgroundColor:"red", alignSelf:"flex-end", marginTop:-40}}
+      <View style={styles.fullCenter}>
+      <View style={styles.modalView}>
+        <Text style={styles.bigText}>Link a New App</Text>
+        <TouchableOpacity style={[styles.exitButton, {alignSelf:"flex-end", marginTop:-40}]}
           onPress={() => props.setModalVisible(!props.modalVisible)}/>
         {
-          {1: <StepOne style={{width:"100%"}} selectedApp={selectedApp} setSelectedApp={setSelectedApp}/>,
-          2: <StepTwo style={{width:"100%"}} username={username} setUsername={setUsername} selectedApp={selectedApp}/>}[step]
+          {1: <StepOne selectedApp={selectedApp} setSelectedApp={setSelectedApp}/>,
+          2: <StepTwo username={username} setUsername={setUsername} selectedApp={selectedApp}/>}[step]
         }
-        <View style={{width:"100%", backgroundColor:"#ffbab3", flexDirection:"row"}}>
-          <TouchableOpacity style={{width:"50%", height:"100%"}} onPress={() => props.setModalVisible(!props.modalVisible)}>
-            <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10}}>Cancel</Text>
+        <View style={{backgroundColor:"#ffbab3", flexDirection:"row"}}>
+          <TouchableOpacity style={{width:"50%"}} onPress={() => props.setModalVisible(!props.modalVisible)}>
+            <Text style={styles.modalOptionText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:"50%", height:"100%", backgroundColor:selectedApp?null:"lightgrey"}} onPress={async ()=>{setNextText("Link App");
-            if (step < 2) {setStep(step+1)} else {connectApp(selectedApp, usernameToLink(selectedApp, username)); props.setModalVisible(!props.modalVisible)}; props.forceReload(!props.reload)}} disabled={selectedApp?false:true}>
-            <Text style={{textAlign:"center", fontWeight:"bold", marginVertical:10, color:selectedApp?null:"grey"}}>{nextText}</Text>
+          <TouchableOpacity style={{width:"50%", backgroundColor:selectedApp?null:"lightgrey"}} 
+            onPress={async () => {setNextText("Link App");
+            if (step < 2) {
+              setStep(step+1)
+            } else {
+              connectApp(selectedApp, usernameToLink(selectedApp, username));
+              props.setModalVisible(!props.modalVisible)};
+              props.forceReload(!props.reload)}}
+            disabled={selectedApp?false:true}>
+            <Text style={[styles.modalOptionText, {color:selectedApp?null:"grey"}]}>{nextText}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -132,6 +138,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       if (route.params.id == signedInId) {
         setIsOwnProfile(true);
+        navigation.setOptions({title:"My Profile"})
         route.params.username = signedInUser;
       } else {
         let user = await getUser(route.params.id);
@@ -157,19 +164,17 @@ export default function ProfileScreen ( {navigation, route} ) {
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
-      <View style={{justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', width: '100%', height: 220, backgroundColor: 'pink'}}>
-        <Text style={{fontSize: 40, fontWeight: 'bold', padding: 40}}>License Plate</Text>
-        <View style={{flexDirection: 'row', width: '100%', backgroundColor: 'pink', justifyContent: 'center'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>{username}</Text>
-        </View>
+      <View style={{alignItems: 'center', width: '100%', backgroundColor: 'pink'}}>
+        <Text style={[styles.bigText, {marginVertical: 40, fontSize:40}]}>License Plate</Text>
+        <Text style={[styles.bigText, {marginVertical: 20}]}>{username}</Text>
       </View>
-      <Text style={{fontSize: 20, fontWeight: 'bold', padding: 20}}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
+      <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
 
-      <ScrollView style={{width: "100%", height: "100%"}}>
-        {isOwnProfile ?  <TouchableOpacity style={{width: '100%', justifyContent: 'center', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, backgroundColor:"pink", borderRadius:10}} onPress={async () => {
+      <ScrollView style={{width: "100%"}}>
+        {isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
           setModalVisible(true);
         }}>
-          <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>Connect new app</Text>
+          <Text style={styles.mediumText}>Connect new app</Text>
         </TouchableOpacity> : null}
 
         {connectedApps.map((connection) => <SocialMedia name={connection.app_name} app={connection.app_name} link={connection.link} key={connection.id}/>)}
@@ -188,6 +193,38 @@ const styles = StyleSheet.create({
     borderColor: 'pink',
     width:"80%"
   },
-  
+  fullCenter: {
+    justifyContent:"center",
+    alignItems:"center",
+    height:"100%",
+    width:"100%"
+  },
+  modalView: {
+    width:"80%",
+    height:"70%",
+    backgroundColor:"#ffbab3",
+    borderRadius:10,
+    overflow:"hidden"
+  },
+  bigText: {
+    textAlign:"center",
+    fontWeight:"bold", fontSize:20,
+    marginVertical:10
+  },
+  mediumText: {
+    fontSize: 18,
+    padding:20
+  },
+  exitButton: {
+    height:40,
+    width:40,
+    backgroundColor:"red"
+  },
+  modalOptionText: {
+    textAlign:"center",
+    fontWeight:"bold",
+    marginVertical:10,
+    fontSize:15
+  }
   
 })

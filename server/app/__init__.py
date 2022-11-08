@@ -40,6 +40,7 @@ def init_app():
         # Include our Routes
         from .auth import routes
         from .connections import routes
+        from .users import routes
         from .friends import routes
         db.create_all()
         db.session.commit()
@@ -47,6 +48,7 @@ def init_app():
         # Register Blueprints
         app.register_blueprint(auth.routes.auth_bp)
         app.register_blueprint(connections.routes.connections_bp)
+        app.register_blueprint(users.routes.users_bp)
         app.register_blueprint(friends.routes.friends_bp)
 
 

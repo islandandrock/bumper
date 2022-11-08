@@ -65,6 +65,22 @@ function MyTabs( {navigation} ) {
 
   return (
     <Tab.Navigator>
+      <Tab.Screen name="FriendsTab" component={FriendsStackScreen} options={{
+        headerShown: false,
+        tabBarLabel:() => {return null},
+        tabBarIcon: ({ focused }) => {
+          const image = focused
+          ? require('./assets/people_filled.png')
+          : require('./assets/people.png')
+          
+          return (
+              <Image
+                  source={image}
+                  style={{height:38, width:38}}
+              />
+          )
+        }
+      }}/>
       <Tab.Screen name="PlateLookupTab" component={PlateLookupStackScreen} options={{
         headerShown: false,
         tabBarLabel:() => {return null},
@@ -88,22 +104,6 @@ function MyTabs( {navigation} ) {
           const image = focused
           ? require('./assets/user_filled.png')
           : require('./assets/user.png')
-          
-          return (
-              <Image
-                  source={image}
-                  style={{height:38, width:38}}
-              />
-          )
-        }
-      }}/>
-      <Tab.Screen name="FriendsTab" component={FriendsStackScreen} options={{
-        headerShown: false,
-        tabBarLabel:() => {return null},
-        tabBarIcon: ({ focused }) => {
-          const image = focused
-          ? require('./assets/people_filled.png')
-          : require('./assets/people.png')
           
           return (
               <Image
