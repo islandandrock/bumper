@@ -4,6 +4,8 @@ import MapView, {Marker} from 'react-native-maps';
 import { getFriend, friendSearch} from '../util/requests';
 import { getData } from '../util/storage'
 
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 const SearchBar = (props) => {
   return (
@@ -37,7 +39,7 @@ export default function FriendScreen ( {navigation} ) {
   <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
 
   return (
-    <View>
+    <View style={{width:'100%', height:'100%'}}>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>forceRefresh(!refresh)}>
@@ -52,9 +54,10 @@ export default function FriendScreen ( {navigation} ) {
       {ListMode ? 
       (
         
-        <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-          <FlatList data={SearchFriends} 
-          renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.username}</Text></TouchableOpacity>}/>
+        <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
+          <ScrollView style={{width: "100%"}}>
+            {SearchFriends.map((user) => <TouchableOpacity style={styles.friendList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}><Text style={styles.friend}>{user.username}</Text></TouchableOpacity>)}
+          </ScrollView>
         </View>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
@@ -77,8 +80,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection:'row',
     width:'100%',
-    height:80,
+    height:60,
     padding:10 
+  },
+
+  friendList: {
+    margin: 5,
   },
 
   marker: {
@@ -116,5 +123,6 @@ const styles = StyleSheet.create({
     paddingLeft:20,
     backgroundColor: '#FFDADA',
     borderBottomColor: 'black',
+    borderRadius: 10
   }
 })

@@ -1,5 +1,6 @@
 import { useLinkProps } from '@react-navigation/native';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
 
 
@@ -16,8 +17,6 @@ function PlateButton (props) {
 const SearchBar = (props) => {
   return (
     <TextInput style={[styles.input]} placeholder='Search' value={props.SearchText} onChangeText={(text)=>props.SetSearchText(text)}/>
-
-
   )
 
 }
@@ -37,18 +36,20 @@ export default function PlateLookupScreen ({ navigation }) {
     <View style={{width:"100%", height:"100%"}}>
       <View style={{flexDirection:"row"}}>
         <PlateButton text={"ENTER USERNAME"}/>
-        <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
+        <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>ENTER PLATE</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
-        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10, alignItems:'center', justifyContent:'center', margin:10}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
+        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-        <FlatList data={SearchUsers} renderItem={({item}) => <TouchableOpacity onPress={() => navigation.navigate("Profile", {id:item.id})}><Text style={styles.user}>{item.username}</Text></TouchableOpacity>}/>
+      <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
+        <ScrollView style={{width: "100%"}}>
+          {SearchUsers.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}><Text style={styles.user}>{user.username}</Text></TouchableOpacity>)}
+        </ScrollView>
       </View>
     </View>
   )
@@ -56,11 +57,15 @@ export default function PlateLookupScreen ({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
     flexDirection:'row',
-    width:300,
-    height:60
+    width:'100%',
+    height:60,
+    padding:10 
   },  
+
+  userList: {
+    margin: 5,
+  },
 
   marker: {
   backgroundColor: 'pink',
@@ -73,14 +78,13 @@ const styles = StyleSheet.create({
   },
 
   input: {
-  borderRadius:10,
-  padding:10,
-  backgroundColor: '#fff',
-  borderWidth:1,
-  borderColor: 'pink',
-  alignSelf:'flex-start',
-  width:250,
-  marginTop:10
+    borderRadius:10,
+    padding:10,
+    backgroundColor: '#fff',
+    borderWidth:1,
+    borderColor: 'pink',
+    width: '70%'
+
   },
   
   user: {
@@ -91,5 +95,6 @@ const styles = StyleSheet.create({
     paddingLeft:20,
     backgroundColor: '#FFDADA',
     borderBottomColor: 'black',
+    borderRadius: 10
 }
 })
