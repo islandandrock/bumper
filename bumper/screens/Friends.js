@@ -1,16 +1,13 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button} from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { getFriend } from '../util/requests';
+import { getFriend, friendSearch} from '../util/requests';
 import { getData } from '../util/storage'
 
 
 const SearchBar = (props) => {
   return (
-    <View>
       <TextInput style={styles.input} placeholder='Search' value={props.SearchText} onChangeText={(text)=>props.SetSearchText(text)}/>
-    </View>
-
   )
 
 }
@@ -19,6 +16,7 @@ const SearchBar = (props) => {
 
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
+  const [SearchFriends, SetSearchFriends] = useState([])
   const [ListMode, SetListMode] = useState(true)
   const [user_id, setUser_id] = useState("")
   const [friends, setFriends] = useState([])
@@ -30,6 +28,7 @@ export default function FriendScreen ( {navigation} ) {
       setUser_id(user_id_temp);
       let temp = await getFriend(user_id_temp)
       setFriends(temp)
+      SetSearchFriends(await friendSearch(SearchText))
     }
     asyncFunc();
   }, [refresh])
@@ -40,7 +39,10 @@ export default function FriendScreen ( {navigation} ) {
   return (
     <View>
       <View style={styles.container}>
-        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
+        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>forceRefresh(!refresh)}>
+          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
+        </TouchableOpacity>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 10}}>
         <TouchableOpacity style={styles.toggle} onPress={() => SetListMode(!ListMode)}>
@@ -51,8 +53,7 @@ export default function FriendScreen ( {navigation} ) {
       (
         
         <View style={{flexDirection: 'column', justifyContent: 'flex-start'}}>
-          <Button style={{height:50, width:50, backgroundColor:"red"}} title="RELOAD" onPress={() => forceRefresh(!refresh)}></Button>
-          <FlatList data={friends} 
+          <FlatList data={SearchFriends} 
           renderItem={({item}) => <TouchableOpacity onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}><Text style={styles.friend}>{item.username}</Text></TouchableOpacity>}/>
         </View>
       ):(
@@ -74,7 +75,10 @@ export default function FriendScreen ( {navigation} ) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10
+    flexDirection:'row',
+    width:'100%',
+    height:80,
+    padding:10 
   },
 
   marker: {
@@ -92,7 +96,8 @@ const styles = StyleSheet.create({
     padding:10,
     backgroundColor: '#fff',
     borderWidth:1,
-    borderColor: 'pink'
+    borderColor: 'pink',
+    width: '70%'
   },
 
   map: {

@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import re
 
 from flask import Blueprint, request, render_template, make_response, abort, make_response
 from flask import current_app as app
@@ -39,3 +40,14 @@ def getfriends():
     friends = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]
 
     return friends
+
+@friends_bp.route('/friends/search', methods=['GET'])
+def searchfriends():
+    args = request.args
+    userN = args.get('search')
+    search = '%{}%'.format(userN)
+
+    user_friends = current_user.friends
+    friends = [friend for friend in user_friends if re.match(userN, friend.username,  re.IGNORECASE)]
+    friend_list = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin, 'id':friend.id} for friend in friends]
+    return friend_list

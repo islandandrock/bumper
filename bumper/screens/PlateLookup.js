@@ -3,7 +3,7 @@ import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList} from 'rea
 import { useState, useEffect } from 'react';
 
 
-import {signUp, search} from "../util/requests"
+import {signUp, userSearch} from "../util/requests"
 
 function PlateButton (props) {
   return (
@@ -28,7 +28,7 @@ export default function PlateLookupScreen ({ navigation }) {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      SetSearchUsers(await search(SearchText))
+      SetSearchUsers(await userSearch(SearchText))
     }
     asyncFunc();
 }, [])
@@ -43,7 +43,7 @@ export default function PlateLookupScreen ({ navigation }) {
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
-        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10, alignItems:'center', justifyContent:'center', margin:10}} onPress={async ()=>SetSearchUsers(await search(SearchText))}>
+        <TouchableOpacity style={{width:100, height:50, backgroundColor:"pink", borderRadius:10, alignItems:'center', justifyContent:'center', margin:10}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
