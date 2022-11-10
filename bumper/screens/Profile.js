@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput, Button, ImageBackground, Dimensions } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useFonts } from 'expo-font'
 
-import { addConnection, addFriend, getConnections, getUser } from '../util/requests';
+import { addConnection, addFriend, getConnections, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
 
 const TextBar = (props) => {
@@ -14,8 +15,22 @@ const TextBar = (props) => {
   )
   }
 
+const LicensePlate = (props) => {
+  return (
+    <ImageBackground imageStyle={{resizeMode:"contain"}} style={{alignItems: 'center',
+      justifyContent:'center',
+      alignContent:'center',
+      width: 600, height: 300,
+      backgroundColor: 'pink',
+      marginVertical: -(150-props.width/4),
+      transform: [{scale:props.width/600}]}} source={require("../assets/plates/oregon.jpg")}>
+      <Text style={{fontSize:170, fontFamily:"LicensePlate", textShadowColor:"white", textShadowRadius:20, paddingVertical:10}}>ABC 123</Text>
+    </ImageBackground>
+  )
+}
+
 const SocialMedia = (props) => {
-  let selectable=props.selectable?true:false
+  let selectable = props.selectable?true:false
   let app = props.app;
   console.log("init", app,props.selectedApp)
   return (
@@ -158,16 +173,24 @@ export default function ProfileScreen ( {navigation, route} ) {
 
     asyncFunc();
   }, [route.params, reload])
+
+  const [loaded] = useFonts({
+    LicensePlate: require('../assets/fonts/LicensePlate-j9eO.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
+  const dimensions = Dimensions.get('window')
   
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
-      <View style={{alignItems: 'center', width: '100%', backgroundColor: 'pink'}}>
-        <Text style={[styles.bigText, {marginVertical: 40, fontSize:40}]}>License Plate</Text>
-        <Text style={[styles.bigText, {marginVertical: 20}]}>{username}</Text>
-      </View>
+        <LicensePlate width={dimensions.width}/>
+        <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{username}</Text>
       <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
 
       <ScrollView style={{width: "100%"}}>
@@ -207,7 +230,6 @@ const styles = StyleSheet.create({
     overflow:"hidden"
   },
   bigText: {
-    textAlign:"center",
     fontWeight:"bold", fontSize:20,
     marginVertical:10
   },
