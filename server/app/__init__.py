@@ -2,6 +2,7 @@ import json
 from flask import Flask
 from werkzeug.exceptions import HTTPException
 from flask_login import LoginManager
+from flask_migrate import Migrate
 from .extensions import db
 from .models import User
 from datetime import datetime as dt
@@ -28,6 +29,7 @@ def init_app():
         return response
 
     db.init_app(app)
+    migrate = Migrate(app, db, render_as_batch=True)
     login_manager.init_app(app)
     
     from .models import User
