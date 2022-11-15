@@ -19,7 +19,6 @@ function BigButton (props) {
 }
 
 export default function SignUpScreen ({ navigation }) {
-  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -27,20 +26,18 @@ export default function SignUpScreen ({ navigation }) {
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Email</Text>
       <TextBar inputText={email} setInputText={setEmail} placeholder="Your email"/>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Username</Text>
-      <TextBar inputText={username} setInputText={setUsername} placeholder="Your new username"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Password</Text>
       <TextBar inputText={password} setInputText={setPassword} placeholder="Your new password"/>
       
       <BigButton text="SIGN UP" onPress={
         async () => {
           try {
-            await signUp(email, username, password);
+            await signUp(email, password);
             Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
             navigation.goBack();
           } catch (e) {
             if (isCode(e, [422])) {
-              Alert.alert("Sign up failed!", "Enter a username, email, and password.")
+              Alert.alert("Sign up failed!", "Enter an email and password.")
             } else if (isCode(e, [409])) {
               Alert.alert("Sign up failed!", e.description);
             } else {

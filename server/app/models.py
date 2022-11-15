@@ -15,7 +15,7 @@ friend_request = db.Table('friend_request',
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     plate = db.Column(db.String(10), unique=True, nullable=False, server_default="ABC123")
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(80), unique=False, nullable=False)
     password = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True, nullable=False)
     created = db.Column(db.DateTime, index=False, unique=False, nullable=False)
@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
     friends = db.relationship('User', secondary=friendship, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
    
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<User %r>' % self.plate
  
 class Connection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
