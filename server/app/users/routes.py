@@ -21,7 +21,7 @@ def getuser():
     user = User.query.filter_by(id=user_id).first()
     if not user:
         raise NotFound("User not found")
-    return {'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin}
+    return {'plate':user.plate, 'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin}
 
 @users_bp.route('/users/search', methods=['GET'])
 def usersearch():

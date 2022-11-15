@@ -16,6 +16,10 @@ const TextBar = (props) => {
   }
 
 const LicensePlate = (props) => {
+  let plate = props.plate;
+  if (plate.length == 6) {
+    plate = plate.slice(0, 3) + " " + plate.slice(3);
+  }
   return (
     <ImageBackground imageStyle={{resizeMode:"contain"}} style={{alignItems: 'center',
       justifyContent:'center',
@@ -24,7 +28,7 @@ const LicensePlate = (props) => {
       backgroundColor: 'pink',
       marginVertical: -(150-props.width/4),
       transform: [{scale:props.width/600}]}} source={require("../assets/plates/oregon.jpg")}>
-      <Text style={{fontSize:170, fontFamily:"LicensePlate", textShadowColor:"white", textShadowRadius:20, paddingVertical:10}}>ABC 123</Text>
+      <Text style={{fontSize:170, fontFamily:"LicensePlate", textShadowColor:"white", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
     </ImageBackground>
   )
 }
@@ -138,6 +142,7 @@ const NewAppModal = (props) => {
 export default function ProfileScreen ( {navigation, route} ) {
   const [username, setUsername] = useState("")
   const [userId, setUserId] = useState(null)
+  const [plate, setPlate] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -155,8 +160,11 @@ export default function ProfileScreen ( {navigation, route} ) {
         setIsOwnProfile(true);
         navigation.setOptions({title:"My Profile"})
         route.params.username = signedInUser;
+        let user = await getUser(route.params.id);
+        setPlate(user.plate)
       } else {
         let user = await getUser(route.params.id);
+        setPlate(user.plate)
         route.params.username = user.username;
         navigation.setOptions({title:`${route.params.username}'s Profile`})
         navigation.setOptions({
@@ -189,7 +197,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
-        <LicensePlate width={dimensions.width}/>
+        <LicensePlate width={dimensions.width} plate={plate}/>
         <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{username}</Text>
       <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
 
