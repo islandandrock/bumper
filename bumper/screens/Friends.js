@@ -4,6 +4,9 @@ import MapView, {Marker} from 'react-native-maps';
 import { getFriend, friendSearch} from '../util/requests';
 import { getData } from '../util/storage'
 
+import * as Location from 'expo-location';
+
+
 import { ScrollView } from 'react-native-gesture-handler';
 
 
@@ -14,7 +17,24 @@ const SearchBar = (props) => {
 
 }
 
+const useGeolocation = () => {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+}
 
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
@@ -23,6 +43,8 @@ export default function FriendScreen ( {navigation} ) {
   const [user_id, setUser_id] = useState("")
   const [friends, setFriends] = useState([])
   const [refresh, forceRefresh] = useState(false)
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -31,12 +53,22 @@ export default function FriendScreen ( {navigation} ) {
       let temp = await getFriend(user_id_temp)
       setFriends(temp)
       SetSearchFriends(await friendSearch(SearchText))
+
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
     }
     asyncFunc();
   }, [refresh])
+  
 
-  const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: 37.78825, longitude: -122.4324}} pinColor={'pink'}>
-  <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
+  //const Pins = friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: location.coords.latitude, longitude: location.coords.longitude}} pinColor={'pink'}>
+  //<Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>)
 
   return (
     <View style={{width:'100%', height:'100%'}}>
@@ -55,6 +87,7 @@ export default function FriendScreen ( {navigation} ) {
       (
         
         <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
+          <Text>{location}</Text>
           <ScrollView style={{width: "100%"}}>
             {SearchFriends.map((user) => <TouchableOpacity style={styles.friendList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}><Text style={styles.friend}>{user.username}</Text></TouchableOpacity>)}
           </ScrollView>
@@ -67,7 +100,8 @@ export default function FriendScreen ( {navigation} ) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                   }} style={styles.map}>
-                {Pins}
+                {location? friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: location.coords.latitude, longitude: location.coords.longitude}} pinColor={'pink'}>
+  <Text style={{backgroundColor: 'pink', borderRadius: 100, padding: 5}}>{friend.username}</Text></Marker>): null}
           </MapView>
         </View>
       )}
