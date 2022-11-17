@@ -112,3 +112,12 @@ export const friendSearch = async (search) => {
   data = await response.json();
   return data
 }
+
+export const addLocation = async (location) => {
+  await handledFetch(server + '/users/location', {
+    method:'POST',
+    body: JSON.stringify({
+      location: location
+    })
+  })
+}

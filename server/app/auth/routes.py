@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import random
 
 from flask import Blueprint, request, render_template, make_response, abort, make_response
 from flask import current_app as app
@@ -34,6 +35,9 @@ def signup():
         bio="Default Bio",
         admin=False
     )
+
+    new_user.plate="ABC"+str(random.randint(0, 1000))
+
     db.session.add(new_user)  # Adds new User record to database
     db.session.commit()  # Commits all changes
     return "", 201

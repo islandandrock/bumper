@@ -1,4 +1,5 @@
 from datetime import datetime as dt
+import json
 
 from flask import Blueprint, request, render_template, make_response, abort, make_response
 from flask import current_app as app
@@ -36,5 +37,17 @@ def usersearch():
     user_list = [{'username':user.username, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin, 'id':user.id} for user in users]
     print(user_list)
     return user_list
+
+@users_bp.route('/users/location', methods=['POST'])
+def addLocation():
+    location = json.dumps(request.json['location'])
+
+    print(location)
+    current_user.location = location
+    
+    db.session.commit()  # Commits all changes
+
+    return "", 201
+
 
     

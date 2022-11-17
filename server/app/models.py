@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
     created = db.Column(db.DateTime, index=False, unique=False, nullable=False)
     bio = db.Column(db.Text, index=False, unique=False, nullable=True)
     admin = db.Column( db.Boolean, index=False, unique=False, nullable=False)
+    location = db.Column(db.String(100), unique=False, nullable=True)
     connections = db.relationship('Connection', backref='user', lazy=True)
 
     #friend_requests_sent = db.relationship('User', backref='sender', lazy=True)
