@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 
 
 import {signUp, userSearch} from "../util/requests"
+import { LicensePlate } from "../util/components"
 
 function PlateButton (props) {
   return (
@@ -48,7 +49,9 @@ export default function PlateLookupScreen ({ navigation }) {
       </View>
       <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
         <ScrollView style={{width: "100%"}}>
-          {SearchUsers.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}><Text style={styles.user}>{user.username}</Text></TouchableOpacity>)}
+          {SearchUsers.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+            <LicensePlate width={80} plate={user.plate} style={{marginRight:30}}/><Text style={styles.user}>{user.name}</Text>
+            </TouchableOpacity>)}
         </ScrollView>
       </View>
     </View>
@@ -64,7 +67,15 @@ const styles = StyleSheet.create({
   },  
 
   userList: {
-    margin: 5,
+    marginVertical:5,
+    width: '100%',
+    padding:5,
+    paddingLeft:20,
+    backgroundColor: '#FFDADA',
+    borderBottomColor: 'black',
+    borderRadius: 10,
+    flexDirection:'row',
+    alignItems:'center'
   },
 
   marker: {
@@ -88,13 +99,7 @@ const styles = StyleSheet.create({
   },
   
   user: {
-    width: '100%',
     fontSize: 20,
     fontWeight: 'bold',
-    padding:10,
-    paddingLeft:20,
-    backgroundColor: '#FFDADA',
-    borderBottomColor: 'black',
-    borderRadius: 10
-}
+  }
 })

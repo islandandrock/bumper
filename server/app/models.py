@@ -15,7 +15,7 @@ friend_request = db.Table('friend_request',
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     plate = db.Column(db.String(10), unique=True, nullable=False, server_default="ABC123")
-    username = db.Column(db.String(80), unique=False, nullable=False)
+    name = db.Column(db.String(80), unique=False, nullable=True)
     password = db.Column(db.String(100))
     email = db.Column(db.String(120), unique=True, nullable=False)
     created = db.Column(db.DateTime, index=False, unique=False, nullable=False)

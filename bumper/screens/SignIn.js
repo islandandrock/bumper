@@ -33,9 +33,9 @@ export default function SignInScreen ({ navigation }) {
       <BigButton text="SIGN IN" onPress={
         async () => {
           try {
-            const [username, id] = await signIn(email, password);
-            console.log(username, id)
-            await storeData("username", username);
+            const [name, id] = await signIn(email, password);
+            console.log(name, id)
+            await storeData("name", name.toString());
             await storeData("user_id", id.toString());
             Alert.alert("Sign in was successful!");
             navigation.navigate('TabPages');
