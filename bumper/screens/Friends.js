@@ -81,7 +81,7 @@ export default function FriendScreen ( {navigation} ) {
                   }} style={styles.map}>
                 {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: location.coords.latitude, longitude: location.coords.longitude}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.username}</Text></Marker>)}
-                <Marker coordinate={{latitude : location.coords.latitude , longitude : location.coords.longitude}} onPress={() => addLocation([location.coords.latitude, location.coords.longitude])}><Text style={styles.friendPin}>You</Text></Marker>
+                <Marker coordinate={{latitude : location.coords.latitude , longitude : location.coords.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView>: null}
         </View>
       )}

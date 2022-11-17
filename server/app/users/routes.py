@@ -42,7 +42,6 @@ def usersearch():
 def addLocation():
     location = json.dumps(request.json['location'])
 
-    print(location)
     current_user.location = location
     
     db.session.commit()  # Commits all changes
