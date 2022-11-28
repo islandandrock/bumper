@@ -18,6 +18,7 @@ const SearchBar = (props) => {
 }
 
 
+
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchFriends, SetSearchFriends] = useState([])
@@ -52,6 +53,11 @@ export default function FriendScreen ( {navigation} ) {
 
   return (
     <View style={{width:'100%', height:'100%'}}>
+      <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
+        {location?<TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => forceRefresh(!refresh)}>
+          <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
+        </TouchableOpacity>: null}
+      </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>forceRefresh(!refresh)}>
@@ -65,7 +71,6 @@ export default function FriendScreen ( {navigation} ) {
       </View>
       {ListMode ? 
       (
-        
         <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
           <ScrollView style={{width: "100%"}}>
             {SearchFriends.map((user) => <TouchableOpacity style={styles.friendList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}><Text style={styles.friend}>{user.username}</Text></TouchableOpacity>)}
@@ -82,7 +87,7 @@ export default function FriendScreen ( {navigation} ) {
                 {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: location.coords.latitude, longitude: location.coords.longitude}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.username}</Text></Marker>)}
                 <Marker coordinate={{latitude : location.coords.latitude , longitude : location.coords.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
-          </MapView>: null}
+          </MapView> : null}
         </View>
       )}
     </View>
