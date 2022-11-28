@@ -22,16 +22,22 @@ def signup():
 
     if User.query.filter_by(email=email).first():
         raise Conflict("Email is already registered.")
-    
+
     new_user = User(
         email=email,
+        plate=email,
         password=generate_password_hash(password, method='sha256'),
         created=dt.now(),
         bio="Default Bio",
-        admin=False
+        admin=False,
+        linked=False
     )
     db.session.add(new_user)  # Adds new User record to database
     db.session.commit()  # Commits all changes
+    user = User.query.filter_by(email=email).first()  # Get user again
+    user.plate = f"---{user.id:03d}"
+    db.session.add(user)
+    db.session.commit()
     return "", 201
 
 @auth_bp.route('/signin', methods=['POST'])

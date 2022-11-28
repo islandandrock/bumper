@@ -50,7 +50,7 @@ export default function PlateLookupScreen ({ navigation }) {
       <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
         <ScrollView style={{width: "100%"}}>
           {SearchUsers.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-            <LicensePlate width={80} plate={user.plate} style={{marginRight:20}}/><Text style={styles.user}>{user.name}</Text>
+            <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/><Text style={styles.user}>{user.name}</Text>
             </TouchableOpacity>)}
         </ScrollView>
       </View>

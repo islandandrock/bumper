@@ -127,7 +127,7 @@ const NewAppModal = (props) => {
 export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
-  const [plate, setPlate] = useState("");
+  const [plate, setPlate] = useState({linked:false, plate:""});
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -146,10 +146,10 @@ export default function ProfileScreen ( {navigation, route} ) {
         navigation.setOptions({title:"My Profile"})
         route.params.name = signedInUser;
         let user = await getUser(route.params.id);
-        setPlate(user.plate)
+        setPlate({linked:user.linked,plate:user.plate})
       } else {
         let user = await getUser(route.params.id);
-        setPlate(user.plate)
+        setPlate({linked:user.linked,plate:user.plate})
         route.params.name = user.name;
         navigation.setOptions({title:`${route.params.name}'s Profile`})
         navigation.setOptions({
@@ -175,7 +175,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
-        <LicensePlate width={dimensions.width} plate={plate}/>
+        <LicensePlate width={dimensions.width} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
         <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{name}</Text>
       <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${name}'s`} Connections</Text>
 
