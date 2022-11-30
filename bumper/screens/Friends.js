@@ -18,7 +18,6 @@ const SearchBar = (props) => {
 }
 
 
-
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchFriends, SetSearchFriends] = useState([])
@@ -54,9 +53,6 @@ export default function FriendScreen ( {navigation} ) {
   return (
     <View style={{width:'100%', height:'100%'}}>
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
-        {location?<TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => forceRefresh(!refresh)}>
-          <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
-        </TouchableOpacity>: null}
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
@@ -78,7 +74,14 @@ export default function FriendScreen ( {navigation} ) {
         </View>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
-          {location? <MapView  initialRegion={{
+          {location?           
+          <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
+            <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
+              <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
+            </TouchableOpacity>
+          </View>: null}
+          {location?    
+        <MapView  initialRegion={{
                   latitude: location.coords.latitude,
                   longitude: location.coords.longitude,
                   latitudeDelta: 0.0922,
