@@ -22,8 +22,16 @@ function PlateLookupStackScreen() {
       <PlateLookupStack.Screen name="Plate Lookup" component={PlateLookupScreen} options={{
         title: 'Plate Lookup',
         headerShown: true,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
       }}/>
-      <PlateLookupStack.Screen name="Profile" component={ProfileScreen} />
+      <PlateLookupStack.Screen name="Profile" component={ProfileScreen} options={{
+          title: "",
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }
+        }}/>
     </PlateLookupStack.Navigator>
   );
 }
@@ -36,8 +44,16 @@ function FriendsStackScreen() {
       <FriendsStack.Screen name="Friends" component={FriendScreen} options={{
         title: 'Friends',
         headerShown: true,
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
       }}/>
-      <FriendsStack.Screen name="Profile" component={ProfileScreen}/>
+      <FriendsStack.Screen name="Profile" component={ProfileScreen} options={{
+          title: "",
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }
+        }}/>
     </FriendsStack.Navigator>
   )
 }
@@ -47,7 +63,11 @@ const ProfileStack = createNativeStackNavigator();
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen}/>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
+          title: "",
+          headerShown: true,
+          header: () => <View style={{backgroundColor:'red', width:20, height:56}}/>
+        }}/>
     </ProfileStack.Navigator>
   )
 }
@@ -126,7 +146,10 @@ export default function App() {
           component={SignInScreen}
           options={{
             title: "Sign In",
-            headerShown: true
+            headerShown: true,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            }
           }}
         />
         <BaseStack.Screen
@@ -134,7 +157,10 @@ export default function App() {
           component={SignUpScreen}
           options={{
             title: "Sign Up",
-            headerShown: true
+            headerShown: true,
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            }
           }}
         />
         <BaseStack.Screen name="TabPages" component={MyTabs} options={{headerShown: false}}/>

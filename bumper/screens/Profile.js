@@ -140,18 +140,17 @@ export default function ProfileScreen ( {navigation, route} ) {
       if (!route.params?.id) {
         if (!route.params) {route.params = {}}
         route.params.id = signedInId;
+        route.params.name = signedInUser;
       }
+      let user = await getUser(route.params.id);
       if (route.params.id == signedInId) {
         setIsOwnProfile(true);
-        navigation.setOptions({title:"My Profile"})
-        route.params.name = signedInUser;
-        let user = await getUser(route.params.id);
+        navigation.setOptions({title:user.plate})        
         setPlate({linked:user.linked,plate:user.plate})
       } else {
-        let user = await getUser(route.params.id);
         setPlate({linked:user.linked,plate:user.plate})
         route.params.name = user.name;
-        navigation.setOptions({title:`${route.params.name}'s Profile`})
+        navigation.setOptions({title:user.plate})
         navigation.setOptions({
           headerRight: () => (
           <Button onPress={() => addFriend(route.params.id)} title="Add friend" />
@@ -176,7 +175,10 @@ export default function ProfileScreen ( {navigation, route} ) {
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
         <LicensePlate width={dimensions.width} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
-        <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{name}</Text>
+        <View style={{width:dimensions.width-50}}>
+        <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 10, marginBottom: 0, width:"100%"}]}>{name}</Text>
+        <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>this is a user descriptionaaaaaaaa dafsfssss sdfsss sag afg ag </Text>
+        </View>
       <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${name}'s`} Connections</Text>
 
       <ScrollView style={{width: "100%"}}>
