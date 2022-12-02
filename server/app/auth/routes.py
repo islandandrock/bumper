@@ -51,4 +51,4 @@ def signin():
     if user and check_password_hash(user.password, password):
         login_user(user)
         return {"name":user.name, "user_id":user.id}, 200
-    raise Unauthorized("Username or Password doesn't match.")
+    raise Unauthorized("Email or Password doesn't match.")

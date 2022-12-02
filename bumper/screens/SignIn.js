@@ -41,7 +41,7 @@ export default function SignInScreen ({ navigation }) {
             navigation.navigate('TabPages');
           } catch (e) {
             if (isCode(e, [422])) {
-              Alert.alert("Sign in failed!", "Enter a username, email, and password.")
+              Alert.alert("Sign in failed!", "Enter an email and password.")
             } else if (isCode(e, [401])) {
               Alert.alert("Sign in failed!", "Check your email and password.");
             } else {
