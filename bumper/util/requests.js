@@ -1,3 +1,4 @@
+import { Alert } from 'react-native';
 import file from './server.json'
 let server = file.ip
 if (server == "REPLACEME") {
@@ -18,7 +19,17 @@ const handledFetch = async (resource, init={}) => {
     Accept: 'application/json',
     'Content-Type': 'application/json'
   }
-  const response = await fetch(resource, init)
+  let response = null;
+  try {
+    response = await fetch(resource, init)
+  } catch (e) {
+    if (e instanceof TypeError) {
+      Alert.alert("Couldn't reach server. Check IP/internet")
+      throw e; // re-raise
+    } else {
+      throw e; // re-throw the error unchanged
+    }
+  }
   if (!response.ok) {
     let error = await response.json();
     throw new ServerError(response.status, error.name, error.description);
@@ -30,11 +41,10 @@ export function isCode(e, codes) {
   return (e instanceof ServerError && codes.includes(e.code))
 }
 
-export const signUp = async (email, username, password) => {
+export const signUp = async (email, password) => {
   await handledFetch(server + '/signup', {
     method: 'POST',
     body: JSON.stringify({
-      username: username,
       email: email,
       password: password
     })
@@ -49,9 +59,9 @@ export const signIn = async (email, password) => {
       password: password
     })
   });
-  data = await response.json();
+  let data = await response.json();
   console.log(data)
-  return [data.username, data.user_id];
+  return [data.name, data.user_id];
 }
 
 export const addConnection = async (app_name, link) => {
@@ -85,7 +95,7 @@ export const getFriend = async (user_id) => {
   const response = await handledFetch(server + '/friends/get?user_id=' + user_id, {
     method: 'GET'
   });
-  data = await response.json();
+  let data = await response.json();
   return data
 }
 
@@ -93,7 +103,7 @@ export const getUser = async (user_id) => {
   const response = await handledFetch(server + '/users/get?id=' + user_id, {
     method: 'GET'
   });
-  data = await response.json()
+  let data = await response.json()
   return data
 }
 
@@ -101,7 +111,7 @@ export const userSearch = async (search) => {
   const response = await handledFetch(server + '/users/search?search=' + search, {
     method: 'GET'
   });
-  data = await response.json();
+  let data = await response.json();
   return data
 }
 
@@ -109,7 +119,7 @@ export const friendSearch = async (search) => {
   const response = await handledFetch(server + '/friends/search?search=' + search, {
     method: 'GET'
   });
-  data = await response.json();
+  let data = await response.json();
   return data
 }
 

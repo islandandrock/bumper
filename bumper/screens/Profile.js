@@ -6,6 +6,7 @@ import { useFonts } from 'expo-font'
 
 import { addConnection, addFriend, getConnections, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
+import { LicensePlate } from '../util/components';
 
 const TextBar = (props) => {
   return (
@@ -15,23 +16,7 @@ const TextBar = (props) => {
   )
   }
 
-const LicensePlate = (props) => {
-  let plate = props.plate;
-  if (plate.length == 6) {
-    plate = plate.slice(0, 3) + " " + plate.slice(3);
-  }
-  return (
-    <ImageBackground imageStyle={{resizeMode:"contain"}} style={{alignItems: 'center',
-      justifyContent:'center',
-      alignContent:'center',
-      width: 600, height: 300,
-      backgroundColor: 'pink',
-      marginVertical: -(150-props.width/4),
-      transform: [{scale:props.width/600}]}} source={require("../assets/plates/oregon.jpg")}>
-      <Text style={{fontSize:170, fontFamily:"LicensePlate", textShadowColor:"white", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
-    </ImageBackground>
-  )
-}
+
 
 const SocialMedia = (props) => {
   let selectable = props.selectable?true:false
@@ -140,9 +125,9 @@ const NewAppModal = (props) => {
 
 
 export default function ProfileScreen ( {navigation, route} ) {
-  const [username, setUsername] = useState("")
+  const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
-  const [plate, setPlate] = useState("");
+  const [plate, setPlate] = useState({linked:false, plate:""});
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
@@ -151,7 +136,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   useEffect(() => {
     const asyncFunc = async () => {
       let signedInId = await getData("user_id")
-      let signedInUser = await getData("username")
+      let signedInUser = await getData("name")
       if (!route.params?.id) {
         if (!route.params) {route.params = {}}
         route.params.id = signedInId;
@@ -159,21 +144,21 @@ export default function ProfileScreen ( {navigation, route} ) {
       if (route.params.id == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:"My Profile"})
-        route.params.username = signedInUser;
+        route.params.name = signedInUser;
         let user = await getUser(route.params.id);
-        setPlate(user.plate)
+        setPlate({linked:user.linked,plate:user.plate})
       } else {
         let user = await getUser(route.params.id);
-        setPlate(user.plate)
-        route.params.username = user.username;
-        navigation.setOptions({title:`${route.params.username}'s Profile`})
+        setPlate({linked:user.linked,plate:user.plate})
+        route.params.name = user.name;
+        navigation.setOptions({title:`${route.params.name}'s Profile`})
         navigation.setOptions({
           headerRight: () => (
           <Button onPress={() => addFriend(route.params.id)} title="Add friend" />
           ),
         });
       }
-      setUsername(route.params.username);
+      setName(route.params.name);
       setUserId(route.params.id)
       let temp = await getConnections(route.params.id)
       setConnectedApps(temp)
@@ -182,13 +167,6 @@ export default function ProfileScreen ( {navigation, route} ) {
     asyncFunc();
   }, [route.params, reload])
 
-  const [loaded] = useFonts({
-    LicensePlate: require('../assets/fonts/LicensePlate-j9eO.ttf'),
-  });
-
-  if (!loaded) {
-    return null;
-  }
 
   const dimensions = Dimensions.get('window')
   
@@ -197,9 +175,9 @@ export default function ProfileScreen ( {navigation, route} ) {
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
 
-        <LicensePlate width={dimensions.width} plate={plate}/>
-        <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{username}</Text>
-      <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${username}'s`} Connections</Text>
+        <LicensePlate width={dimensions.width} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
+        <Text style={[styles.bigText, {textAlign:"left", marginTop: 10, marginBottom: 0, marginLeft:40, width:"100%"}]}>{name}</Text>
+      <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${name}'s`} Connections</Text>
 
       <ScrollView style={{width: "100%"}}>
         {isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {

@@ -19,7 +19,7 @@ def addfriend():
     if not friend_id or not friend:
         return UnprocessableEntity("You must specify a valid friend_id.")
     for i in current_user.friends: # makes sure there are no duplicate friends
-        if i.username == friend.username:
+        if i.id == friend.id:
             raise Conflict('They are already your friend.')
 
     current_user.friends.append(friend)
@@ -37,17 +37,16 @@ def getfriends():
     print("user id: ", user_id)
 
     user_friends = User.query.filter_by(id=user_id).first().friends
-    friends = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]
+    friends = [{'plate':friend.plate, 'linked':friend.linked, 'name':friend.name, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]
 
     return friends
 
 @friends_bp.route('/friends/search', methods=['GET'])
 def searchfriends():
     args = request.args
-    userN = args.get('search')
-    search = '%{}%'.format(userN)
+    query = args.get('search')
 
     user_friends = current_user.friends
-    friends = [friend for friend in user_friends if re.match(userN, friend.username,  re.IGNORECASE)]
-    friend_list = [{'username':friend.username, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin, 'id':friend.id} for friend in friends]
+    friends = [friend for friend in user_friends if re.match(query, str(friend.name),  re.IGNORECASE) or re.match(query, friend.plate,  re.IGNORECASE)]
+    friend_list = [{'plate':friend.plate, 'linked':friend.linked, 'name':friend.name, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin, 'id':friend.id} for friend in friends]
     return friend_list
