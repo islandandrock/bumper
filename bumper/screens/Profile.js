@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal,
 import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useFonts } from 'expo-font'
+
 
 import { addConnection, addFriend, getConnections, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
@@ -157,6 +157,7 @@ export default function ProfileScreen ( {navigation, route} ) {
           ),
         });
       }
+      
       setName(route.params.name);
       setUserId(route.params.id)
       let temp = await getConnections(route.params.id)
