@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
 
-
 import { addConnection, addFriend, getConnections, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
@@ -174,11 +173,25 @@ export default function ProfileScreen ( {navigation, route} ) {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
+        <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
+          <View style={{width:2*(dimensions.width-40)/3}}>
+            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
+            <View style={{backgroundColor:'lightgrey', marginTop:10, borderRadius:10, padding:5}}>
+              <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
+              <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>this is a user descriptionaaaaaaaa dafsfssss sdfsss sag afg ag </Text>
+            </View>
+          </View>
+          <View style={{flexGrow:1, backgroundColor:'lightgrey', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
+            <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
+              <Text style={{fontWeight:"bold", fontSize:24}}>52</Text>
+              <Text style={{marginTop:-5}}>Friends</Text>
 
-        <LicensePlate width={dimensions.width} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
-        <View style={{width:dimensions.width-50}}>
-        <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 10, marginBottom: 0, width:"100%"}]}>{name}</Text>
-        <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>this is a user descriptionaaaaaaaa dafsfssss sdfsss sag afg ag </Text>
+            </View>
+            <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
+              <Text style={{fontWeight:"bold", fontSize:24}}>12</Text>
+              <Text style={{marginTop:-5}}>Connections</Text>
+            </View>
+          </View>
         </View>
       <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${name}'s`} Connections</Text>
 
