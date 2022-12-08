@@ -2,10 +2,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal,
 import { useState, useEffect } from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { addConnection, addFriend, getConnections, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
+
+const Tab = createMaterialTopTabNavigator();
 
 const TextBar = (props) => {
   return (
@@ -15,7 +18,34 @@ const TextBar = (props) => {
   )
   }
 
+const ConnectionList = (route) => {
+  console.log(route, route.params)
+  return (
+    <ScrollView style={{width: "100%"}}>
+      {route.params.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
+        setModalVisible(true);
+      }}>
+        <Text style={styles.mediumText}>Connect new app</Text>
+      </TouchableOpacity> : null}
 
+      {route.params.connectedApps.map((connection) => <SocialMedia name={connection.app_name} app={connection.app_name} link={connection.link} key={connection.id}/>)}
+
+  </ScrollView>
+);
+}
+
+function FriendList() {
+  return (<View style={{height:50, width:50, backgroundColor:'red'}}></View>);
+}
+
+const SwipeTabs = (props) => {
+    return (
+      <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}}>
+        <Tab.Screen name="ConnectionList" component={ConnectionList} initialParams={{isOwnProfile: props.isOwnProfile, connectedApps: props.connectedApps}}/>
+        <Tab.Screen name="FriendList" component={FriendList} />
+      </Tab.Navigator>
+    );
+  }
 
 const SocialMedia = (props) => {
   let selectable = props.selectable?true:false
@@ -193,18 +223,7 @@ export default function ProfileScreen ( {navigation, route} ) {
             </View>
           </View>
         </View>
-      <Text style={[styles.bigText, {marginVertical: 20}]}>{isOwnProfile? "My" : `${name}'s`} Connections</Text>
-
-      <ScrollView style={{width: "100%"}}>
-        {isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
-          setModalVisible(true);
-        }}>
-          <Text style={styles.mediumText}>Connect new app</Text>
-        </TouchableOpacity> : null}
-
-        {connectedApps.map((connection) => <SocialMedia name={connection.app_name} app={connection.app_name} link={connection.link} key={connection.id}/>)}
-
-      </ScrollView>
+      <SwipeTabs connectedApps={connectedApps} isOwnProfile={isOwnProfile}/>
     </View>
   )
 }
