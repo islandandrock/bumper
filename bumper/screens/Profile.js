@@ -18,17 +18,16 @@ const TextBar = (props) => {
   )
   }
 
-const ConnectionList = (route) => {
-  console.log(route, route.params)
+function ConnectionList(props) {
   return (
     <ScrollView style={{width: "100%"}}>
-      {route.params.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
-        setModalVisible(true);
+      {props.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
+        props.setModalVisible(true);
       }}>
         <Text style={styles.mediumText}>Connect new app</Text>
       </TouchableOpacity> : null}
 
-      {route.params.connectedApps.map((connection) => <SocialMedia name={connection.app_name} app={connection.app_name} link={connection.link} key={connection.id}/>)}
+      {props.connectedApps.map((connection) => <SocialMedia name={connection.app_name} app={connection.app_name} link={connection.link} key={connection.id}/>)}
 
   </ScrollView>
 );
@@ -39,13 +38,16 @@ function FriendList() {
 }
 
 const SwipeTabs = (props) => {
-    return (
-      <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}}>
-        <Tab.Screen name="ConnectionList" component={ConnectionList} initialParams={{isOwnProfile: props.isOwnProfile, connectedApps: props.connectedApps}}/>
-        <Tab.Screen name="FriendList" component={FriendList} />
-      </Tab.Navigator>
-    );
-  }
+  console.log("AAAA", props.connectedApps, props.isOwnProfile)
+  return (
+    <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}}>
+      <Tab.Screen name="Home">
+        {(props) => <ConnectionList {...props} />}
+      </Tab.Screen>
+      <Tab.Screen name="FriendList" component={FriendList} />
+    </Tab.Navigator>
+  );
+}
 
 const SocialMedia = (props) => {
   let selectable = props.selectable?true:false
@@ -161,6 +163,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [connectedApps, setConnectedApps] = useState([]);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [reload, forceReload] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -191,6 +194,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       setUserId(route.params.id)
       let temp = await getConnections(route.params.id)
       setConnectedApps(temp)
+      setLoaded(true)
     }
 
     asyncFunc();
@@ -200,7 +204,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const dimensions = Dimensions.get('window')
   
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
@@ -223,7 +227,9 @@ export default function ProfileScreen ( {navigation, route} ) {
             </View>
           </View>
         </View>
-      <SwipeTabs connectedApps={connectedApps} isOwnProfile={isOwnProfile}/>
+      {loaded ? 
+      <SwipeTabs connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/> :
+      null}
     </View>
   )
 }
