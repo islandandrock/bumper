@@ -37,7 +37,7 @@ def getfriends():
     print("user id: ", user_id)
 
     user_friends = User.query.filter_by(id=user_id).first().friends
-    friends = [{'plate':friend.plate, 'linked':friend.linked, 'name':friend.name, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin} for friend in user_friends]
+    friends = [friend.json for friend in user_friends]
 
     return friends
 
@@ -48,5 +48,5 @@ def searchfriends():
 
     user_friends = current_user.friends
     friends = [friend for friend in user_friends if re.match(query, str(friend.name),  re.IGNORECASE) or re.match(query, friend.plate,  re.IGNORECASE)]
-    friend_list = [{'plate':friend.plate, 'linked':friend.linked, 'name':friend.name, 'password':friend.password, 'email':friend.email, 'created':friend.created, 'bio':friend.bio, 'admin':friend.admin, 'id':friend.id} for friend in friends]
+    friend_list = [friend.json for friend in friends]
     return friend_list

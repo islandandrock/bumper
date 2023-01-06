@@ -22,7 +22,7 @@ def getuser():
     user = User.query.filter_by(id=user_id).first()
     if not user:
         raise NotFound("User not found")
-    return {'plate':user.plate, 'linked':user.linked, 'name':user.name, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin}
+    return user.json
 
 @users_bp.route('/users/search', methods=['GET'])
 def usersearch():
@@ -34,7 +34,7 @@ def usersearch():
         search = '%{}%'.format(userN)
 
     users = User.query.filter(User.plate.like(search)).all()
-    user_list = [{'id':user.id, 'plate':user.plate, 'linked':user.linked, 'name':user.name, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin} for user in users]
+    user_list = [user.json for user in users]
     print(user_list)
     return user_list
 
