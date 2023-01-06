@@ -49,9 +49,22 @@ export default function PlateLookupScreen ({ navigation }) {
       </View>
       <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
         <ScrollView style={{width: "100%"}}>
-          {SearchUsers.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-            <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/><Text style={styles.user}>{user.name}</Text>
-            </TouchableOpacity>)}
+          {SearchUsers.map((user) => 
+            <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+              <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+              <View style={{flexGrow:1, flexShrink:1}}>
+                <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
+              </View>
+              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
+                <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
+              </View>
+              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
+                <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
+              </View>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </View>
     </View>
