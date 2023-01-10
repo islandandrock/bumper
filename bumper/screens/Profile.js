@@ -4,6 +4,7 @@ import React from 'react';
 import { getData } from '../util/storage';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { CommonActions } from '@react-navigation/native';
 
 import { addConnection, addFriend, getConnections, getFriends, getUser, getCode } from '../util/requests';
 import getIcon from '../util/icons';
@@ -35,12 +36,30 @@ const ConnectionList = React.memo(function ConnectionList(props) {
 );
 })
 
-const FriendList = React.memo(function FriendList(props) {
+const FriendList = React.memo(function FriendList({navigation, route}) {
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+
+      navigation.dispatch(state => {
+        // Remove the home route from the stack
+        const history = [state.history[state.history.length-1]];
+
+        return CommonActions.reset({
+          ...state,
+          history,
+          index: history.length,
+        });
+      });
+      
+    });
+
+    return unsubscribe;
+  }, [navigation]);
   return (
     <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
       <ScrollView style={{width: "100%"}}>
-        {props.friends.map((user) => 
-          <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+        {route.params.friends.map((user) => 
+          <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => {navigation.push("Profile", {id:user.id})}}>
             <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
             <View style={{flexGrow:1, flexShrink:1}}>
               <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
@@ -72,9 +91,7 @@ const SwipeTabs = React.memo((props) => {
       <Tab.Screen name="Connections" options={{gestureEnabled: false}}>
         {(props) => <ConnectionList connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/>}
       </Tab.Screen>
-      <Tab.Screen name="Friends" options={{gestureEnabled: false}}>
-        {(props) => <FriendList friends={friends} navigation={navigation}/>}
-      </Tab.Screen>
+      <Tab.Screen name="Friends" options={{gestureEnabled: false}} initialParams={{ friends:friends }} component={FriendList}/>
     </Tab.Navigator>
   );
 })
@@ -86,9 +103,9 @@ const SocialMedia = (props) => {
   return (
     <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}} onPress={() => {
       if (selectable) {
-        console.log("clicked", app)
+        //console.log("clicked", app)
         props.setSelectedApp(app)
-        console.log(app, props.selectedApp);
+        //console.log(app, props.selectedApp);
       } else {
         Linking.openURL(props.link)
       }
@@ -199,7 +216,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
 
   useEffect(() => {
-    console.log("params", route.params, "reload", reload)
+    //console.log("params", route.params, "reload", reload)
     let newId = null;
     let newName = null;
     const asyncFunc = async () => {
