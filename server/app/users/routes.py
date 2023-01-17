@@ -39,7 +39,7 @@ def usersearch():
     return user_list
 
 @users_bp.route('/users/location', methods=['POST'])
-def addLocation():
+def setlocation():
     location = json.dumps(request.json['location'])
 
     current_user.location = location
@@ -48,5 +48,22 @@ def addLocation():
 
     return "", 201
 
+@users_bp.route('/users/update', methods=['POST'])
+def updateuser():
+    print(request.json)
 
+    name = request.json['user_name']
+    bio = request.json['bio']
+    plate = request.json['plate']
+
+    temp = User.query.filter_by(plate=plate).first()
+    if temp and temp.id != current_user.id:
+        raise Conflict("Plate is already linked with an account")
     
+    current_user.name = name
+    current_user.bio = bio
+    current_user.plate = plate
+
+    db.session.commit()
+
+    return "", 200

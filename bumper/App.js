@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import EditProfileScreen from './screens/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const BaseStack = createNativeStackNavigator();
@@ -71,6 +72,10 @@ function ProfileStackScreen() {
           headerShown: true,
           //header: () => <View style={{backgroundColor:'red', width:0, height:insets.top}}/>
         }}/>
+      <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} options={{
+        title: "Edit Profile",
+        headerShown: true
+      }}/>
     </ProfileStack.Navigator>
   )
 }

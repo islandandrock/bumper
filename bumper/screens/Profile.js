@@ -29,8 +29,18 @@ const ConnectionList = React.memo(function ConnectionList(props) {
       }}>
         <Text style={styles.mediumText}>Connect new app</Text>
       </TouchableOpacity> : null}
-
-      {props.connectedApps.map((connection) => <SocialMedia name={`${connection.app_name.slice(0, 1).toUpperCase()+connection.app_name.slice(1)} - @${connection.link.split("/").pop()}`} app={connection.app_name} link={connection.link} key={connection.id}/>)}
+      {props.connectedApps.length ? 
+      props.connectedApps.map(
+        (connection) => <SocialMedia
+        name={
+          `${connection.app_name.slice(0, 1).toUpperCase()+connection.app_name.slice(1)} - @${connection.link.split("/").pop()}`
+        }
+        app={connection.app_name}
+        link={connection.link}
+        key={connection.id}/>) :  
+      <Text>This user hasn't linked any apps yet!</Text>
+      }
+     
 
   </ScrollView>
 );
@@ -87,7 +97,8 @@ const SwipeTabs = React.memo((props) => {
   let friends = props.friends
   let navigation = props.navigation
   return (
-    <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false}}>
+    <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
+   }}>
       <Tab.Screen name="Connections" options={{gestureEnabled: false}}>
         {(props) => <ConnectionList connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/>}
       </Tab.Screen>
@@ -184,7 +195,7 @@ const NewAppModal = (props) => {
           <TouchableOpacity style={{width:"50%"}} onPress={() => props.setModalVisible(!props.modalVisible)}>
             <Text style={styles.modalOptionText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{width:"50%", backgroundColor:selectedApp?null:"lightgrey"}} 
+          <TouchableOpacity style={{width:"50%", backgroundColor:selectedApp?null:"#d3c9cd"}} 
             onPress={async () => {setNextText("Link App");
             if (step < 2) {
               setStep(step+1)
@@ -214,11 +225,13 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [reload, forceReload] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
+  const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
     //console.log("params", route.params, "reload", reload)
     let newId = null;
     let newName = null;
+    let newBio = null;
     const asyncFunc = async () => {
       let signedInId = await getData("user_id")
       let signedInUser = await getData("name")
@@ -229,6 +242,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       let user = await getUser(newId);
       newName = user.name;
+      newBio = user.bio;
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        
@@ -245,14 +259,22 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       
       setName(newName);
-      setUserId(newId)
-      let temp = await getConnections(newId)
-      setConnectedApps(temp)
-      setFriends(await getFriends(newId))
-      setLoaded(true)
+      setUserId(newId);
+      setBio(newBio);
+      let temp = await getConnections(newId);
+      setConnectedApps(temp);
+      setFriends(await getFriends(newId));
+      setLoaded(true);
     }
-
     asyncFunc();
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      setEditMode(false)
+      forceReload(!reload)
+    });
+
+    return unsubscribe;
+
   }, [route.params, reload])
 
   const onTextLayout = useCallback(e => {
@@ -268,18 +290,20 @@ export default function ProfileScreen ( {navigation, route} ) {
   const dimensions = Dimensions.get('window')
   
   return (
-    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
+    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor:"#fff0f6"}}>
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
+
+      {loaded ?
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
             <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
-            <View style={{backgroundColor:'lightgrey', marginTop:10, borderRadius:10, padding:5}}>
+            <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
               <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
               <Text numberOfLines={4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
             </View>
           </View>
-          <View style={{flexGrow:1, backgroundColor:'lightgrey', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
+          <View style={{flexGrow:1, backgroundColor:'#d3c9cd', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
             <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
               <Text style={{fontWeight:"bold", fontSize:24}}>{friends.length}</Text>
               <Text style={{marginTop:-5}}>Friends</Text>
@@ -291,6 +315,16 @@ export default function ProfileScreen ( {navigation, route} ) {
             </View>
           </View>
         </View>
+      : null}
+      {loaded ? !isOwnProfile ?
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => addFriend(userId)}>
+          <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Add Friend</Text>
+        </TouchableOpacity>
+      : 
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate})}}>
+        <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Edit Profile</Text>
+      </TouchableOpacity>
+      : null }
       {loaded ? 
       <SwipeTabs connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
       null}

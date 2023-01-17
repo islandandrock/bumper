@@ -107,6 +107,18 @@ export const getUser = async (user_id) => {
   return data
 }
 
+export const updateUser = async (name, bio, plate) => {
+  console.log("name:"+name)
+  await handledFetch(server + '/users/update', {
+    method: 'POST',
+    body: JSON.stringify({
+      user_name: name,
+      bio: bio,
+      plate: plate
+    })
+  });
+}
+
 export const userSearch = async (search) => {
   const response = await handledFetch(server + '/users/search?search=' + search, {
     method: 'GET'
