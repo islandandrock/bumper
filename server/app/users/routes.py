@@ -22,7 +22,7 @@ def getuser():
     user = User.query.filter_by(id=user_id).first()
     if not user:
         raise NotFound("User not found")
-    return {'plate':user.plate, 'linked':user.linked, 'name':user.name, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin}
+    return user.json
 
 @users_bp.route('/users/search', methods=['GET'])
 def usersearch():
@@ -34,12 +34,12 @@ def usersearch():
         search = '%{}%'.format(userN)
 
     users = User.query.filter(User.plate.like(search)).all()
-    user_list = [{'id':user.id, 'plate':user.plate, 'linked':user.linked, 'name':user.name, 'password':user.password, 'email':user.email, 'created':user.created, 'bio':user.bio, 'admin':user.admin} for user in users]
+    user_list = [user.json for user in users]
     print(user_list)
     return user_list
 
 @users_bp.route('/users/location', methods=['POST'])
-def addLocation():
+def setlocation():
     location = json.dumps(request.json['location'])
 
     current_user.location = location
@@ -48,5 +48,22 @@ def addLocation():
 
     return "", 201
 
+@users_bp.route('/users/update', methods=['POST'])
+def updateuser():
+    print(request.json)
 
+    name = request.json['user_name']
+    bio = request.json['bio']
+    plate = request.json['plate']
+
+    temp = User.query.filter_by(plate=plate).first()
+    if temp and temp.id != current_user.id:
+        raise Conflict("Plate is already linked with an account")
     
+    current_user.name = name
+    current_user.bio = bio
+    current_user.plate = plate
+
+    db.session.commit()
+
+    return "", 200

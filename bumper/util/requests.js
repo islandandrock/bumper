@@ -91,7 +91,7 @@ export const addFriend = async (friend_id) => {
   });
 }
 
-export const getFriend = async (user_id) => {
+export const getFriends = async (user_id) => {
   const response = await handledFetch(server + '/friends/get?user_id=' + user_id, {
     method: 'GET'
   });
@@ -105,6 +105,18 @@ export const getUser = async (user_id) => {
   });
   let data = await response.json()
   return data
+}
+
+export const updateUser = async (name, bio, plate) => {
+  console.log("name:"+name)
+  await handledFetch(server + '/users/update', {
+    method: 'POST',
+    body: JSON.stringify({
+      user_name: name,
+      bio: bio,
+      plate: plate
+    })
+  });
 }
 
 export const userSearch = async (search) => {

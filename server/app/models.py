@@ -28,7 +28,22 @@ class User(UserMixin, db.Model):
     #friend_requests_sent = db.relationship('User', backref='sender', lazy=True)
     #friend_requests_recieved = db.relationship('User', secondary=friend_request, primaryjoin=(id==friend_request.c.sender_id))
     friends = db.relationship('User', secondary=friendship, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
-   
+
+    @property
+    def json(self):
+        return {
+            'plate':self.plate,
+            'linked':self.linked,
+            'name':self.name,
+            'email':self.email,
+            'created':self.created,
+            'bio':self.bio,
+            'admin':self.admin,
+            'id':self.id,
+            'numConnections':len(self.connections),
+            'numFriends':len(self.friends)
+        }
+
     def __repr__(self):
         return '<User %r>' % self.plate
  

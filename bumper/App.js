@@ -9,6 +9,8 @@ import { Text, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import EditProfileScreen from './screens/EditProfile';
 
 const Tab = createBottomTabNavigator();
 const BaseStack = createNativeStackNavigator();
@@ -61,13 +63,19 @@ function FriendsStackScreen() {
 const ProfileStack = createNativeStackNavigator();
 
 function ProfileStackScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
-          title: "",
+          title: "Profile",
           headerShown: true,
-          header: () => <View style={{backgroundColor:'red', width:20, height:56}}/>
+          //header: () => <View style={{backgroundColor:'red', width:0, height:insets.top}}/>
         }}/>
+      <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} options={{
+        title: "Edit Profile",
+        headerShown: true
+      }}/>
     </ProfileStack.Navigator>
   )
 }

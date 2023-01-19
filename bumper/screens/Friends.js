@@ -1,7 +1,7 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button} from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { getFriend, friendSearch, addLocation} from '../util/requests';
+import { getFriends, friendSearch, addLocation} from '../util/requests';
 import { getData } from '../util/storage'
 
 import * as Location from 'expo-location';
@@ -33,9 +33,12 @@ export default function FriendScreen ( {navigation} ) {
     const asyncFunc = async () => {
       let user_id_temp = await getData("user_id");
       setUser_id(user_id_temp);
-      let temp = await getFriend(user_id_temp)
+      let temp = await getFriends(user_id_temp)
+      console.log("1", temp)
       setFriends(temp)
-      SetSearchFriends(await friendSearch(SearchText))
+      temp = await friendSearch(SearchText)
+      console.log(temp)
+      SetSearchFriends(temp)
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -70,9 +73,22 @@ export default function FriendScreen ( {navigation} ) {
       (
         <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
           <ScrollView style={{width: "100%"}}>
-            {SearchFriends.map((user) => <TouchableOpacity style={styles.userList} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-            <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/><Text style={styles.user}>{user.name}</Text>
-            </TouchableOpacity>)}
+            {SearchFriends.map((user) =>
+              <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+                <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+                <View style={{flexGrow:1, flexShrink:1}}>
+                  <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </ScrollView>
         </View>
       ):(
