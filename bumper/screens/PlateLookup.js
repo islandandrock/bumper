@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import {signUp, userSearch} from "../util/requests"
 import { LicensePlate } from "../util/components"
 
+const cameraPermission = await Camera.getCameraPermissionStatus()
+
 function PlateButton (props) {
   return (
     <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>await signUp("theo", "t@a.com", "password")}>
