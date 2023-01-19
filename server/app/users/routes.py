@@ -22,7 +22,9 @@ def getuser():
     user = User.query.filter_by(id=user_id).first()
     if not user:
         raise NotFound("User not found")
-    return user.json
+    json = user.json
+    json.update({"friended":current_user in user.friends})
+    return json
 
 @users_bp.route('/users/search', methods=['GET'])
 def usersearch():

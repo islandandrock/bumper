@@ -221,6 +221,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
+  const [friended, setFriended] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [reload, forceReload] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -249,6 +250,7 @@ export default function ProfileScreen ( {navigation, route} ) {
         setPlate({linked:user.linked,plate:user.plate})
       } else {
         setPlate({linked:user.linked,plate:user.plate})
+        setFriended(user.friended)
         newName = user.name;
         navigation.setOptions({title:user.plate})
         navigation.setOptions({
@@ -269,8 +271,11 @@ export default function ProfileScreen ( {navigation, route} ) {
     asyncFunc();
 
     const unsubscribe = navigation.addListener('focus', () => {
-      setEditMode(false)
-      forceReload(!reload)
+      //if (editMode) { FIX THIS
+        setEditMode(false)
+        console.log("reloding")
+        forceReload(!reload)
+      //}
     });
 
     return unsubscribe;
@@ -316,9 +321,13 @@ export default function ProfileScreen ( {navigation, route} ) {
           </View>
         </View>
       : null}
-      {loaded ? !isOwnProfile ?
+      {loaded ? !isOwnProfile ? !friended ?
         <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => addFriend(userId)}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Add Friend</Text>
+        </TouchableOpacity>
+      :
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={() => addFriend(userId)}>
+          <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Remove Friend</Text>
         </TouchableOpacity>
       : 
       <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate})}}>
