@@ -1,4 +1,5 @@
 import { useLinkProps } from '@react-navigation/native';
+import { Camera, CameraType } from 'expo-camera'
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect } from 'react';
@@ -25,10 +26,14 @@ const SearchBar = (props) => {
 export default function PlateLookupScreen ({ navigation }) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
+  const [type, setType] = useState(CameraType.back);
+  const [permission, setPermission] = useState(null)
 
   useEffect(() => {
     const asyncFunc = async () => {
       SetSearchUsers(await userSearch(SearchText))
+      const permissionStatus = await Camera.requestCameraPermissionsAsync();
+      setPermission(permissionStatus.status === 'granted');
     }
     asyncFunc();
 }, [])
@@ -37,9 +42,7 @@ export default function PlateLookupScreen ({ navigation }) {
     <View style={{width:"100%", height:"100%"}}>
       <View style={{flexDirection:"row"}}>
         <PlateButton text={"ENTER USERNAME"}/>
-        <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
-          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>ENTER PLATE</Text>
-        </TouchableOpacity>
+        <Camera type={type} style={{height:100}}/>
       </View>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
