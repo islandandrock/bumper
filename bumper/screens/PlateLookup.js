@@ -2,7 +2,8 @@ import { useLinkProps } from '@react-navigation/native';
 import { Camera, CameraType } from 'expo-camera';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import * as MediaLibrary from 'expo-media-library';
 
 
 import {signUp, userSearch} from "../util/requests"
@@ -25,24 +26,46 @@ const SearchBar = (props) => {
 }
 
 export default function PlateLookupScreen ({ navigation }) {
+  let cameraRef = useRef();
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
   const [type, setType] = useState(CameraType.back);
   const [permission, setPermission] = useState(null)
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [photo, setPhoto] = useState();
+
 
   useEffect(() => {
     const asyncFunc = async () => {
       SetSearchUsers(await userSearch(SearchText))
       const permissionStatus = await Camera.requestCameraPermissionsAsync();
+      const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
       setPermission(permissionStatus.status === 'granted');
+      setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     }
     asyncFunc();
 }, [])
 
+  let takePic = async () => {
+    let options = {
+      quality: 1,
+      base64: true,
+      exif: false
+    };
+
+    let newPhoto = await cameraRef.current.takePictureAsync(options);
+    setPhoto(newPhoto);
+
+    MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
+      setPhoto(undefined);
+    });
+  };
+
+  
   return (
     <View style={{width:"100%", height:"100%"}}>
       <View style={{flexDirection:"row"}}>
-        <PlateButton text={"ENTER USERNAME"}/>
+        <PlateButton text={"TAKE PICTURE"} onPress={takePic}/>
         <Camera type={type} style={{flex:1}}></Camera>
       </View>
       <View style={styles.container}>
