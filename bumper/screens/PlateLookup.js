@@ -12,7 +12,7 @@ import { LicensePlate } from "../util/components"
 
 function PlateButton (props) {
   return (
-    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>await signUp("theo", "t@a.com", "password")}>
+    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={props.onPress}>
       <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>{props.text}</Text>
     </TouchableOpacity>
   )
@@ -32,7 +32,7 @@ export default function PlateLookupScreen ({ navigation }) {
   const [type, setType] = useState(CameraType.back);
   const [permission, setPermission] = useState(null)
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
-  const [photo, setPhoto] = useState();
+  const [cameraMode, setCameraMode] = useState(false)
 
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function PlateLookupScreen ({ navigation }) {
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     }
     asyncFunc();
-}, [])
+  }, [])
 
   let takePic = async () => {
     let options = {
@@ -54,47 +54,52 @@ export default function PlateLookupScreen ({ navigation }) {
     };
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
-    setPhoto(newPhoto);
 
-    MediaLibrary.saveToLibraryAsync(photo.uri).then(() => {
-      setPhoto(undefined);
-    });
+    MediaLibrary.saveToLibraryAsync(newPhoto.uri)
   };
 
-  
-  return (
-    <View style={{width:"100%", height:"100%"}}>
-      <View style={{flexDirection:"row"}}>
-        <PlateButton text={"TAKE PICTURE"} onPress={takePic}/>
-        <Camera type={type} style={{flex:1}}></Camera>
+  return cameraMode ? 
+    (
+      <View style={{width:"100%", height:"100%"}}>
+        <View style={{flexDirection:"row"}}>
+          <PlateButton text={"TAKE PICTURE"} onPress={takePic}/>
+          <Camera type={type} style={{flex:1}} ref={cameraRef}></Camera>
+        </View>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 10}}>
+          <TouchableOpacity style={styles.toggle} onPress={() => setCameraMode(!cameraMode)}>
+            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Toggle Mode</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.container}>
-        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
-        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
-          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
-        </TouchableOpacity>
+    ) : (
+      <View>
+        <View style={styles.container}>
+          <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+          <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
+            <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
+          <ScrollView style={{width: "100%"}}>
+            {SearchUsers.map((user) => 
+              <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+                <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+                <View style={{flexGrow:1, flexShrink:1}}>
+                  <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </ScrollView>
+        </View>
       </View>
-      <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
-        <ScrollView style={{width: "100%"}}>
-          {SearchUsers.map((user) => 
-            <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-              <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
-              <View style={{flexGrow:1, flexShrink:1}}>
-                <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
-              </View>
-              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
-                <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
-              </View>
-              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
-                <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        </ScrollView>
-      </View>
-    </View>
   )
 }
 
