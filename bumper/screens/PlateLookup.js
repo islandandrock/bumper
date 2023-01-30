@@ -61,9 +61,9 @@ export default function PlateLookupScreen ({ navigation }) {
   return cameraMode ? 
     (
       <View style={{width:"100%", height:"100%"}}>
+        <Camera type={type} style={{flex:1}} ref={cameraRef}></Camera>
         <View style={{flexDirection:"row"}}>
           <PlateButton text={"TAKE PICTURE"} onPress={takePic}/>
-          <Camera type={type} style={{flex:1}} ref={cameraRef}></Camera>
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 10}}>
           <TouchableOpacity style={styles.toggle} onPress={() => setCameraMode(!cameraMode)}>
@@ -72,14 +72,19 @@ export default function PlateLookupScreen ({ navigation }) {
         </View>
       </View>
     ) : (
-      <View>
+      <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
         <View style={styles.container}>
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
           <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
             <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
           </TouchableOpacity>
         </View>
-        <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 10}}>
+          <TouchableOpacity style={styles.toggle} onPress={() => setCameraMode(!cameraMode)}>
+            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Toggle Mode</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
           <ScrollView style={{width: "100%"}}>
             {SearchUsers.map((user) => 
               <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
