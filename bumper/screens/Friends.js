@@ -1,4 +1,4 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation} from '../util/requests';
@@ -28,16 +28,22 @@ export default function FriendScreen ( {navigation} ) {
   const [refresh, forceRefresh] = useState(false)
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [notified, setNotified] = useState(true)
 
   useEffect(() => {
     const asyncFunc = async () => {
+      navigation.setOptions({
+        headerRight: () => (
+
+          <TouchableOpacity>
+            <Image source={notified ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
+          </TouchableOpacity>
+        )})
       let user_id_temp = await getData("user_id");
       setUser_id(user_id_temp);
       let temp = await getFriends(user_id_temp)
-      console.log("1", temp)
       setFriends(temp)
       temp = await friendSearch(SearchText)
-      console.log(temp)
       SetSearchFriends(temp)
 
       let { status } = await Location.requestForegroundPermissionsAsync();
