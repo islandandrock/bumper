@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect, useRef } from 'react';
 
 
-import {signUp, userSearch} from "../util/requests"
+import {signUp, userSearch, uploadPic} from "../util/requests"
 import { LicensePlate } from "../util/components"
 
 
@@ -38,6 +38,9 @@ export default function PlateLookupScreen ({ navigation }) {
 
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync()
+    let pic = result.uri;
+    let picname = pic.split('/').pop();
+    await uploadPic(picname, pic)
   }
 
   return (

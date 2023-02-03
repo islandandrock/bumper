@@ -143,3 +143,13 @@ export const addLocation = async (location) => {
     })
   })
 }
+
+export const uploadPic = async (picname, pic) => {
+  await handledFetch(server + '/plates/upload', {
+    method:'POST',
+    body: JSON.stringify({
+      picname: picname,
+      pic: pic
+    })
+  })
+}
