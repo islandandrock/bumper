@@ -40,7 +40,13 @@ export default function PlateLookupScreen ({ navigation }) {
     let result = await ImagePicker.launchCameraAsync()
     let pic = result.uri;
     let picname = pic.split('/').pop();
-    await uploadPic(picname, pic)
+
+    let match = /\.(\w+)$/.exec(picname);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData()
+    formData.append('photo', {uri: pic, name:"photo", type })
+    await uploadPic(formData)
   }
 
   return (

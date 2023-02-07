@@ -5,9 +5,16 @@ import os
 plates_bp = Blueprint('plates_bp', __name__)
 
 
-@plates_bp.route('/plates/upload', methods=['POST'])
+@plates_bp.route('/plates/upload', methods=['GET', 'POST'])
 def upload_pic():
-    pic = request.files['pic']
-    picname = request.files['picname']
-    pic.save(os.path.join(app.config['UPLOAD_FOLDER'], picname))
 
+    formData = request.json
+
+    uri = formData.get('_parts')[0][1]['uri']
+    name = formData.get('_parts')[0][1]['name']
+    print(request.files)
+    print(request.form)
+    print(request.json)
+
+    uri.save(os.path.join(app.config['UPLOAD_FOLDER'], name))
+    return {}
