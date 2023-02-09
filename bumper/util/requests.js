@@ -15,9 +15,11 @@ export class ServerError extends Error {
 }
 
 const handledFetch = async (resource, init={}) => {
-  init.headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
+  if (!init.headers) {
+    init.headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
   }
   let response = null;
   try {
@@ -147,9 +149,10 @@ export const addLocation = async (location) => {
 export const uploadPic = async (formData) => {
   await handledFetch(server + '/plates/upload', {
     method:'POST',
-    body: JSON.stringify(formData),
+    body: formData,
     headers: {
       'Content-Type': 'multipart/form-data',
+      Accept: 'application/json'
     }
   })
 }

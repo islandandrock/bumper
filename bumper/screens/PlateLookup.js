@@ -45,8 +45,9 @@ export default function PlateLookupScreen ({ navigation }) {
     let type = match ? `image/${match[1]}` : `image`;
 
     let formData = new FormData()
-    formData.append('photo', {uri: pic, name:"photo", type })
+    formData.append('photo', {uri: pic, name:picname, type })
     await uploadPic(formData)
+    
   }
 
   return (
