@@ -147,7 +147,7 @@ export const addLocation = async (location) => {
 }
 
 export const uploadPic = async (formData) => {
-  await handledFetch(server + '/plates/upload', {
+  const response = await handledFetch(server + '/plates/upload', {
     method:'POST',
     body: formData,
     headers: {
@@ -155,4 +155,7 @@ export const uploadPic = async (formData) => {
       Accept: 'application/json'
     }
   })
+  let data1 = await response.json();
+  return data1
 }
+

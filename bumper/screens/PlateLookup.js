@@ -28,6 +28,8 @@ const SearchBar = (props) => {
 export default function PlateLookupScreen ({ navigation }) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
+  const [Data, SetData] = useState()
+
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -46,8 +48,9 @@ export default function PlateLookupScreen ({ navigation }) {
 
     let formData = new FormData()
     formData.append('photo', {uri: pic, name:picname, type })
-    await uploadPic(formData)
-    
+    thing = await uploadPic(formData)
+    console.log(thing)
+    SetData(thing)
   }
 
   return (
@@ -62,6 +65,7 @@ export default function PlateLookupScreen ({ navigation }) {
         <TouchableOpacity style={{width:'40%', height:'100%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async () => await takePicture() }>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Take Picture</Text>
         </TouchableOpacity>
+        <Text>{Data}</Text>
       </View>
       <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
         <ScrollView style={{width: "100%"}}>
