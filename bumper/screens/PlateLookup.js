@@ -29,12 +29,15 @@ export default function PlateLookupScreen ({ navigation }) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
   const [Loading, SetLoading] = useState(false)
-
+  const [type, setType] = useState(CameraType.back);
+  const [permission, setPermission] = useState(null)
 
 
   useEffect(() => {
     const asyncFunc = async () => {
       SetSearchUsers(await userSearch(SearchText))
+      const permissionStatus = await Camera.requestCameraPermissionsAsync();
+      setPermission(permissionStatus.status === 'granted');
     }
     asyncFunc();
   }, [])
