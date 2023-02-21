@@ -8,3 +8,4 @@ class Config:
     FLASK_SECRET = SECRET_KEY
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "project.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    UPLOAD_FOLDER = os.path.join(basedir, "images")

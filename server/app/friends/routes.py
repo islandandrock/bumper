@@ -7,27 +7,57 @@ from flask_login import login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict
 
-from ..models import db, User
+from ..models import db, User, FriendRequest
 
 friends_bp = Blueprint('friends_bp', __name__)
 
 @friends_bp.route('/friends/add', methods=['POST'])
 def addfriend():
     friend_id = request.json['friend_id']
-    friend = User.query.filter_by(id=friend_id).first()
-    print(friend_id, friend)
-    if not friend_id or not friend:
+    if not friend_id:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    friend = User.query.get(friend_id)
+    if not friend:
         return UnprocessableEntity("You must specify a valid friend_id.")
     for i in current_user.friends: # makes sure there are no duplicate friends
         if i.id == friend.id:
             raise Conflict('They are already your friend.')
+    for i in current_user.friend_requests_sent:
+        if i.recipient.id == friend.id:
+            raise Conflict('You already sent this user a friend request.')
+    for i in current_user.friend_requests_recieved:
+        if i.sender.id == friend.id:
+            raise Conflict('You have a request from this user.') # FIX THIS BEHAVIOR LATER
 
-    current_user.friends.append(friend)
-    friend.friends.append(current_user)
-
+    new_request = FriendRequest(sender_id=current_user.id, recipient_id=friend_id, date_sent="x")
+    db.session.add(new_request)
     db.session.commit()
 
     return {}, 200
+
+@friends_bp.route('/friends/requests', methods=['GET'])
+def get_friend_requests():
+    requests = [{"user": r.sender.json, "date": r.date_sent} for r in current_user.friend_requests_recieved]
+
+    return requests, 200
+
+@friends_bp.route('/friends/accept', methods=['POST'])
+def accept_friend_request():
+    friend_id = request.json['friend_id']
+    if not friend_id:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    friend = User.query.get(friend_id)
+    if not friend:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    for i in current_user.friend_requests_recieved:
+        if i.sender.id == friend_id:
+            db.session.delete(i)
+            current_user.friends.append(friend)
+            friend.friends.append(current_user)
+            db.session.commit()
+            return 200
+    else:
+        return UnprocessableEntity("You don't have a request from this user.")
 
 
 @friends_bp.route('/friends/get', methods=['GET'])

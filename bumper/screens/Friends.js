@@ -6,9 +6,7 @@ import { getData } from '../util/storage'
 
 import * as Location from 'expo-location';
 
-
-import { ScrollView } from 'react-native-gesture-handler';
-import { LicensePlate } from '../util/components';
+import { UserList } from '../util/components';
 
 
 const SearchBar = (props) => {
@@ -34,8 +32,7 @@ export default function FriendScreen ( {navigation} ) {
     const asyncFunc = async () => {
       navigation.setOptions({
         headerRight: () => (
-
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Notifications", {user_id:user_id})}>
             <Image source={notified ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
           </TouchableOpacity>
         )})
@@ -61,7 +58,7 @@ export default function FriendScreen ( {navigation} ) {
   
 
   return (
-    <View style={{width:'100%', height:'100%'}}>
+    <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
       <View style={styles.container}>
@@ -77,26 +74,7 @@ export default function FriendScreen ( {navigation} ) {
       </View>
       {ListMode ? 
       (
-        <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
-          <ScrollView style={{width: "100%"}}>
-            {SearchFriends.map((user) =>
-              <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-                <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
-                <View style={{flexGrow:1, flexShrink:1}}>
-                  <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
-                </View>
-                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
-                  <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
-                </View>
-                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
-                  <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          </ScrollView>
-        </View>
+        <UserList users={SearchFriends} navigation={navigation}/>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
           {location?           
@@ -170,15 +148,15 @@ const styles = StyleSheet.create({
   },
   
   userList: {
-    marginVertical:5,
     width: '100%',
     padding:5,
-    paddingLeft:20,
+    paddingLeft:10,
     backgroundColor: '#FFDADA',
     borderBottomColor: 'black',
-    borderRadius: 10,
     flexDirection:'row',
-    alignItems:'center'
+    alignItems:'center',
+    marginVertical:3,
+    borderRadius:10
   },
 
   user: {

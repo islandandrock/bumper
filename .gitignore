@@ -15,6 +15,7 @@ server.json
 
 # python-related
 project.db
+project.db-journal
 venv
 __pycache__
 

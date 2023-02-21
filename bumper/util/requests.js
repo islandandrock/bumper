@@ -91,6 +91,14 @@ export const addFriend = async (friend_id) => {
   });
 }
 
+export const getFriendRequests = async () => {
+  const response = await handledFetch(server + '/friends/requests', {
+    method: 'GET',
+  })
+  let data = await response.json()
+  return data
+}
+
 export const getFriends = async (user_id) => {
   const response = await handledFetch(server + '/friends/get?user_id=' + user_id, {
     method: 'GET'
