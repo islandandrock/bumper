@@ -11,8 +11,11 @@ login_manager = LoginManager()
 
 def init_app():
     """Initialize the core application."""
+    UPLOAD_FOLDER = 'temp'
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):
@@ -44,6 +47,7 @@ def init_app():
         from .connections import routes
         from .users import routes
         from .friends import routes
+        from .plates import routes
         db.create_all()
         db.session.commit()
         
@@ -52,6 +56,7 @@ def init_app():
         app.register_blueprint(connections.routes.connections_bp)
         app.register_blueprint(users.routes.users_bp)
         app.register_blueprint(friends.routes.friends_bp)
+        app.register_blueprint(plates.routes.plates_bp)
 
 
         return app
