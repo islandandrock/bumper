@@ -24,6 +24,8 @@ def getuser():
         raise NotFound("User not found")
     json = user.json
     json.update({"friended":current_user in user.friends})
+    json.update({"incoming":current_user.id in map(lambda req: req.recipient.id, user.friend_requests_sent)})
+    json.update({"outgoing":current_user.id in map(lambda req: req.sender.id, user.friend_requests_recieved)})
     return json
 
 @users_bp.route('/users/search', methods=['GET'])

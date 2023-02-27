@@ -242,6 +242,7 @@ export default function ProfileScreen ( {navigation, route} ) {
         newId = route.params.id;
       }
       let user = await getUser(newId);
+      console.log(user)
       newName = user.name;
       newBio = user.bio;
       if (newId == signedInId) {
@@ -253,11 +254,6 @@ export default function ProfileScreen ( {navigation, route} ) {
         setFriended(user.friended)
         newName = user.name;
         navigation.setOptions({title:user.plate})
-        navigation.setOptions({
-          headerRight: () => (
-          <Button onPress={() => addFriend(route.params.id)} title="Add friend" />
-          ),
-        });
       }
       
       setName(newName);
