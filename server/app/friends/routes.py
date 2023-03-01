@@ -59,6 +59,10 @@ def accept_friend_request():
     else:
         return UnprocessableEntity("You don't have a request from this user.")
 
+@friends_bp.route('/friends/remove', methods=['POST'])
+def remove_friend_request():
+    pass #ADD ME
+
 
 @friends_bp.route('/friends/get', methods=['GET'])
 def getfriends():

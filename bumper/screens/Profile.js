@@ -222,6 +222,8 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
   const [friended, setFriended] = useState(false)
+  const [outgoing, setOutgoing] = useState(false)
+  const [incoming, setIncoming] = useState(false)
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [reload, forceReload] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -242,7 +244,8 @@ export default function ProfileScreen ( {navigation, route} ) {
         newId = route.params.id;
       }
       let user = await getUser(newId);
-      console.log(user)
+      setIncoming(user.incoming)
+      setOutgoing(user.outgoing)
       newName = user.name;
       newBio = user.bio;
       if (newId == signedInId) {
@@ -317,10 +320,18 @@ export default function ProfileScreen ( {navigation, route} ) {
           </View>
         </View>
       : null}
-      {loaded ? !isOwnProfile ? !friended ?
+      {loaded ? !isOwnProfile ? !friended ? !incoming ? !outgoing ?
         <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => addFriend(userId)}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Add Friend</Text>
         </TouchableOpacity>
+      :
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate})}}>
+          <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Cancel Friend Request</Text>
+        </TouchableOpacity>
+      :
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate})}}>
+        <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Accept Friend Request</Text>
+      </TouchableOpacity>
       :
         <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={() => addFriend(userId)}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Remove Friend</Text>
