@@ -49,7 +49,6 @@ const ConnectionList = React.memo(function ConnectionList(props) {
 const FriendList = React.memo(function FriendList({navigation, route}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-
       navigation.dispatch(state => {
         // Remove the home route from the stack
         const history = [state.history[state.history.length-1]];
@@ -215,6 +214,7 @@ const NewAppModal = (props) => {
 
 
 export default function ProfileScreen ( {navigation, route} ) {
+  const [desBig, setDesBig] = useState(false)
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
@@ -277,6 +277,8 @@ export default function ProfileScreen ( {navigation, route} ) {
 
   }, [route.params, reload])
 
+
+
   const onTextLayout = useCallback(e => {
     if (e.nativeEvent.lines.length > 4) {
       let newText = ""
@@ -298,17 +300,18 @@ export default function ProfileScreen ( {navigation, route} ) {
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
             <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
-            <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
-              <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
-              <Text numberOfLines={4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
-            </View>
+            <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
+              <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
+                <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
+                <Text numberOfLines={desBig ? 100 : 4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={{flexGrow:1, backgroundColor:'#d3c9cd', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
-            <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
-              <Text style={{fontWeight:"bold", fontSize:24}}>{friends.length}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('EditProfile', {name:name, bio:bio, plate:plate})} style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
+              <Text style={{fontWeight:"bold", fontSize:24, alignItems:'center'}}>{friends.length}</Text>
               <Text style={{marginTop:-5}}>Friends</Text>
-
-            </View>
+            </TouchableOpacity>
             <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
               <Text style={{fontWeight:"bold", fontSize:24}}>{connectedApps.length}</Text>
               <Text style={{marginTop:-5}}>Connections</Text>
