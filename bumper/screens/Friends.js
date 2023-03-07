@@ -75,7 +75,7 @@ export default function FriendScreen ( {navigation} ) {
           <ScrollView style={{width: "100%"}}>
             {SearchFriends.map((user) =>
               <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-                <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+                <LicensePlate width={80} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
                 <View style={{flexGrow:1, flexShrink:1}}>
                   <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
                 </View>
