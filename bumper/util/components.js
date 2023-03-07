@@ -1,5 +1,6 @@
 import { ImageBackground, Text, View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { useFonts } from "expo-font"
+import { acceptFriend, rejectFriend } from "./requests";
 
 function getPlate(state) {
   switch (state) {
@@ -50,7 +51,8 @@ export const UserList = (props) => {
         <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.navigation.navigate("Profile", {id:user.id})}>
           <LicensePlate width={90} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
-            <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
+            <Text style={[styles.user, user.name ? {} : {fontStyle:"italic", fontWeight:'normal'}]} numberOfLines={1}>{user.name ? user.name : "[unnamed]"}</Text>
+            {props.acceptable ?  <Text style={[styles.user, {fontWeight:"normal"}]}>{"wants to follow you."}</Text> : null}
           </View>
           {!props.acceptable ?
           <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
@@ -64,9 +66,16 @@ export const UserList = (props) => {
             <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
           </View>
           :
-          <TouchableOpacity style={{width:100, height:45, marginRight:10, backgroundColor:"#ee8888", borderRadius:10, alignItems:"center", justifyContent:"center"}}>
+          <View>
+          <TouchableOpacity style={{width:100, height:40, marginRight:10, marginBottom:5, backgroundColor:"#ee8888", borderRadius:10, alignItems:"center", justifyContent:"center"}}
+            onPress={async () => {await acceptFriend(user.id); props.setUsers(props.users.filter(u => u.id != user.id))}}>
             <Text style={{fontWeight:"bold", fontSize:20}}>ACCEPT</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={{width:100, height:40, marginRight:10, backgroundColor:"#ffbbbb", borderRadius:10, alignItems:"center", justifyContent:"center"}}
+            onPress={async () => {await acceptFriend(user.id)}}>
+            <Text style={{fontWeight:"bold", fontSize:20}}>DENY</Text>
+          </TouchableOpacity>
+          </View>
           }
         </TouchableOpacity>
       )}

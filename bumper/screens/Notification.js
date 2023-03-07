@@ -25,7 +25,7 @@ export default function NotificationScreen ( {navigation} ) {
     asyncFunc()
   }, [])
   return (
-    <UserList users={requestUsers} navigation={navigation} acceptable={true}/>
+    <UserList users={requestUsers} navigation={navigation} acceptable={true} setUsers={setRequestUsers}/>
   );
 }
 

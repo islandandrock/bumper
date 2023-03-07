@@ -91,6 +91,24 @@ export const addFriend = async (friend_id) => {
   });
 }
 
+export const acceptFriend = async (friend_id) => {
+  await handledFetch(server + '/friends/accept', {
+    method: 'POST',
+    body: JSON.stringify({
+      friend_id: friend_id
+    })
+  });
+}
+
+export const rejectFriend = async (friend_id) => {
+  await handledFetch(server + '/friends/reject', {
+    method: 'POST',
+    body: JSON.stringify({
+      friend_id: friend_id
+    })
+  });
+}
+
 export const getFriendRequests = async () => {
   const response = await handledFetch(server + '/friends/requests', {
     method: 'GET',

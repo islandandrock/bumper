@@ -55,13 +55,30 @@ def accept_friend_request():
             current_user.friends.append(friend)
             friend.friends.append(current_user)
             db.session.commit()
-            return 200
+            return {}, 200
     else:
         return UnprocessableEntity("You don't have a request from this user.")
 
+@friends_bp.route('/friends/reject', methods=['POST'])
+def reject_friend_request():
+    friend_id = request.json['friend_id']
+    if not friend_id:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    friend = User.query.get(friend_id)
+    if not friend:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    for i in current_user.friend_requests_recieved:
+        if i.sender.id == friend_id:
+            db.session.delete(i)
+            db.session.commit()
+            return {}, 200
+    else:
+        return UnprocessableEntity("You don't have a request from this user.")
+    
+
 @friends_bp.route('/friends/remove', methods=['POST'])
-def remove_friend_request():
-    pass #ADD ME
+def remove_friend():
+    pass
 
 
 @friends_bp.route('/friends/get', methods=['GET'])
