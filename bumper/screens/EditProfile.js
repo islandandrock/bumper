@@ -32,6 +32,12 @@ export default function EditProfileScreen ({ navigation, route }) {
       <TextBar inputText={bio} setInputText={setBio} placeholder="Your bio"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
+      <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate State</Text>
+      <View style={{flexDirection:'row', }}>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'unlisted')}><Text style={{fontSize: 20}}>Unlisted</Text></TouchableOpacity>
+      </View>
       
       <BigButton text="SAVE" onPress={
         async () => {
@@ -61,4 +67,10 @@ const styles = StyleSheet.create({
     borderColor: 'pink',
     width:"80%"
   },
+  changePlateState: {
+    padding: 10,
+    backgroundColor: 'pink',
+    borderRadius: 10,
+    margin: 10
+  }
 })
