@@ -24,7 +24,8 @@ def addfriend():
             raise Conflict('They are already your friend.')
     for i in current_user.friend_requests_sent:
         if i.recipient.id == friend.id:
-            raise Conflict('You already sent this user a friend request.')
+            #raise Conflict('You already sent this user a friend request.')
+            return {}, 200
     for i in current_user.friend_requests_recieved:
         if i.sender.id == friend.id:
             raise Conflict('You have a request from this user.') # FIX THIS BEHAVIOR LATER
@@ -57,7 +58,8 @@ def accept_friend_request():
             db.session.commit()
             return {}, 200
     else:
-        return UnprocessableEntity("You don't have a request from this user.")
+        #return UnprocessableEntity("You don't have a request from this user.")
+        return {}, 200
 
 @friends_bp.route('/friends/reject', methods=['POST'])
 def reject_friend_request():
@@ -73,12 +75,43 @@ def reject_friend_request():
             db.session.commit()
             return {}, 200
     else:
-        return UnprocessableEntity("You don't have a request from this user.")
-    
+        #return UnprocessableEntity("You don't have a request from this user.")
+        return {}, 200
+
+@friends_bp.route('/friends/cancel', methods=['POST'])
+def cancel_friend_request():
+    friend_id = request.json['friend_id']
+    if not friend_id:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    friend = User.query.get(friend_id)
+    if not friend:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    for i in current_user.friend_requests_sent:
+        if i.recipient.id == friend_id:
+            db.session.delete(i)
+            db.session.commit()
+            return {}, 200
+    else:
+        #return UnprocessableEntity("You don't have a pending request to this user.")
+        return {}, 200
 
 @friends_bp.route('/friends/remove', methods=['POST'])
 def remove_friend():
-    pass
+    friend_id = request.json['friend_id']
+    if not friend_id:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    friend = User.query.get(friend_id)
+    if not friend:
+        return UnprocessableEntity("You must specify a valid friend_id.")
+    for i in current_user.friends:
+        if i.id == friend_id:
+            current_user.friends.remove(friend)
+            friend.friends.remove(current_user)
+            db.session.commit()
+            return {}, 200
+    else:
+        #return UnprocessableEntity("You weren't friends with this user.")
+        return {}, 200
 
 
 @friends_bp.route('/friends/get', methods=['GET'])

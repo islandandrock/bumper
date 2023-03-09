@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { CommonActions } from '@react-navigation/native';
 
-import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, acceptFriend } from '../util/requests';
+import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest } from '../util/requests';
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
 
@@ -227,6 +227,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [reload, forceReload] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
   const [editMode, setEditMode] = useState(false)
 
@@ -266,6 +267,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       setConnectedApps(temp);
       setFriends(await getFriends(newId));
       setLoaded(true);
+      setBusy(false);
     }
     asyncFunc();
 
@@ -321,23 +323,23 @@ export default function ProfileScreen ( {navigation, route} ) {
         </View>
       : null}
       {loaded ? !isOwnProfile ? !friended ? !incoming ? !outgoing ?
-        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {addFriend(userId); forceReload(!reload)}}>
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {if (!busy) {setBusy(true); await addFriend(userId); forceReload(!reload); setBusy(false)}}}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Add Friend</Text>
         </TouchableOpacity>
       :
-        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate}); forceReload(!reload)}}>
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={async () => {if (!busy) {setBusy(true); await cancelFriendRequest(userId); forceReload(!reload); setBusy(false)}}}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Cancel Friend Request</Text>
         </TouchableOpacity>
       :
-      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {acceptFriend(userId); forceReload(!reload)}}>
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {if (!busy) {setBusy(true); await acceptFriend(userId); forceReload(!reload); setBusy(false)}}}>
         <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Accept Friend Request</Text>
       </TouchableOpacity>
       :
-        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={() => {addFriend(userId); forceReload(!reload)}}>
+        <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={async () => {if (!busy) {setBusy(true); await removeFriend(userId); forceReload(!reload); setBusy(false)}}}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Remove Friend</Text>
         </TouchableOpacity>
       : 
-      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate}); forceReload(!reload)}}>
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate}); forceReload(!reload)}}>
         <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Edit Profile</Text>
       </TouchableOpacity>
       : null }

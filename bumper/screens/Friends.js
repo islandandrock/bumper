@@ -1,7 +1,7 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image } from 'react-native';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { getFriends, friendSearch, addLocation} from '../util/requests';
+import { getFriends, friendSearch, addLocation, getFriendRequests } from '../util/requests';
 import { getData } from '../util/storage'
 
 import * as Location from 'expo-location';
@@ -30,18 +30,22 @@ export default function FriendScreen ( {navigation} ) {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      navigation.setOptions({
-        headerRight: () => (
-          <TouchableOpacity onPress={() => navigation.navigate("Notifications", {user_id:user_id})}>
-            <Image source={notified ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
-          </TouchableOpacity>
-        )})
       let user_id_temp = await getData("user_id");
       setUser_id(user_id_temp);
       let temp = await getFriends(user_id_temp)
       setFriends(temp)
       temp = await friendSearch(SearchText)
       SetSearchFriends(temp)
+      temp = await getFriendRequests()
+      console.log(temp.length)
+      setNotified(temp.length > 0)
+
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("Notifications", {user_id:user_id})}>
+            <Image source={notified ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
+          </TouchableOpacity>
+        )})
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
