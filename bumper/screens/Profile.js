@@ -49,7 +49,6 @@ const ConnectionList = React.memo(function ConnectionList(props) {
 const FriendList = React.memo(function FriendList({navigation, route}) {
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-
       navigation.dispatch(state => {
         // Remove the home route from the stack
         const history = [state.history[state.history.length-1]];
@@ -70,7 +69,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
       <ScrollView style={{width: "100%"}}>
         {route.params.friends.map((user) => 
           <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => {navigation.push("Profile", {id:user.id})}}>
-            <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+            <LicensePlate width={80} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
             <View style={{flexGrow:1, flexShrink:1}}>
               <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
             </View>
@@ -92,6 +91,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
 const SwipeTabs = React.memo((props) => {
   //console.log("AAAA", props.connectedApps, props.isOwnProfile)
   let connectedApps = props.connectedApps
+  let myID = props.id
   let isOwnProfile = props.isOwnProfile
   let setModalVisible = props.setModalVisible
   let friends = props.friends
@@ -99,10 +99,10 @@ const SwipeTabs = React.memo((props) => {
   return (
     <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
    }}>
-      <Tab.Screen name="Connections" options={{gestureEnabled: false}}>
+      <Tab.Screen name={`Connections${myID}`} options={{gestureEnabled: false, title:"Connections"}}>
         {(props) => <ConnectionList connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/>}
       </Tab.Screen>
-      <Tab.Screen name="Friends" options={{gestureEnabled: false}} initialParams={{ friends:friends }} component={FriendList}/>
+      <Tab.Screen name={`Friends${myID}`} options={{gestureEnabled: false, title:"Friends"}} initialParams={{ friends:friends }} component={FriendList}/>
     </Tab.Navigator>
   );
 })
@@ -215,6 +215,7 @@ const NewAppModal = (props) => {
 
 
 export default function ProfileScreen ( {navigation, route} ) {
+  const [desBig, setDesBig] = useState(false)
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
@@ -283,6 +284,8 @@ export default function ProfileScreen ( {navigation, route} ) {
 
   }, [route.params, reload])
 
+
+
   const onTextLayout = useCallback(e => {
     if (e.nativeEvent.lines.length > 4) {
       let newText = ""
@@ -303,22 +306,23 @@ export default function ProfileScreen ( {navigation, route} ) {
       {loaded ?
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
-            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} state={plate.linked ? "oregon" : "unlinked"}/>
-            <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
-              <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
-              <Text numberOfLines={4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
-            </View>
+            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plate.linked ? "oregon" : "unlinked"}/>
+            <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
+              <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
+                <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
+                <Text numberOfLines={desBig ? 100 : 4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={{flexGrow:1, backgroundColor:'#d3c9cd', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
-            <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
-              <Text style={{fontWeight:"bold", fontSize:24}}>{friends.length}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate(`Friends${userId}`)} style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
+              <Text style={{fontWeight:"bold", fontSize:24, alignItems:'center'}}>{friends.length}</Text>
               <Text style={{marginTop:-5}}>Friends</Text>
-
-            </View>
-            <View style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate(`Connections${userId}`)} style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
               <Text style={{fontWeight:"bold", fontSize:24}}>{connectedApps.length}</Text>
               <Text style={{marginTop:-5}}>Connections</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       : null}
@@ -348,7 +352,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       </TouchableOpacity>
       : null }
       {loaded ? 
-      <SwipeTabs connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
+      <SwipeTabs id={userId} connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
       null}
     </View>
   )

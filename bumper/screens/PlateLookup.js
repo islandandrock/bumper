@@ -1,15 +1,18 @@
 import { useLinkProps } from '@react-navigation/native';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking} from 'react-native';
+import { Camera, CameraType } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking, Alert, ActivityIndicator} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 
-import {signUp, userSearch} from "../util/requests"
+import {signUp, userSearch, uploadPic} from "../util/requests"
 import { LicensePlate } from "../util/components"
+
 
 function PlateButton (props) {
   return (
-    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>await signUp("theo", "t@a.com", "password")}>
+    <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={props.onPress}>
       <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>{props.text}</Text>
     </TouchableOpacity>
   )
@@ -25,47 +28,82 @@ const SearchBar = (props) => {
 export default function PlateLookupScreen ({ navigation }) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchUsers, SetSearchUsers] = useState([])
+  const [Loading, SetLoading] = useState(false)
+  const [type, setType] = useState(CameraType.back);
+  const [permission, setPermission] = useState(null)
+
 
   useEffect(() => {
     const asyncFunc = async () => {
       SetSearchUsers(await userSearch(SearchText))
+      const permissionStatus = await Camera.requestCameraPermissionsAsync();
+      setPermission(permissionStatus.status === 'granted');
     }
     asyncFunc();
-}, [])
+  }, [])
+
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync()
+    let pic = result.uri;
+    let picname = pic.split('/').pop();
+
+    let match = /\.(\w+)$/.exec(picname);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData()
+    formData.append('photo', {uri: pic, name:picname, type })
+    SetLoading(true)
+    plate_data = await uploadPic(formData)
+    console.log(plate_data)
+    SetLoading(false)
+    if (plate_data.results.length != 0 && plate_data.results[0].score > .75) {
+      plate_data = plate_data.results[0].plate
+      SetSearchText(plate_data)
+    } else {
+      Alert.alert('No plate', 'We\'re sorry, the picture you took does not have a recognizable plate. Please try again.')
+    }
+  }
 
   return (
-    <View style={{width:"100%", height:"100%"}}>
-      <View style={{flexDirection:"row"}}>
-        <PlateButton text={"ENTER USERNAME"}/>
-        <TouchableOpacity style={{width:"50%", height:100, backgroundColor:"pink", justifyContent:"center"}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
-          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>ENTER PLATE</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
-        <ScrollView style={{width: "100%"}}>
-          {SearchUsers.map((user) => 
-            <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-              <LicensePlate width={80} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
-              <View style={{flexGrow:1, flexShrink:1}}>
-                <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
-              </View>
-              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
-                <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
-              </View>
-              <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
-                <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        </ScrollView>
+      <View style={{flexDirection:'row', justifyContent:'flex-end', height:60, padding:10}}>
+        <TouchableOpacity style={{width:'40%', height:'100%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async () => await takePicture() }>
+          <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Take Picture</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
+        {Loading  ? 
+        (
+          <View style={{alignSelf: 'center', height:"100%", width:"100%", justifyContent:"center"}}>        
+            <ActivityIndicator style={{transform:[{scale:2}]}} size='large' color='#F4CBCB'/>
+          </View>
+
+        ) : (
+          <ScrollView style={{width: "100%"}}>
+            {SearchUsers.map((user) => 
+              <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
+                <LicensePlate width={80} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+                <View style={{flexGrow:1, flexShrink:1}}>
+                  <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
+                </View>
+                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
+                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
+                  <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          </ScrollView>
+        )}
       </View>
     </View>
   )

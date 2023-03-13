@@ -8,6 +8,8 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
+*.jpeg
+*.png
 web-build/
 
 # js-related

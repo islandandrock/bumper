@@ -2,8 +2,8 @@ import { ImageBackground, Text, View, StyleSheet, ScrollView, TouchableOpacity }
 import { useFonts } from "expo-font"
 import { acceptFriend, rejectFriend } from "./requests";
 
-function getPlate(state) {
-  switch (state) {
+function getPlate(name) {
+  switch (name) {
     case "oregon":
       return require("../assets/plates/oregon.png")
     case "california":
@@ -36,8 +36,8 @@ export const LicensePlate = (props) => {
       backgroundColor: 'pink',
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
-      transform: [{scale:props.width/600}]}} source={getPlate(props.state)}>
-      <Text style={{fontSize:170, fontFamily:"LicensePlate", color:props.state=="oregon"?"black":"white", textShadowColor:props.state=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
+      transform: [{scale:props.width/600}]}} source={getPlate(props.name)}>
+      <Text style={{fontSize:170, fontFamily:"LicensePlate", color:props.name=="oregon"?"black":"white", textShadowColor:props.name=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
     </ImageBackground>
     </View>
   )
