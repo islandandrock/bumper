@@ -7,10 +7,18 @@ from .extensions import db
 friendship = db.Table('friendship',
                        db.Column('user1_id', db.Integer, db.ForeignKey('user.id')),
                        db.Column('user2_id', db.Integer, db.ForeignKey('user.id')))
-
+"""
 friend_request = db.Table('friend_request',
                        db.Column('sender_id', db.Integer, db.ForeignKey('user.id')),
                        db.Column('recipient_id', db.Integer, db.ForeignKey('user.id')))
+"""
+class FriendRequest(db.Model):
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    date_sent = db.Column(db.String(50))
+
+    sender = db.relationship("User", foreign_keys=[sender_id], backref="friend_requests_sent")
+    recipient = db.relationship("User", foreign_keys=[recipient_id], backref="friend_requests_recieved")
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,7 +34,10 @@ class User(UserMixin, db.Model):
     connections = db.relationship('Connection', backref='user', lazy=True)
 
     #friend_requests_sent = db.relationship('User', backref='sender', lazy=True)
-    #friend_requests_recieved = db.relationship('User', secondary=friend_request, primaryjoin=(id==friend_request.c.sender_id))
+
+    #friend_requests_sent = db.relationship('FriendRequest', back_populates="sender")
+    #friend_requests_recieved = db.relationship('FriendRequest', back_populates="recipient")
+
     friends = db.relationship('User', secondary=friendship, primaryjoin=(id==friendship.c.user1_id), secondaryjoin=(id==friendship.c.user2_id))
 
     @property
