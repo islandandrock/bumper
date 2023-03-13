@@ -37,7 +37,7 @@ export const LicensePlate = (props) => {
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
       transform: [{scale:props.width/600}]}} source={getPlate(props.name)}>
-      <Text style={{fontSize:170, fontFamily:"LicensePlate", color:props.name=="oregon"?"black":"white", textShadowColor:props.name=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
+      <Text style={{fontSize:170, height:"100%", justifyContent:"center", textAlignVertical:"center", fontFamily:"LicensePlate", color:props.name=="oregon"?"black":"white", textShadowColor:props.name=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
     </ImageBackground>
     </View>
   )
@@ -49,7 +49,7 @@ export const UserList = (props) => {
     <ScrollView style={{width: "100%"}}>
       {props.users.map((user) =>
         <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.navigation.navigate("Profile", {id:user.id})}>
-          <LicensePlate width={90} plate={user.plate} state={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+          <LicensePlate width={90} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
             <Text style={[styles.user, user.name ? {} : {fontStyle:"italic", fontWeight:'normal'}]} numberOfLines={1}>{user.name ? user.name : "[unnamed]"}</Text>
             {props.acceptable ?  <Text style={[styles.user, {fontWeight:"normal"}]}>{"wants to follow you."}</Text> : null}
