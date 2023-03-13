@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { CommonActions } from '@react-navigation/native';
 
-import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest } from '../util/requests';
+import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest, rejectFriend } from '../util/requests';
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
 
@@ -331,9 +331,13 @@ export default function ProfileScreen ( {navigation, route} ) {
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Cancel Friend Request</Text>
         </TouchableOpacity>
       :
-      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {if (!busy) {setBusy(true); await acceptFriend(userId); forceReload(!reload); setBusy(false)}}}>
+      <View><TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {if (!busy) {setBusy(true); await acceptFriend(userId); forceReload(!reload); setBusy(false)}}}>
         <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Accept Friend Request</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={async () => {if (!busy) {setBusy(true); await rejectFriend(userId); forceReload(!reload); setBusy(false)}}}>
+        <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Deny Friend Request</Text>
+      </TouchableOpacity>
+      </View>
       :
         <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#EDCAD8"}} onPress={async () => {if (!busy) {setBusy(true); await removeFriend(userId); forceReload(!reload); setBusy(false)}}}>
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Remove Friend</Text>
