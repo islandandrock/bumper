@@ -61,6 +61,9 @@ def updateuser():
     if temp and temp.id != current_user.id:
         raise Conflict("Plate is already linked with an account")
     
+    if plate != '':
+        current_user.linked = True
+    
     current_user.name = name
     current_user.bio = bio
     current_user.plate = plate

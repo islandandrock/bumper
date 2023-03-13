@@ -23,6 +23,7 @@ export default function EditProfileScreen ({ navigation, route }) {
   const [name, setName] = useState(route.params.name)
   const [bio, setBio] = useState(route.params.bio)
   const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : "")
+  const [plateState, setPlateState] = useState('unlisted')
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -34,15 +35,15 @@ export default function EditProfileScreen ({ navigation, route }) {
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate State</Text>
       <View style={{flexDirection:'row', }}>
-        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.changePlateState} onPress={() => updateUser(name, bio, plate, 'unlisted')}><Text style={{fontSize: 20}}>Unlisted</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
       </View>
       
       <BigButton text="SAVE" onPress={
         async () => {
           try {
-            await updateUser(name, bio, plate);
+            await updateUser(name, bio, plate, plateState);
             Alert.alert("Updated your profile!");
             navigation.pop();
           } catch (e) {

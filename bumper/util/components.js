@@ -36,7 +36,7 @@ export const LicensePlate = (props) => {
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
       transform: [{scale:props.width/600}]}} source={getPlate(props.name)}>
-      <Text style={{fontSize:170, fontFamily:"LicensePlate", color:props.name=="oregon"?"black":"white", textShadowColor:props.name=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:10}}>{plate}</Text>
+      <Text style={{fontSize:170, fontFamily:"LicensePlate", color:props.name=="oregon"?"black":"white", textShadowColor:props.name=="oregon"?"white":"black", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
     </ImageBackground>
     </View>
   )

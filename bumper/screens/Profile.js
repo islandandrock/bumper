@@ -219,6 +219,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
+  const [plateState, setPlateState] = useState('unlisted')
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
@@ -233,6 +234,7 @@ export default function ProfileScreen ( {navigation, route} ) {
     let newId = null;
     let newName = null;
     let newBio = null;
+    let newPlateState = null;
     const asyncFunc = async () => {
       let signedInId = await getData("user_id")
       let signedInUser = await getData("name")
@@ -244,6 +246,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       let user = await getUser(newId);
       newName = user.name;
       newBio = user.bio;
+      newPlateState = user.plate_name
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        
@@ -260,6 +263,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       
       setName(newName);
+      setPlateState(newPlateState)
       setUserId(newId);
       setBio(newBio);
       let temp = await getConnections(newId);
@@ -300,7 +304,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       {loaded ?
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
-            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plate.linked ? "oregon" : "unlinked"}/>
+            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plateState}/>
             <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
               <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
                 <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
