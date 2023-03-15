@@ -63,11 +63,19 @@ def updateuser():
     
     if plate != '':
         current_user.linked = True
+    else:
+        current_user.linked = False
+    
     
     current_user.name = name
     current_user.bio = bio
     current_user.plate = plate
     current_user.plate_name = plate_name
+
+    print(current_user.linked)
+
+
+
 
     db.session.commit()
 

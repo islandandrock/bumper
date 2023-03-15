@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import { Dropdown } from 'react-native-element-dropdown'
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { signIn, updateUser, isCode } from '../util/requests';
 import { storeData, getData } from '../util/storage';
@@ -22,8 +23,20 @@ function BigButton (props) {
 export default function EditProfileScreen ({ navigation, route }) {
   const [name, setName] = useState(route.params.name)
   const [bio, setBio] = useState(route.params.bio)
-  const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : "")
-  const [plateState, setPlateState] = useState('unlisted')
+  const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : '')
+  const [plateState, setPlateState] = useState(route.params.plateState)
+  const [selected, setSelected] = useState(undefined);
+
+    
+  const data = [
+    {key:'1', value:'Mobiles', disabled:true},
+    {key:'2', value:'Appliances'},
+    {key:'3', value:'Cameras'},
+    {key:'4', value:'Computers', disabled:true},
+    {key:'5', value:'Vegetables'},
+    {key:'6', value:'Diary Products'},
+    {key:'7', value:'Drinks'},
+  ]
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -34,10 +47,13 @@ export default function EditProfileScreen ({ navigation, route }) {
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate State</Text>
-      <View style={{flexDirection:'row', }}>
+      <View style={{backgroundColor: 'red', width:'100%', alignItems:'center'}}>
+        {/*
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
+        */}
+        <Dropdown label="jkldfsaljk;fdaljkdfsjlk;" data={data} onSelect={setSelected}/>
       </View>
       
       <BigButton text="SAVE" onPress={
@@ -73,5 +89,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     borderRadius: 10,
     margin: 10
+  },
+  dropDownStyle: {
+    backgroundColor: 'red',
+    height:50,
+    width: 100
   }
 })

@@ -219,7 +219,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
-  const [plateState, setPlateState] = useState('unlisted')
+  const [plateState, setPlateState] = useState('unlinked')
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
@@ -329,7 +329,7 @@ export default function ProfileScreen ( {navigation, route} ) {
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Add Friend</Text>
         </TouchableOpacity>
       : 
-      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate})}}>
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={() => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate, plateState:plateState})}}>
         <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Edit Profile</Text>
       </TouchableOpacity>
       : null }
