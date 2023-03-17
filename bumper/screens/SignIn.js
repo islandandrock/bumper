@@ -2,6 +2,7 @@ import {useState} from 'react'
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { signIn, isCode } from '../util/requests';
 import { storeData, getData } from '../util/storage';
+import { useEffect } from 'react'
 
 const TextBar = (props) => {
   return (
@@ -22,6 +23,36 @@ function BigButton (props) {
 export default function SignInScreen ({ navigation }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  useEffect (() => {
+    const asyncFunc = async () => {
+      let temp_email = await getData("saved_email")
+      let temp_password = await getData("saved_password")
+      let auto_login = await getData("auto_login")
+      if (temp_email && temp_password) {
+        if (auto_login == "true") {
+          try {
+            const [name, id] = await signIn(temp_email, temp_password);
+            await storeData("name", name ? name.toString() : "");
+            await storeData("user_id", id.toString());
+            Alert.alert("Sign in was successful!");
+            navigation.navigate('TabPages');
+          } catch (e) {
+            if (isCode(e, [422])) {
+              Alert.alert("Automatic sign in failed!", "Enter your email and password.")
+            } else if (isCode(e, [401])) {
+              Alert.alert("Automatic sign in failed!", "Please re-enter your email and password.");
+            } else {
+              throw(e);
+            }
+          }
+        } else {
+          setEmail(temp_email)
+          setPassword(temp_password)
+        }
+      }
+    }
+    asyncFunc();
+  }, [])
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -37,7 +68,9 @@ export default function SignInScreen ({ navigation }) {
             console.log(name, id)
             await storeData("name", name ? name.toString() : "");
             await storeData("user_id", id.toString());
-            Alert.alert("Sign in was successful!");
+            await storeData("saved_email", email)
+            await storeData("saved_password", password)
+            await storeData("auto_login", "true")
             navigation.navigate('TabPages');
           } catch (e) {
             if (isCode(e, [422])) {

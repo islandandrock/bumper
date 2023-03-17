@@ -239,6 +239,7 @@ export default function ProfileScreen ( {navigation, route} ) {
     let newBio = null;
     const asyncFunc = async () => {
       let signedInId = await getData("user_id")
+      console.log("AA" + signedInId)
       let signedInUser = await getData("name")
       if (!route.params?.id) {
         newId = signedInId;
