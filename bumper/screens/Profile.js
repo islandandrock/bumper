@@ -272,6 +272,13 @@ export default function ProfileScreen ( {navigation, route} ) {
     }
     asyncFunc();
 
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+          <Image source={require('../assets/menu.png')} style={{height:38, width:38}}/>
+        </TouchableOpacity>
+      )})
+
     const unsubscribe = navigation.addListener('focus', () => {
       //if (editMode) { FIX THIS
         setEditMode(false)
