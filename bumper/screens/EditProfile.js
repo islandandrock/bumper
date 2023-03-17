@@ -1,6 +1,6 @@
-import {useState} from 'react'
-import { Dropdown } from 'react-native-element-dropdown'
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import {useState, useEffect} from 'react'
+import { DropdownSearch } from '../util/components'
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { signIn, updateUser, isCode } from '../util/requests';
 import { storeData, getData } from '../util/storage';
 
@@ -26,17 +26,48 @@ export default function EditProfileScreen ({ navigation, route }) {
   const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : '')
   const [plateState, setPlateState] = useState(route.params.plateState)
   const [selected, setSelected] = useState(undefined);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+    };
+  }, [])
 
     
   const data = [
-    {key:'1', value:'Mobiles', disabled:true},
-    {key:'2', value:'Appliances'},
-    {key:'3', value:'Cameras'},
-    {key:'4', value:'Computers', disabled:true},
-    {key:'5', value:'Vegetables'},
-    {key:'6', value:'Diary Products'},
-    {key:'7', value:'Drinks'},
-  ]
+    { label: 'Oregon', value: 'oregon' },
+    { label: 'California', value: 'california' },
+    { label: 'Item 3', value: '3' },
+    { label: 'Item 4', value: '4' },
+    { label: 'Item 5', value: '5' },
+    { label: 'Item 6', value: '6' },
+    { label: 'Item 7', value: '7' },
+    { label: 'Item 8', value: '8' },
+  ];
+  
+  const renderItem = item => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.textItem}>{item.label}</Text>
+        {item.value === value && (
+          <AntDesign
+            style={styles.icon}
+            color="black"
+            name="Safety"
+            size={20}
+          />
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -46,14 +77,13 @@ export default function EditProfileScreen ({ navigation, route }) {
       <TextBar inputText={bio} setInputText={setBio} placeholder="Your bio"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate State</Text>
-      <View style={{backgroundColor: 'red', width:'100%', alignItems:'center'}}>
+      <View style={{ width:'100%', alignItems:'center'}}>
         {/*
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
         */}
-        <Dropdown label="jkldfsaljk;fdaljkdfsjlk;" data={data} onSelect={setSelected}/>
+        <DropdownSearch placeholder="Plate State" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'auto'}/>
       </View>
       
       <BigButton text="SAVE" onPress={
