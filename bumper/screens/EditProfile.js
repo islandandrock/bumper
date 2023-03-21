@@ -35,22 +35,72 @@ export default function EditProfileScreen ({ navigation, route }) {
         setKeyboardVisible(true); // or some other action
       }
     );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
 
     return () => {
       keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
     };
   }, [])
 
     
   const data = [
-    { label: 'Oregon', value: 'oregon' },
+    { label: 'Alabama', value: 'alabama' },
+    { label: 'Alaska', value: 'alaska' },
+    { label: 'Arizona', value: 'arizona' },
+    { label: 'Arkansas', value: 'arkansas' },
     { label: 'California', value: 'california' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
+    { label: 'Colorado', value: 'colorado' },
+    { label: 'Connecticut', value: 'connecticut' },
+    { label: 'Delaware', value: 'delaware' },
+    { label: 'Florida', value: 'florida' },
+    { label: 'Georgia', value: 'georgia' },
+    { label: 'Hawaii', value: 'hawaii' },
+    { label: 'Idaho', value: 'idaho' },
+    { label: 'Illinois', value: 'illinois' },
+    { label: 'Indiana', value: 'indiana' },
+    { label: 'Iowa', value: 'iowa' },
+    { label: 'Kansas', value: 'kansas' },
+    { label: 'Kentucky', value: 'kentucky' },
+    { label: 'Louisiana', value: 'louisiana' },
+    { label: 'Maine', value: 'maine' },
+    { label: 'Maryland', value: 'maryland' },
+    { label: 'Massachusetts', value: 'massachusetts' },
+    { label: 'Michigan', value: 'michigan' },
+    { label: 'Minnesota', value: 'minnesota' },
+    { label: 'Mississippi', value: 'mississippi' },
+    { label: 'Missouri', value: 'missouri' },
+    { label: 'Montana', value: 'montana' },
+    { label: 'Nebraska', value: 'nebraska' },
+    { label: 'Nevada', value: 'nevada' },
+    { label: 'New Hampshire', value: 'new hampshire' },
+    { label: 'New Jersey', value: 'new jersey' },
+    { label: 'New Mexico', value: 'new mexico' },
+    { label: 'New York', value: 'new york' },
+    { label: 'North Carolina', value: 'north carolina' },
+    { label: 'North Dakota', value: 'north dakota' },
+    { label: 'Ohio', value: 'ohio' },
+    { label: 'Oklahoma', value: 'oklahoma' },
+    { label: 'Oregon', value: 'oregon' },
+    { label: 'Pennsylvania', value: 'pennsylvania' },
+    { label: 'Rhode Island', value: 'rhode island' },
+    { label: 'South Carolina', value: 'south carolina' },
+    { label: 'South Dakota', value: 'south dakota' },
+    { label: 'Tennessee', value: 'tennessee' },
+    { label: 'Texas', value: 'texas' },
+    { label: 'Utah', value: 'utah' },
+    { label: 'Vermont', value: 'vermont' },
+    { label: 'Virginia', value: 'virginia' },
+    { label: 'Washington', value: 'washington' },
+    { label: 'Washington DC', value: 'washingtondc' },
+    { label: 'West Virginia', value: 'west virigina' },
+    { label: 'Wisconsin', value: 'wisconsin' },
+    { label: 'Wyoming', value: 'wyonming' },
   ];
   
   const renderItem = item => {
@@ -83,7 +133,7 @@ export default function EditProfileScreen ({ navigation, route }) {
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
         */}
-        <DropdownSearch placeholder="Plate State" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'auto'}/>
+        <DropdownSearch placeholder="Plate State" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
       </View>
       
       <BigButton text="SAVE" onPress={
