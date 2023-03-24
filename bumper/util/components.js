@@ -7,12 +7,14 @@ import { Dropdown } from 'react-native-element-dropdown'
 
 function getPlate(name) {
   switch (name) {
-    case "oregon":
-      return require("../assets/plates/oregon.png")
-    case "california":
-      return require("../assets/plates/california.png")
+    case "1":
+      return require("../assets/plates/oregon/1.png")
+    case "2":
+      return require("../assets/plates/oregon/2.png")
+    case "3":
+      return require("../assets/plates/oregon/3.png")
     case "unlinked":
-      return require("../assets/plates/unlinked.png")
+      return require('../assets/plates/unlinked.png')
   }
 }
 

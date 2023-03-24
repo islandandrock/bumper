@@ -219,7 +219,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
-  const [plateState, setPlateState] = useState('unlinked')
+  const [plateState, setPlateState] = useState('unlinked');
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
