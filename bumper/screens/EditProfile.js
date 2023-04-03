@@ -33,6 +33,7 @@ export default function EditProfileScreen ({ navigation, route }) {
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
       
+      
       <BigButton text="SAVE" onPress={
         async () => {
           try {
