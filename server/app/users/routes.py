@@ -55,7 +55,7 @@ def updateuser():
     name = request.json['user_name']
     bio = request.json['bio']
     plate = request.json['plate']
-    plate_name = request.json['plateState']
+    plate_state = request.json['plateState']
 
     temp = User.query.filter_by(plate=plate).first()
     if temp and temp.id != current_user.id:
@@ -70,7 +70,7 @@ def updateuser():
     current_user.name = name
     current_user.bio = bio
     current_user.plate = plate
-    current_user.plate_name = plate_name
+    current_user.plate_state = plate_state
 
     print(current_user.linked)
 

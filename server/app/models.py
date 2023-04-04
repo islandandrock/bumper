@@ -15,7 +15,7 @@ friend_request = db.Table('friend_request',
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     linked = db.Column(db.Boolean, default=False)
-    plate_name = db.Column(db.String(20), server_default="unlinked")
+    plate_state = db.Column(db.String(20), server_default="unlinked")
     plate_style = db.Column(db.Integer,  default=1, nullable=True)
     plate = db.Column(db.String(10), unique=True, nullable=False, server_default="ABC123")
     name = db.Column(db.String(80), unique=False, nullable=True)
@@ -36,7 +36,7 @@ class User(UserMixin, db.Model):
         return {
             'plate':self.plate,
             'linked':self.linked,
-            'plate_name':self.plate_name,
+            'plate_state':self.plate_state,
             'plate_style':self.plate_style,
             'name':self.name,
             'email':self.email,

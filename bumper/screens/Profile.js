@@ -246,7 +246,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       let user = await getUser(newId);
       newName = user.name;
       newBio = user.bio;
-      newPlateState = user.plate_name
+      newPlateState = user.plate_state
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        
