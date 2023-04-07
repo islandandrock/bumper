@@ -52,7 +52,7 @@ export const UserList = (props) => {
           <LicensePlate width={90} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
             <Text style={[styles.user, user.name ? {} : {fontStyle:"italic", fontWeight:'normal'}]} numberOfLines={1}>{user.name ? user.name : "[unnamed]"}</Text>
-            {props.acceptable ?  <Text style={[styles.user, {fontWeight:"normal"}]}>{"wants to follow you."}</Text> : null}
+            {props.acceptable ?  <Text style={[styles.user, {fontWeight:"normal"}]}>{"wants to friend you."}</Text> : null}
           </View>
           {!props.acceptable ?
           <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
