@@ -21,7 +21,7 @@ export default function SettingsScreen ( {navigation} ) {
       <View style={{height:100, justifyContent:"center"}}>
         <Text style={{textAlign:"center", fontSize:15, fontWeight:"bold"}}>More settings coming soon!</Text>
       </View>
-      <TouchableOpacity style={{backgroundColor:"#EDCAD8", height:50, borderRadius:10, justifyContent:"center"}} onPress={async () => {await removeData("name"); await removeData("id"); navigation.navigate("Sign In")}}>
+      <TouchableOpacity style={{backgroundColor:"#EDCAD8", height:50, borderRadius:10, justifyContent:"center"}} onPress={async () => {await removeData("name"); await removeData("user_id"); await storeData("auto_login", "false"); navigation.navigate("Sign In")}}>
         <Text style={{textAlign:"center", fontWeight:"bold", fontSize:20}}>Sign Out</Text>
       </TouchableOpacity>
     </View>
