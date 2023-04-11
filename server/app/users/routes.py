@@ -51,25 +51,26 @@ def setlocation():
 @users_bp.route('/users/update', methods=['POST'])
 def updateuser():
     print(request.json)
+    
 
     name = request.json['user_name']
     bio = request.json['bio']
     plate = request.json['plate']
     plate_state = request.json['plateState']
 
-    temp = User.query.filter_by(plate=plate).first()
-    if temp and temp.id != current_user.id:
-        raise Conflict("Plate is already linked with an account")
-    
-    if plate != '':
+    print(plate)
+
+
+    if plate:
+        temp = User.query.filter_by(plate=plate).first()
+        if temp and temp.id != current_user.id:
+            raise Conflict("Plate is already linked with an account")
+        current_user.plate = plate
         current_user.linked = True
-    else:
-        current_user.linked = False
-    
+        temp = User.query.filter_by(plate=plate).first()
     
     current_user.name = name
     current_user.bio = bio
-    current_user.plate = plate
     current_user.plate_state = plate_state
 
     print(current_user.linked)

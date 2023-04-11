@@ -27,6 +27,7 @@ export default function EditProfileScreen ({ navigation, route }) {
   const [plateState, setPlateState] = useState(route.params.plateState)
   const [selected, setSelected] = useState(undefined);
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isChangingPlate, setIsChangingPlate] = useState(false);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -90,7 +91,7 @@ export default function EditProfileScreen ({ navigation, route }) {
       
       <BigButton text="SAVE" onPress={
         async () => {
-          try {
+          try { 
             await updateUser(name, bio, plate, plateState);
             Alert.alert("Updated your profile!");
             navigation.pop();

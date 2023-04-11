@@ -219,7 +219,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
-  const [plateState, setPlateState] = useState('unlinked');
+  const [plateState, setPlateState] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
@@ -246,7 +246,11 @@ export default function ProfileScreen ( {navigation, route} ) {
       let user = await getUser(newId);
       newName = user.name;
       newBio = user.bio;
-      newPlateState = user.plate_state
+      if (user.linked) {
+        newPlateState = user.plate_state
+      } else {
+        newPlateState = 'unlinked'
+      }
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        

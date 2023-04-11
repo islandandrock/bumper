@@ -117,7 +117,7 @@ export const updateUser = async (name, bio, plate, plateState) => {
       user_name: name,
       bio: bio,
       plate: plate,
-      plateState: plateState
+      plateState: plateState,
     })
   });
 }
