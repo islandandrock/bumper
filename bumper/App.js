@@ -11,6 +11,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import EditProfileScreen from './screens/EditProfile';
+import NotificationScreen from './screens/Notification';
+import SettingsScreen from './screens/Settings';
 
 const Tab = createBottomTabNavigator();
 const BaseStack = createNativeStackNavigator();
@@ -51,11 +53,17 @@ function FriendsStackScreen() {
         }
       }}/>
       <FriendsStack.Screen name="Profile" component={ProfileScreen} options={{
-          title: "",
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }
-        }}/>
+        title: "",
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        }
+      }}/>
+      <FriendsStack.Screen name="Notifications" component={NotificationScreen} options={{
+        title: "Notifications",
+        headerTitleStyle: {
+          fontWeight: 'bold'
+        }
+      }}/>
     </FriendsStack.Navigator>
   )
 }
@@ -74,6 +82,10 @@ function ProfileStackScreen() {
         }}/>
       <ProfileStack.Screen name="EditProfile" component={EditProfileScreen} options={{
         title: "Edit Profile",
+        headerShown: true
+      }}/>
+      <ProfileStack.Screen name="Settings" component={SettingsScreen} options={{
+        title: "Settings",
         headerShown: true
       }}/>
     </ProfileStack.Navigator>
