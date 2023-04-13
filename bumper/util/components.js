@@ -90,7 +90,7 @@ export const UserList = (props) => {
     <ScrollView style={{width: "100%"}}>
       {props.users.map((user) =>
         <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.navigation.navigate("Profile", {id:user.id})}>
-          <LicensePlate width={90} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
+          <LicensePlate width={90} plate={user.plate} name={user.plate_state} linked={user.linked} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
             <Text style={[styles.user, user.name ? {} : {fontStyle:"italic", fontWeight:'normal'}]} numberOfLines={1}>{user.name ? user.name : "[unnamed]"}</Text>
             {props.acceptable ?  <Text style={[styles.user, {fontWeight:"normal"}]}>{"wants to friend you."}</Text> : null}
