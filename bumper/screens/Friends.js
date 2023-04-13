@@ -43,9 +43,11 @@ export default function FriendScreen ( {navigation} ) {
       navigation.setOptions({
         headerRight: () => (
           <TouchableOpacity onPress={() => navigation.navigate("Notifications", {user_id:user_id})}>
-            <Image source={notified ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
+            <Image source={temp.length > 0 ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
           </TouchableOpacity>
         )})
+
+      
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -58,6 +60,18 @@ export default function FriendScreen ( {navigation} ) {
       addLocation([location.coords.latitude, location.coords.longitude])
     }
     asyncFunc();
+
+    const unsubscribe = navigation.addListener('focus', async () => {
+      let temp = await getFriendRequests()
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate("Notifications", {user_id:user_id})}>
+            <Image source={temp.length > 0 ? require('../assets/notification_active.png') : require('../assets/notification.png')} style={{height:38, width:38}}/>
+          </TouchableOpacity>
+        )})
+    });
+
+    return unsubscribe;
   }, [refresh])
   
 

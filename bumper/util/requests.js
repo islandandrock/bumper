@@ -33,11 +33,7 @@ const handledFetch = async (resource, init={}) => {
     }
   }
   if (!response.ok) {
-    console.log("ERRORRRRRR")
-    let temp = await response.text()
-    console.log(temp)
     let error = await response.json();
-    console.log(error)
     throw new ServerError(response.status, error.name, error.description);
   }
   return response;
