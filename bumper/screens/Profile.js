@@ -6,7 +6,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { CommonActions } from '@react-navigation/native';
 
-import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest, rejectFriend } from '../util/requests';
+import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, updateUser, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest, rejectFriend} from '../util/requests';
+
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
 
@@ -219,6 +220,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [name, setName] = useState("")
   const [userId, setUserId] = useState(null)
   const [plate, setPlate] = useState({linked:false, plate:""});
+  const [plateState, setPlateState] = useState('1');
   const [modalVisible, setModalVisible] = useState(false);
   const [connectedApps, setConnectedApps] = useState([]);
   const [friends, setFriends] = useState([])
@@ -231,12 +233,14 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [busy, setBusy] = useState(false)
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
   const [editMode, setEditMode] = useState(false)
+  const [linked, setLinked] = useState(false)
 
   useEffect(() => {
     //console.log("params", route.params, "reload", reload)
     let newId = null;
     let newName = null;
     let newBio = null;
+    let newPlateState = null;
     const asyncFunc = async () => {
       let signedInId = await getData("user_id")
       console.log("AA" + signedInId)
@@ -251,6 +255,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       setOutgoing(user.outgoing)
       newName = user.name;
       newBio = user.bio;
+      newPlateState = user.plate_state
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        
@@ -263,6 +268,8 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       
       setName(newName);
+      setLinked(user.linked);
+      setPlateState(newPlateState);
       setUserId(newId);
       setBio(newBio);
       let temp = await getConnections(newId);
@@ -314,7 +321,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       {loaded ?
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
-            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plate.linked ? "oregon" : "unlinked"}/>
+            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plateState} linked={linked}/>
             <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
               <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
                 <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
@@ -355,7 +362,8 @@ export default function ProfileScreen ( {navigation, route} ) {
           <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Remove Friend</Text>
         </TouchableOpacity>
       : 
-      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate}); forceReload(!reload)}}>
+
+      <TouchableOpacity style={{width:dimensions.width-40, borderRadius:10, marginTop:10, height:30, justifyContent:"center", backgroundColor:"#ee5d97"}} onPress={async () => {setEditMode(true); navigation.navigate("EditProfile", {name:name, bio:bio, plate:plate, plateState:plateState}); forceReload(!reload)}}>
         <Text style={{fontWeight:"bold", fontSize:15, alignSelf:"center"}}>Edit Profile</Text>
       </TouchableOpacity>
       : null }

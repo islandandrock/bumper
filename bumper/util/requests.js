@@ -158,14 +158,14 @@ export const getUser = async (user_id) => {
   return data
 }
 
-export const updateUser = async (name, bio, plate) => {
-  console.log("name:"+name)
+export const updateUser = async (name, bio, plate, plateState) => {
   await handledFetch(server + '/users/update', {
     method: 'POST',
     body: JSON.stringify({
       user_name: name,
       bio: bio,
-      plate: plate
+      plate: plate,
+      plateState: plateState,
     })
   });
 }
@@ -207,4 +207,3 @@ export const uploadPic = async (formData) => {
   let data1 = await response.json();
   return data1
 }
-

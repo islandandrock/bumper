@@ -45,6 +45,9 @@ export default function PlateLookupScreen ({ navigation }) {
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync()
     let pic = result.uri;
+    if (!pic) {
+      return
+    }
     let picname = pic.split('/').pop();
 
     let match = /\.(\w+)$/.exec(picname);

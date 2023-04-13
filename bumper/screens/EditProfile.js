@@ -1,5 +1,6 @@
-import {useState} from 'react'
-import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import {useState, useEffect} from 'react'
+import { DropdownSearch } from '../util/components'
+import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { signIn, updateUser, isCode } from '../util/requests';
 import { storeData, getData } from '../util/storage';
 
@@ -22,7 +23,54 @@ function BigButton (props) {
 export default function EditProfileScreen ({ navigation, route }) {
   const [name, setName] = useState(route.params.name)
   const [bio, setBio] = useState(route.params.bio)
-  const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : "")
+  const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : '')
+  const [plateState, setPlateState] = useState(route.params.plateState)
+  const [selected, setSelected] = useState(undefined);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isChangingPlate, setIsChangingPlate] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, [])
+
+    
+  const data = [
+    { label: 'Classic Oregon', value: '1' },
+    { label: 'Crater Lake', value: '3' },
+    { label: 'Blue & Yellow', value: '2' },
+  ];
+  
+  const renderItem = item => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.textItem}>{item.label}</Text>
+        {item.value === value && (
+          <AntDesign
+            style={styles.icon}
+            color="black"
+            name="Safety"
+            size={20}
+          />
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -32,11 +80,19 @@ export default function EditProfileScreen ({ navigation, route }) {
       <TextBar inputText={bio} setInputText={setBio} placeholder="Your bio"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
       <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
+      <View style={{ width:'100%', alignItems:'center'}}>
+        {/*
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
+        */}
+        <DropdownSearch placeholder="Plate State" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
+      </View>
       
       <BigButton text="SAVE" onPress={
         async () => {
-          try {
-            await updateUser(name, bio, plate);
+          try { 
+            await updateUser(name, bio, plate, plateState);
             Alert.alert("Updated your profile!");
             navigation.pop();
           } catch (e) {
@@ -61,4 +117,15 @@ const styles = StyleSheet.create({
     borderColor: 'pink',
     width:"80%"
   },
+  changePlateState: {
+    padding: 10,
+    backgroundColor: 'pink',
+    borderRadius: 10,
+    margin: 10
+  },
+  dropDownStyle: {
+    backgroundColor: 'red',
+    height:50,
+    width: 100
+  }
 })
