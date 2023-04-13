@@ -110,7 +110,6 @@ export const getUser = async (user_id) => {
 }
 
 export const updateUser = async (name, bio, plate, plateState) => {
-  console.log("name:"+name)
   await handledFetch(server + '/users/update', {
     method: 'POST',
     body: JSON.stringify({

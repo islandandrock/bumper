@@ -41,7 +41,7 @@ export const LicensePlate = (props) => {
       backgroundColor: 'pink',
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
-      transform: [{scale:props.width/600}]}} source={getPlate(props.name)}>
+      transform: [{scale:props.width/600}]}} source={props.linked ? getPlate(props.name) : getPlate('unlinked')}>
       <Text style={{fontSize:170, fontFamily:"LicensePlate", color:"black", textShadowColor:"white", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
     </ImageBackground>
     </View>

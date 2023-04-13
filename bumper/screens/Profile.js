@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { CommonActions } from '@react-navigation/native';
 
-import { addConnection, addFriend, getConnections, getFriends, getUser, getCode } from '../util/requests';
+import { addConnection, addFriend, getConnections, getFriends, getUser, getCode , updateUser} from '../util/requests';
 import getIcon from '../util/icons';
 import { LicensePlate } from '../util/components';
 
@@ -228,6 +228,7 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [loaded, setLoaded] = useState(false)
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
   const [editMode, setEditMode] = useState(false)
+  const [linked, setLinked] = useState(false)
 
   useEffect(() => {
     //console.log("params", route.params, "reload", reload)
@@ -246,11 +247,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       let user = await getUser(newId);
       newName = user.name;
       newBio = user.bio;
-      if (user.linked) {
-        newPlateState = user.plate_state
-      } else {
-        newPlateState = 'unlinked'
-      }
+      newPlateState = user.plate_state
       if (newId == signedInId) {
         setIsOwnProfile(true);
         navigation.setOptions({title:user.plate})        
@@ -267,7 +264,8 @@ export default function ProfileScreen ( {navigation, route} ) {
       }
       
       setName(newName);
-      setPlateState(newPlateState)
+      setLinked(user.linked);
+      setPlateState(newPlateState);
       setUserId(newId);
       setBio(newBio);
       let temp = await getConnections(newId);
@@ -308,7 +306,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       {loaded ?
         <View style={{flexDirection:"row", width:dimensions.width-40, marginTop:20}}>
           <View style={{width:2*(dimensions.width-40)/3}}>
-            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plateState}/>
+            <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plateState} linked={linked}/>
             <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
               <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
                 <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
