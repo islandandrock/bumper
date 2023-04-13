@@ -8,8 +8,6 @@ npm-debug.*
 *.key
 *.mobileprovision
 *.orig.*
-*.jpeg
-*.png
 web-build/
 
 # js-related
@@ -19,6 +17,7 @@ server.json
 project.db
 project.db-journal
 venv
+server/temp/
 __pycache__
 
 # macOS
