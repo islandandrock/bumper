@@ -41,7 +41,7 @@ export const LicensePlate = (props) => {
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
       transform: [{scale:props.width/600}]}} source={props.linked ? getPlate(props.name) : getPlate('unlinked')}>
-      <Text style={{height:"100%", justifyContent:"center", textAlignVertical:"center", fontSize:170, fontFamily:"LicensePlate", color:"black", textShadowColor:"white", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
+      <Text style={{height:"100%", justifyContent:"center", textAlignVertical:"center",  fontSize:170, fontFamily:"LicensePlate", color:"black", textShadowColor:"white", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
     </ImageBackground>
     </View>
   )
@@ -60,7 +60,7 @@ export const DropdownSearch = (props) => {
 
   return (
     <Dropdown
-        style={styles.dropdown}
+        style={props.style}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -75,7 +75,7 @@ export const DropdownSearch = (props) => {
         value={value}
         dropdownPosition={props.dropdownPos}
         onChange={item => {
-          props.setPlateState(item.value);
+          props.function(item.value);
           setValue(item.value);
         }}
         renderItem={renderItem}

@@ -1,12 +1,12 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useReducer } from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests } from '../util/requests';
 import { getData } from '../util/storage'
 
 import * as Location from 'expo-location';
 
-import { UserList } from '../util/components';
+import { UserList, DropdownSearch } from '../util/components';
 
 
 const SearchBar = (props) => {
@@ -27,6 +27,7 @@ export default function FriendScreen ( {navigation} ) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
+  const [Focus, SetFocus] = useState([0, 0]);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -73,6 +74,9 @@ export default function FriendScreen ( {navigation} ) {
 
     return unsubscribe;
   }, [refresh])
+
+  const FriendList = SearchFriends.map((user) => {label: user.name, value: user.id})
+  console.log(FriendList)
   
 
   return (
@@ -80,7 +84,19 @@ export default function FriendScreen ( {navigation} ) {
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
       <View style={styles.container}>
-        <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+        {ListMode ? 
+        (
+          <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+        ):(
+          <DropdownSearch placeholder='Friends' data={FriendList} function={SetFocus} style={{
+            borderRadius:10,
+            padding:10,
+            backgroundColor: '#fff',
+            borderWidth:1,
+            borderColor: 'pink',
+            width: '70%'
+          }}/>
+        )}
         <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>forceRefresh(!refresh)}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
