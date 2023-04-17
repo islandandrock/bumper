@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 
 
 import {signUp, userSearch, uploadPic} from "../util/requests"
-import { LicensePlate } from "../util/components"
+import { LicensePlate, UserList } from "../util/components"
 
 
 function PlateButton (props) {
@@ -88,24 +88,7 @@ export default function PlateLookupScreen ({ navigation }) {
           </View>
 
         ) : (
-          <ScrollView style={{width: "100%"}}>
-            {SearchUsers.map((user) => 
-              <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => navigation.navigate("Profile", {id:user.id})}>
-                <LicensePlate width={80} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
-                <View style={{flexGrow:1, flexShrink:1}}>
-                  <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
-                </View>
-                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
-                  <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
-                </View>
-                <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-                  <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
-                  <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          </ScrollView>
+          <UserList users={SearchUsers} navigation={navigation}/>
         )}
       </View>
     </View>
