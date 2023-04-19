@@ -1,7 +1,7 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image } from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image, Alert } from 'react-native';
 import { useState, useEffect, useReducer } from 'react';
 import MapView, {Marker} from 'react-native-maps';
-import { getFriends, friendSearch, addLocation, getFriendRequests } from '../util/requests';
+import { getFriends, friendSearch, addLocation, getFriendRequests, getUser } from '../util/requests';
 import { getData } from '../util/storage'
 
 import * as Location from 'expo-location';
@@ -17,6 +17,8 @@ const SearchBar = (props) => {
 }
 
 
+
+
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchFriends, SetSearchFriends] = useState([])
@@ -27,7 +29,7 @@ export default function FriendScreen ( {navigation} ) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
-  const [Focus, SetFocus] = useState([0, 0]);
+  const [UserID, SetUserID] = useState(null)
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -56,6 +58,14 @@ export default function FriendScreen ( {navigation} ) {
         return;
       }
 
+      if (UserID){
+        console.log(UserID)
+        console.log('thing', getUser(UserID))        
+      } else {
+        Alert.alert("No Person selected")
+      }
+      console.log(UserID)
+
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
       addLocation([location.coords.latitude, location.coords.longitude])
@@ -75,9 +85,8 @@ export default function FriendScreen ( {navigation} ) {
     return unsubscribe;
   }, [refresh])
 
-  const FriendList = SearchFriends.map((user) => {label: user.name, value: user.id})
-  console.log(FriendList)
-  
+  const FriendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
+  console.log(FriendList);
 
   return (
     <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
@@ -88,7 +97,7 @@ export default function FriendScreen ( {navigation} ) {
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         ):(
-          <DropdownSearch placeholder='Friends' data={FriendList} function={SetFocus} style={{
+          <DropdownSearch placeholder="Friends" data={FriendList} function={SetUserID} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
