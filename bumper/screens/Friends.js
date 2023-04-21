@@ -29,7 +29,7 @@ export default function FriendScreen ( {navigation} ) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
-  const [UserID, SetUserID] = useState(null)
+  const [PersonID, SetPersonID] = useState(null)
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -58,19 +58,20 @@ export default function FriendScreen ( {navigation} ) {
         return;
       }
 
-      if (UserID){
-        console.log(UserID)
-        console.log('thing', getUser(UserID))        
-      } else {
-        Alert.alert("No Person selected")
-      }
-      console.log(UserID)
-
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
       addLocation([location.coords.latitude, location.coords.longitude])
+      /*
+      if (PersonID){
+        let person = await getUser(PersonID)
+        setLocation(person.location)
+      } else {
+        Alert.alert("No Person selected")
+      }*/
+      console.log('friends', friends)
     }
     asyncFunc();
+
 
     const unsubscribe = navigation.addListener('focus', async () => {
       let temp = await getFriendRequests()
@@ -86,7 +87,6 @@ export default function FriendScreen ( {navigation} ) {
   }, [refresh])
 
   const FriendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
-  console.log(FriendList);
 
   return (
     <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
@@ -97,7 +97,7 @@ export default function FriendScreen ( {navigation} ) {
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         ):(
-          <DropdownSearch placeholder="Friends" data={FriendList} function={SetUserID} style={{
+          <DropdownSearch placeholder="Friends" data={FriendList} function={SetPersonID} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
@@ -133,7 +133,7 @@ export default function FriendScreen ( {navigation} ) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                   }} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: location.coords.latitude, longitude: location.coords.longitude}} pinColor={'pink'}>
+                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: friend.location[0], longitude: friend.location[1]}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.plate}</Text></Marker>)}
                 <Marker coordinate={{latitude : location.coords.latitude , longitude : location.coords.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
