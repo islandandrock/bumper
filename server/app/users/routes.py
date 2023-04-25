@@ -47,7 +47,7 @@ def setlocation():
     location = json.dumps(request.json['location'])
 
     current_user.location = location
-    
+    print(current_user.location)
     db.session.commit()  # Commits all changes
 
     return "", 201

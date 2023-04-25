@@ -26,7 +26,7 @@ export default function FriendScreen ( {navigation} ) {
   const [user_id, setUser_id] = useState("")
   const [friends, setFriends] = useState([])
   const [refresh, forceRefresh] = useState(false)
-  const [location, setLocation] = useState(null);
+  const [Position, setPosition] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
   const [PersonID, SetPersonID] = useState(null)
@@ -59,19 +59,19 @@ export default function FriendScreen ( {navigation} ) {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      addLocation([location.coords.latitude, location.coords.longitude])
-      /*
+      setPosition([parseFloat(location.coords.latitude), parseFloat(location.coords.longitude)]);
+      addLocation(`${location.coords.latitude} ${location.coords.longitude}`)
+
       if (PersonID){
         let person = await getUser(PersonID)
-        setLocation(person.location)
+        console.log(person)
+        console.log('location', Position)
+        setPosition(person.location)
       } else {
         Alert.alert("No Person selected")
-      }*/
-      console.log('friends', friends)
+      }
     }
     asyncFunc();
-
 
     const unsubscribe = navigation.addListener('focus', async () => {
       let temp = await getFriendRequests()
@@ -120,22 +120,22 @@ export default function FriendScreen ( {navigation} ) {
         <UserList users={SearchFriends} navigation={navigation}/>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
-          {location?           
+          {Position?           
           <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
             <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
               <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
             </TouchableOpacity>
           </View>: null}
-          {location?    
+          {Position?    
         <MapView  initialRegion={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
+                  latitude: Position[0],
+                  longitude: Position[1],
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                   }} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: friend.location[0], longitude: friend.location[1]}} pinColor={'pink'}>
+                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(JSON.parse(friend.location).split(" ")[0]), longitude: parseFloat(JSON.parse(friend.location).split(" ")[1])}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.plate}</Text></Marker>)}
-                <Marker coordinate={{latitude : location.coords.latitude , longitude : location.coords.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
+                <Marker coordinate={{latitude : Position[0] , longitude : Position[1]}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
         </View>
       )}
