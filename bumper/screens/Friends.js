@@ -1,4 +1,5 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image } from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image, ScrollView, RefreshControl } from 'react-native';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests } from '../util/requests';
@@ -27,6 +28,14 @@ export default function FriendScreen ( {navigation} ) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
+  const [refreshing, setRefreshing] = React.useState(false);
+  let x = 1;
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    forceRefresh(x);
+    x += 1;
+  }, []);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -70,12 +79,16 @@ export default function FriendScreen ( {navigation} ) {
           </TouchableOpacity>
         )})
     });
-
+    setRefreshing(false);
     return unsubscribe;
+    
   }, [refresh])
   
 
   return (
+    <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } nestedScrollEnabled = {true}>
     <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
@@ -115,6 +128,7 @@ export default function FriendScreen ( {navigation} ) {
         </View>
       )}
     </View>
+    </ScrollView>
   )
 }
 
