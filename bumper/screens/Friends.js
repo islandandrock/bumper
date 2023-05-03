@@ -26,10 +26,15 @@ export default function FriendScreen ( {navigation} ) {
   const [user_id, setUser_id] = useState("")
   const [friends, setFriends] = useState([])
   const [refresh, forceRefresh] = useState(false)
-  const [Position, setPosition] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
   const [PersonID, SetPersonID] = useState(null)
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
+  const [region, setRegion] = useState();
+
+
+
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -59,15 +64,26 @@ export default function FriendScreen ( {navigation} ) {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      setPosition(`${location.coords.latitude} ${location.coords.longitude}`);
       addLocation(`${location.coords.latitude} ${location.coords.longitude}`)
+
+
 
       if (PersonID){
         let person = await getUser(PersonID)
-        console.log('person', person.location)
-        setPosition(person.location)
+        setLatitude(parseFloat(person.location.split(' ')[0]))
+        setLongitude(parseFloat(person.location.split(' ')[1]))
+        setRegion({
+          latitude: parseFloat(person.location.split(' ')[0]),
+          longitude: parseFloat(person.location.split(' ')[1]),
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+          })
+        console.log('lat', latitude)
+        console.log('long', longitude)
       } else {
-        Alert.alert("No Person selected")
+        console.log("No Person selected")
+        setLatitude(location.coords.latitude)
+        setLongitude(location.coords.longitude)
       }
     }
     asyncFunc();
@@ -92,7 +108,7 @@ export default function FriendScreen ( {navigation} ) {
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
       <View style={styles.container}>
-        {ListMode && Position ? 
+        {ListMode && latitude && longitude ? 
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
         ):(
@@ -119,22 +135,22 @@ export default function FriendScreen ( {navigation} ) {
         <UserList users={SearchFriends} navigation={navigation}/>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
-          {Position?           
+          {latitude && longitude?           
           <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
             <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
               <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
             </TouchableOpacity>
           </View>: null}
-          {Position?    
+          {latitude && longitude?    
         <MapView  initialRegion={{
-                  latitude: parseFloat(Position.split(" ")[0]),
-                  longitude: parseFloat(Position.split(" ")[1]),
+                  latitude: latitude,
+                  longitude: longitude,
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
-                  }} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(JSON.parse(friend.location).split(" ")[0]), longitude: parseFloat(JSON.parse(friend.location).split(" ")[1])}} pinColor={'pink'}>
+                  }} region={region} onRegionChange={setRegion} style={styles.map}>
+                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.plate}</Text></Marker>)}
-                <Marker coordinate={{latitude : parseFloat(Position.split(" ")[0]), longitude : parseFloat(Position.split(" ")[1])}}><Text style={styles.friendPin}>You</Text></Marker>
+                <Marker coordinate={{latitude : 60.538838, longitude : -150.6268205}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
         </View>
       )}
