@@ -98,6 +98,8 @@ export default function EditProfileScreen ({ navigation, route }) {
           } catch (e) {
             if (isCode(e, [409])) {
               Alert.alert("Plate update failed!", "Someone has already linked this license plate.")
+            } else if (isCode(e, [422])) {
+              Alert.alert("Profile update failed!", e.description)
             } else {
               throw(e);
             }
