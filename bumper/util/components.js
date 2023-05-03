@@ -17,10 +17,29 @@ function getPlate(name) {
   }
 }
 
+function getTextColors(name) {
+  switch (name) {
+    case "1":
+      return {color:"black", shadowColor:"white"}
+    case "2":
+      return {color:"#ffcc00", shadowColor:"black"}
+    case "3":
+      return {color:"white", shadowColor:"black"}
+    case "unlinked":
+      return {color:"white", shadowColor:"black"}
+  }
+}
+
 export const LicensePlate = (props) => {
   let plate = props.plate;
   if (plate.length == 6) {
     plate = plate.slice(0, 3) + " " + plate.slice(3);
+  }
+
+  console.log("AFD", props.name, "L", props.linked)
+  let colors = props.linked ? getTextColors(props.name) : getTextColors("unlinked")
+  if (!colors) {
+    colors = {color:"black", shadowColor:"white"}
   }
 
   const [loaded] = useFonts({
@@ -41,7 +60,7 @@ export const LicensePlate = (props) => {
       marginVertical: -(150-props.width/4),
       marginHorizontal: -(300-props.width/2),
       transform: [{scale:props.width/600}]}} source={props.linked ? getPlate(props.name) : getPlate('unlinked')}>
-      <Text style={{height:"100%", justifyContent:"center", textAlignVertical:"center", fontSize:170, fontFamily:"LicensePlate", color:"black", textShadowColor:"white", textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
+      <Text style={{height:"100%", justifyContent:"center", textAlignVertical:"center", fontSize:170, fontFamily:"LicensePlate", color:colors.color, textShadowColor:colors.shadowColor, textShadowRadius:20, paddingVertical:0}}>{plate}</Text>
     </ImageBackground>
     </View>
   )
