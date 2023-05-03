@@ -1,7 +1,8 @@
 import { useLinkProps } from '@react-navigation/native';
 import { Camera, CameraType } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking, Alert, ActivityIndicator} from 'react-native';
+import React from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, TextInput, FlatList, Linking, Alert, ActivityIndicator, RefreshControl} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useState, useEffect, useRef } from 'react';
 
@@ -31,7 +32,15 @@ export default function PlateLookupScreen ({ navigation }) {
   const [Loading, SetLoading] = useState(false)
   const [type, setType] = useState(CameraType.back);
   const [permission, setPermission] = useState(null)
+  const [reload, forceReload] = useState(0)
+  const [refreshing, setRefreshing] = React.useState(false);
+  let x = 1;
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    forceReload(x);
+    x += 1;
+  }, []);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -40,7 +49,8 @@ export default function PlateLookupScreen ({ navigation }) {
       setPermission(permissionStatus.status === 'granted');
     }
     asyncFunc();
-  }, [])
+    setRefreshing(false);
+  }, [reload])
 
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync()
@@ -68,6 +78,9 @@ export default function PlateLookupScreen ({ navigation }) {
   }
 
   return (
+    <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } nestedScrollEnabled = {true}>
     <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
@@ -92,6 +105,7 @@ export default function PlateLookupScreen ({ navigation }) {
         )}
       </View>
     </View>
+    </ScrollView>
   )
 }
 
