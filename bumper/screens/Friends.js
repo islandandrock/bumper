@@ -1,5 +1,5 @@
 import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image, Alert } from 'react-native';
-import { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests, getUser } from '../util/requests';
 import { getData } from '../util/storage'
@@ -17,8 +17,6 @@ const SearchBar = (props) => {
 }
 
 
-
-
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
   const [SearchFriends, SetSearchFriends] = useState([])
@@ -32,6 +30,17 @@ export default function FriendScreen ( {navigation} ) {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [region, setRegion] = useState();
+  const mapView = React.createRef();
+
+  const animateMap = async (personID) => {
+    let person = await getUser(personID)
+    mapView.current.animateToRegion({
+      latitude: parseFloat(person.location.split(' ')[0]),
+      longitude: parseFloat(person.location.split(' ')[1]),
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+      },1000);
+  }
 
 
 
@@ -70,14 +79,6 @@ export default function FriendScreen ( {navigation} ) {
 
       if (PersonID){
         let person = await getUser(PersonID)
-        setLatitude(parseFloat(person.location.split(' ')[0]))
-        setLongitude(parseFloat(person.location.split(' ')[1]))
-        setRegion({
-          latitude: parseFloat(person.location.split(' ')[0]),
-          longitude: parseFloat(person.location.split(' ')[1]),
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-          })
         console.log('lat', latitude)
         console.log('long', longitude)
       } else {
@@ -110,9 +111,9 @@ export default function FriendScreen ( {navigation} ) {
       <View style={styles.container}>
         {ListMode && latitude && longitude ? 
         (
-          <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
+          <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
         ):(
-          <DropdownSearch placeholder="Friends" data={FriendList} function={SetPersonID} style={{
+          <DropdownSearch placeholder="Friends" data={FriendList} function={animateMap} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
@@ -147,7 +148,7 @@ export default function FriendScreen ( {navigation} ) {
                   longitude: longitude,
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
-                  }} region={region} onRegionChange={setRegion} style={styles.map}>
+                    }} ref={mapView} style={styles.map}>
                 {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
   <Text style={styles.friendPin}>{friend.plate}</Text></Marker>)}
                 <Marker coordinate={{latitude : 60.538838, longitude : -150.6268205}}><Text style={styles.friendPin}>You</Text></Marker>
