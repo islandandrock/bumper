@@ -29,11 +29,14 @@ export default function FriendScreen ( {navigation} ) {
   const [PersonID, SetPersonID] = useState(null)
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
-  const [region, setRegion] = useState();
   const mapView = React.createRef();
+  const [searchID, setSearchID] = useState();
 
-  const animateMap = async (personID) => {
+
+
+  const focusMap = async (personID) => {
     let person = await getUser(personID)
+    console.log(parseFloat(person.location.split(' ')[1]))
     mapView.current.animateToRegion({
       latitude: parseFloat(person.location.split(' ')[0]),
       longitude: parseFloat(person.location.split(' ')[1]),
@@ -113,7 +116,7 @@ export default function FriendScreen ( {navigation} ) {
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
         ):(
-          <DropdownSearch placeholder="Friends" data={FriendList} function={animateMap} style={{
+          <DropdownSearch placeholder="Friends" data={FriendList} function={setSearchID} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
@@ -122,7 +125,7 @@ export default function FriendScreen ( {navigation} ) {
             width: '70%'
           }}/>
         )}
-        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>forceRefresh(!refresh)}>
+        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>{focusMap(searchID)}}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
@@ -149,8 +152,8 @@ export default function FriendScreen ( {navigation} ) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                     }} ref={mapView} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
-  <Text style={styles.friendPin}>{friend.plate}</Text></Marker>)}
+                {friends.map((friend) => <Marker onPress={() => navigation.navigate(`Friends${friend.id}`)} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
+  <Text style={[styles.friendPin, {backgroundColor:(friend.id == searchID ? '#ee5d97' : 'pink')}]}>{friend.plate}</Text></Marker>)}
                 <Marker coordinate={{latitude : 60.538838, longitude : -150.6268205}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
         </View>
