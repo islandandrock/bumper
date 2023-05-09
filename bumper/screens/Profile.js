@@ -24,6 +24,7 @@ const TextBar = (props) => {
 const ConnectionList = React.memo(function ConnectionList(props) {
   //console.log("BBBB", props.connectedApps, props.isOwnProfile, props.setModalVisible)
   return (
+    
     <ScrollView style={{width: "100%"}} nestedScrollEnabled = {true}>
       {props.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
         props.setModalVisible(true);
@@ -42,6 +43,8 @@ const ConnectionList = React.memo(function ConnectionList(props) {
       <Text>This user hasn't linked any apps yet!</Text>
       }
      
+
+
 
   </ScrollView>
 );
@@ -66,7 +69,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
     return unsubscribe;
   }, [navigation]);
   return (
-    <UserList users={route.params.friends} navigation={navigation}/>
+    <UserList users={route.params.friends} navigation={navigation} emptyText={"No friends :("}/>
   );
 })
 
@@ -94,7 +97,17 @@ const SocialMedia = (props) => {
   let app = props.app;
   //console.log("init", app,props.selectedApp)
   return (
-    <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}} onPress={() => {
+    <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, 
+      width: '100%',
+      padding:0,
+      paddingLeft:10,
+      backgroundColor: '#FFDADA',
+      borderBottomColor: 'black',
+      flexDirection:'row',
+      alignItems:'center',
+      marginTop:6,
+      borderRadius:10
+    }} onPress={() => {
       if (selectable) {
         //console.log("clicked", app)
         props.setSelectedApp(app)

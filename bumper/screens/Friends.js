@@ -105,7 +105,7 @@ export default function FriendScreen ( {navigation} ) {
       </View>
       {ListMode ? 
       (
-        <UserList users={SearchFriends} navigation={navigation}/>
+        <UserList users={SearchFriends} navigation={navigation} emptyText={"No friends found... Get adding!"}/>
       ):(
         <View style={{justifyContent: 'center', flexDirection: 'column'}}>
           {location?           
