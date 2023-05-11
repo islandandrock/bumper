@@ -77,18 +77,10 @@ export default function FriendScreen ( {navigation} ) {
 
       let location = await Location.getCurrentPositionAsync({});
       addLocation(`${location.coords.latitude} ${location.coords.longitude}`)
+      setLongitude(location.coords.longitude)
+      setLatitude(location.coords.latitude)
 
 
-
-      if (PersonID){
-        let person = await getUser(PersonID)
-        console.log('lat', latitude)
-        console.log('long', longitude)
-      } else {
-        console.log("No Person selected")
-        setLatitude(location.coords.latitude)
-        setLongitude(location.coords.longitude)
-      }
     }
     asyncFunc();
 
@@ -125,7 +117,7 @@ export default function FriendScreen ( {navigation} ) {
             width: '70%'
           }}/>
         )}
-        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>{focusMap(searchID)}}>
+        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>{ListMode ? forceRefresh(!refresh) : focusMap(searchID)}}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
@@ -152,9 +144,9 @@ export default function FriendScreen ( {navigation} ) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                     }} ref={mapView} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => navigation.navigate(`Friends${friend.id}`)} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
-  <Text style={[styles.friendPin, {backgroundColor:(friend.id == searchID ? '#ee5d97' : 'pink')}]}>{friend.plate}</Text></Marker>)}
-                <Marker coordinate={{latitude : 60.538838, longitude : -150.6268205}}><Text style={styles.friendPin}>You</Text></Marker>
+                {friends.map((friend) => <Marker onPress={() => navigation.push("Profile", {id:friend.id})} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
+  <Text style={[styles.friendPin, {backgroundColor:(friend.id == searchID ? '#ee5d97' : 'pink'), padding:(friend.id == searchID ? 10 : 5), zIndex:(friend.id == searchID ? 1000 : 0), elevation:(friend.id == searchID ? 50 : 0)}]}>{friend.plate}</Text></Marker>)}
+                <Marker coordinate={{latitude : latitude, longitude : longitude}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
         </View>
       )}
@@ -173,7 +165,6 @@ const styles = StyleSheet.create({
 
   friendPin: {
     backgroundColor: 'pink',
-    borderRadius: 100,
     padding: 5,
     borderRadius:10
   },
