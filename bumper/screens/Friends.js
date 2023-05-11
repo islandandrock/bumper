@@ -1,5 +1,5 @@
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image, Alert } from 'react-native';
 import React, { useState, useEffect, useReducer, useRef } from 'react';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatList, Linking, Button, Image, ScrollView, RefreshControl, Alert } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests, getUser } from '../util/requests';
 import { getData } from '../util/storage'
@@ -26,6 +26,7 @@ export default function FriendScreen ( {navigation} ) {
   const [refresh, forceRefresh] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null);
   const [notified, setNotified] = useState(true)
+
   const [PersonID, SetPersonID] = useState(null)
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
@@ -46,7 +47,14 @@ export default function FriendScreen ( {navigation} ) {
   }
 
 
+  const [refreshing, setRefreshing] = React.useState(false);
+  let x = 1;
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    forceRefresh(x);
+    x += 1;
+  }, []);
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -93,13 +101,17 @@ export default function FriendScreen ( {navigation} ) {
           </TouchableOpacity>
         )})
     });
-
+    setRefreshing(false);
     return unsubscribe;
+    
   }, [refresh])
 
   const FriendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
 
   return (
+    <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } nestedScrollEnabled = {true}>
     <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
@@ -151,6 +163,7 @@ export default function FriendScreen ( {navigation} ) {
         </View>
       )}
     </View>
+    </ScrollView>
   )
 }
 

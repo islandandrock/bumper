@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput, Button, ImageBackground, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Linking, Alert, Modal, TextInput, Button, ImageBackground, Dimensions, RefreshControl } from 'react-native';
 import { useState, useEffect, useCallback } from 'react';
 import React from 'react';
 import { getData } from '../util/storage';
@@ -9,7 +9,7 @@ import { CommonActions } from '@react-navigation/native';
 import { addConnection, addFriend, getConnections, getFriends, getUser, getCode, updateUser, acceptFriend, removeFriend, getFriendRequests, cancelFriendRequest, rejectFriend} from '../util/requests';
 
 import getIcon from '../util/icons';
-import { LicensePlate } from '../util/components';
+import { LicensePlate, UserList } from '../util/components';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -24,7 +24,7 @@ const TextBar = (props) => {
 const ConnectionList = React.memo(function ConnectionList(props) {
   //console.log("BBBB", props.connectedApps, props.isOwnProfile, props.setModalVisible)
   return (
-    <ScrollView style={{width: "100%"}}>
+    <ScrollView style={{width: "100%"}} nestedScrollEnabled = {true}>
       {props.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
         props.setModalVisible(true);
       }}>
@@ -66,26 +66,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
     return unsubscribe;
   }, [navigation]);
   return (
-    <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
-      <ScrollView style={{width: "100%"}}>
-        {route.params.friends.map((user) => 
-          <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => {navigation.push("Profile", {id:user.id})}}>
-            <LicensePlate width={80} plate={user.plate} name={user.linked ? "oregon" : "unlinked"} style={{marginRight:20}}/>
-            <View style={{flexGrow:1, flexShrink:1}}>
-              <Text style={[styles.user]} numberOfLines={1}>{user.name}</Text>
-            </View>
-            <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-              <Text style={{fontWeight:"bold", fontSize:20}}>{user.numFriends}</Text>
-              <Text style={{marginTop:-5, fontSize:10}}>Friends</Text>
-            </View>
-            <View style={{width:60, justifyContent:"center", alignItems:"center"}}>
-              <Text style={{fontWeight:"bold", fontSize:20}}>{user.numConnections}</Text>
-              <Text style={{marginTop:-5, fontSize:10}}>Connections</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      </ScrollView>
-    </View>
+    <UserList users={route.params.friends} navigation={navigation}/>
   );
 })
 
@@ -234,6 +215,14 @@ export default function ProfileScreen ( {navigation, route} ) {
   const [bio, setBio] = useState("this is a user with a really really really long description for some reason like its so so so so long")
   const [editMode, setEditMode] = useState(false)
   const [linked, setLinked] = useState(false)
+  const [refreshing, setRefreshing] = React.useState(false);
+  let x = 1;
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    forceReload(x);
+    x += 1;
+  }, []);
 
   useEffect(() => {
     //console.log("params", route.params, "reload", reload)
@@ -291,9 +280,11 @@ export default function ProfileScreen ( {navigation, route} ) {
       //if (editMode) { FIX THIS
         setEditMode(false)
         console.log("reloding")
-        forceReload(!reload)
+        forceReload(x)
+        x += 1;
       //}
     });
+    setRefreshing(false);
 
     return unsubscribe;
 
@@ -314,6 +305,9 @@ export default function ProfileScreen ( {navigation, route} ) {
   const dimensions = Dimensions.get('window')
   
   return (
+    <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } nestedScrollEnabled = {true}>
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor:"#fff0f6"}}>
       
       {modalVisible? <NewAppModal modalVisible={modalVisible} setModalVisible={setModalVisible} forceReload={forceReload} reload={reload}/> : null}
@@ -371,6 +365,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       <SwipeTabs id={userId} connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
       null}
     </View>
+    </ScrollView>
   )
 }
 
