@@ -79,7 +79,7 @@ export const DropdownSearch = (props) => {
 
   return (
     <Dropdown
-        style={styles.dropdown}
+        style={props.style}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -94,7 +94,7 @@ export const DropdownSearch = (props) => {
         value={value}
         dropdownPosition={props.dropdownPos}
         onChange={item => {
-          props.setPlateState(item.value);
+          props.function(item.value);
           setValue(item.value);
         }}
         renderItem={renderItem}
