@@ -26,8 +26,9 @@ const FriendList = React.memo(function ConnectionList(props) {
     })
     return changeSearch
   })
+  console.log(props.SearchFriends)
   return (
-    <UserList users={props.SearchFriends} navigation={props.navigation}/>
+    <UserList users={props.users} navigation={props.navigation}/>
   )
 })
 
@@ -173,7 +174,7 @@ export default function FriendScreen ( {navigation} ) {
     
   }, [refresh])
 
-  const FriendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
+  const friendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
 
   return (
     <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
@@ -187,7 +188,7 @@ export default function FriendScreen ( {navigation} ) {
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
         ):(
-          <DropdownSearch placeholder="Friends" data={FriendList} function={setSearchID} style={{
+          <DropdownSearch placeholder="Friends" data={friendList} function={setSearchID} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
