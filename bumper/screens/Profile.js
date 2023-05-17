@@ -66,7 +66,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
     return unsubscribe;
   }, [navigation]);
   return (
-    <UserList users={route.params.friends} navigation={navigation}/>
+    <UserList users={route.params.friends} navigation={navigation} profileList={true}/>
   );
 })
 
