@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import EditProfileScreen from './screens/EditProfile';
 import NotificationScreen from './screens/Notification';
 import SettingsScreen from './screens/Settings';
+import EmailVerificationScreen from './screens/EmailVerification';
 
 const Tab = createBottomTabNavigator();
 const BaseStack = createNativeStackNavigator();
@@ -183,6 +184,7 @@ export default function App() {
             }
           }}
         />
+        <BaseStack.Screen name="Verify Email" component={EmailVerificationScreen}/>
         <BaseStack.Screen name="TabPages" component={MyTabs} options={{headerShown: false}}/>
       </BaseStack.Navigator>
     </NavigationContainer>

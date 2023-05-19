@@ -34,7 +34,7 @@ export default function SignUpScreen ({ navigation }) {
           try {
             await signUp(email, password);
             Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
-            navigation.goBack();
+            navigation.navigate("Verify Email");
           } catch (e) {
             if (isCode(e, [422])) {
               Alert.alert("Sign up failed!", "Enter an email and password.")
