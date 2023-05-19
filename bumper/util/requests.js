@@ -203,3 +203,20 @@ export const uploadPic = async (formData) => {
   let data1 = await response.json();
   return data1
 }
+
+export const sendVerification = async (email) => {
+  const response = await handledFetch(server + "/sendcode", {
+    method:'POST',
+  });
+  let data = await response.json();
+}
+
+export const checkVerification = async (verification_code) => {
+  const response = await handledFetch(server + "/verifyme", {
+    method:'POST',
+    body: JSON.stringify({
+      verification_code:verification_code
+    })
+  })
+  let data = await response.json()
+}

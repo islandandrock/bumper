@@ -34,6 +34,7 @@ class User(UserMixin, db.Model):
     admin = db.Column( db.Boolean, index=False, unique=False, nullable=False)
     location = db.Column(db.String(100), unique=False, nullable=True)
     connections = db.relationship('Connection', backref='user', lazy=True)
+    email_verified = db.Column(db.Boolean, default=False)
 
     #friend_requests_sent = db.relationship('User', backref='sender', lazy=True)
 

@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from .extensions import db
 from .models import User
 from datetime import datetime as dt
+from twilio.rest import Client
 
 login_manager = LoginManager()
 
@@ -16,6 +17,8 @@ def init_app():
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    
+    app.twilio_client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):
