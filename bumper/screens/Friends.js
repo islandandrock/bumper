@@ -4,6 +4,7 @@ import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests, getUser } from '../util/requests';
 import { getData } from '../util/storage'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 
 import * as Location from 'expo-location';
 
@@ -19,25 +20,18 @@ const SearchBar = (props) => {
 
 }
 
-const FriendList = React.memo(function ConnectionList(props) {
-  React.useEffect(() => {
-    const changeSearch = navigation.addListener('focus', () => {
-      props.listMode = !props.listMode
-    })
-    return changeSearch
+const FriendList = React.memo(function FriendList(props) {
+  useFocusEffect(() => {
+    props.setListMode(true)
   })
-  console.log(props.SearchFriends)
   return (
     <UserList users={props.users} navigation={props.navigation}/>
   )
 })
 
-const Map = React.memo(function ConnectionList(props) {
-  React.useEffect(() => {
-    const changeSearch = navigation.addListener('focus', () => {
-      props.listMode = !props.listMode
-    })
-    return changeSearch
+const Map = React.memo(function Map(props) {
+  useFocusEffect(() => {
+      props.setListMode(false)
   })
   return (
     <View style={{justifyContent: 'center', flexDirection: 'column'}}>
@@ -72,14 +66,15 @@ const SwipeTabs = React.memo((props) => {
   let navigation = props.navigation
   let searchID = props.searchID
   let listMode = props.listMode
+  let setListMode = props.setListMode
   return (
     <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
    }}>
       <Tab.Screen name={`FriendList${myID}`} options={{gestureEnabled: false, title:"FriendList"}}>
-        {(props) => <FriendList users={SearchFriends} navigation={navigation}/>}
+        {(props) => <FriendList users={SearchFriends} navigation={navigation} listMode={listMode} setListMode={setListMode}/>}
       </Tab.Screen>
       <Tab.Screen name={`Map${myID}`} options={{gestureEnabled: false, title:"Map"}}>
-        {(props) => <Map searchID={searchID} mapView={mapView} longitude={longitude} latitude={latitude} friends={friends} />}
+        {(props) => <Map searchID={searchID} mapView={mapView} longitude={longitude} latitude={latitude} friends={friends} listMode={listMode} setListMode={setListMode} navigation={navigation}/>}
       </Tab.Screen>
     </Tab.Navigator>
   );
@@ -123,6 +118,7 @@ export default function FriendScreen ( {navigation} ) {
     forceRefresh(x);
     x += 1;
   }, []);
+
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -174,7 +170,7 @@ export default function FriendScreen ( {navigation} ) {
     
   }, [refresh])
 
-  const friendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
+  const friendList = SearchFriends.map((user) => ({label: user.name + "; " + user.plate, value: user.id}))
 
   return (
     <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
@@ -201,7 +197,7 @@ export default function FriendScreen ( {navigation} ) {
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
-      <SwipeTabs listMode={ListMode} searchFriends={SearchFriends} searchID={searchID} friends={friends} longitude={longitude} latitude={latitude} mapView={mapView} id={user_id} navigation={navigation}/>
+      <SwipeTabs listMode={ListMode} setListMode={SetListMode} searchFriends={SearchFriends} searchID={searchID} friends={friends} longitude={longitude} latitude={latitude} mapView={mapView} id={user_id} navigation={navigation}/>
     </View>
     </ScrollView>
   )
