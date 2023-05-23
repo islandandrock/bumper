@@ -3,10 +3,14 @@ import {View, Text, TextInput, StyleSheet, TouchableOpacity, Dimensions, FlatLis
 import MapView, {Marker} from 'react-native-maps';
 import { getFriends, friendSearch, addLocation, getFriendRequests, getUser } from '../util/requests';
 import { getData } from '../util/storage'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useFocusEffect } from '@react-navigation/native';
 
 import * as Location from 'expo-location';
 
 import { UserList, DropdownSearch } from '../util/components';
+
+const Tab = createMaterialTopTabNavigator();
 
 
 const SearchBar = (props) => {
@@ -16,6 +20,65 @@ const SearchBar = (props) => {
 
 }
 
+const FriendList = React.memo(function FriendList(props) {
+  useFocusEffect(() => {
+    props.setListMode(true)
+  })
+  return (
+    <UserList users={props.users} navigation={props.navigation}/>
+  )
+})
+
+const Map = React.memo(function Map(props) {
+  useFocusEffect(() => {
+      props.setListMode(false)
+  })
+  return (
+    <View style={{justifyContent: 'center', flexDirection: 'column'}}>
+          {props.latitude && props.longitude?           
+          <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
+            <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
+              <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
+            </TouchableOpacity>
+          </View>: null}
+          {props.latitude && props.longitude?    
+        <MapView  initialRegion={{
+                  latitude: props.latitude,
+                  longitude: props.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                    }} ref={props.mapView} style={styles.map}>
+                {props.friends.map((friend) => <Marker onPress={() => props.navigation.push("Profile", {id:friend.id})} key={props.friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
+  <Text style={[styles.friendPin, {backgroundColor:(friend.id == props.searchID ? '#ee5d97' : 'pink'), padding:(friend.id == props.searchID ? 10 : 5), zIndex:(friend.id == props.searchID ? 1000 : 0), elevation:(friend.id == props.searchID ? 50 : 0)}]}>{friend.plate}</Text></Marker>)}
+                <Marker coordinate={{latitude : props.latitude, longitude : props.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
+          </MapView> : null}
+        </View>
+  )
+})
+
+const SwipeTabs = React.memo((props) => {
+  let SearchFriends = props.searchFriends
+  let myID = props.id
+  let friends = props.friends
+  let longitude = props.longitude
+  let latitude = props.latitude
+  let mapView = props.mapView
+  let navigation = props.navigation
+  let searchID = props.searchID
+  let listMode = props.listMode
+  let setListMode = props.setListMode
+  return (
+    <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
+   }}>
+      <Tab.Screen name={`FriendList${myID}`} options={{gestureEnabled: false, title:"FriendList"}}>
+        {(props) => <FriendList users={SearchFriends} navigation={navigation} listMode={listMode} setListMode={setListMode}/>}
+      </Tab.Screen>
+      <Tab.Screen name={`Map${myID}`} options={{gestureEnabled: false, title:"Map"}}>
+        {(props) => <Map searchID={searchID} mapView={mapView} longitude={longitude} latitude={latitude} friends={friends} listMode={listMode} setListMode={setListMode} navigation={navigation}/>}
+      </Tab.Screen>
+    </Tab.Navigator>
+  );
+})
 
 export default function FriendScreen ( {navigation} ) {
   const [SearchText, SetSearchText] = useState('');
@@ -55,6 +118,7 @@ export default function FriendScreen ( {navigation} ) {
     forceRefresh(x);
     x += 1;
   }, []);
+
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -106,7 +170,7 @@ export default function FriendScreen ( {navigation} ) {
     
   }, [refresh])
 
-  const FriendList = SearchFriends.map((user) => ({label: user.name, value: user.id}))
+  const friendList = SearchFriends.map((user) => ({label: user.name + "; " + user.plate, value: user.id}))
 
   return (
     <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
@@ -120,7 +184,7 @@ export default function FriendScreen ( {navigation} ) {
         (
           <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>
         ):(
-          <DropdownSearch placeholder="Friends" data={FriendList} function={setSearchID} style={{
+          <DropdownSearch placeholder="Friends" data={friendList} function={setSearchID} style={{
             borderRadius:10,
             padding:10,
             backgroundColor: '#fff',
@@ -133,35 +197,7 @@ export default function FriendScreen ( {navigation} ) {
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end', margin: 10}}>
-        <TouchableOpacity style={styles.toggle} onPress={() => SetListMode(!ListMode)}>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Toggle Mode</Text>
-        </TouchableOpacity>
-      </View>
-      {ListMode ? 
-      (
-        <UserList users={SearchFriends} navigation={navigation}/>
-      ):(
-        <View style={{justifyContent: 'center', flexDirection: 'column'}}>
-          {latitude && longitude?           
-          <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
-            <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
-              <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
-            </TouchableOpacity>
-          </View>: null}
-          {latitude && longitude?    
-        <MapView  initialRegion={{
-                  latitude: latitude,
-                  longitude: longitude,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                    }} ref={mapView} style={styles.map}>
-                {friends.map((friend) => <Marker onPress={() => navigation.push("Profile", {id:friend.id})} key={friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
-  <Text style={[styles.friendPin, {backgroundColor:(friend.id == searchID ? '#ee5d97' : 'pink'), padding:(friend.id == searchID ? 10 : 5), zIndex:(friend.id == searchID ? 1000 : 0), elevation:(friend.id == searchID ? 50 : 0)}]}>{friend.plate}</Text></Marker>)}
-                <Marker coordinate={{latitude : latitude, longitude : longitude}}><Text style={styles.friendPin}>You</Text></Marker>
-          </MapView> : null}
-        </View>
-      )}
+      <SwipeTabs listMode={ListMode} setListMode={SetListMode} searchFriends={SearchFriends} searchID={searchID} friends={friends} longitude={longitude} latitude={latitude} mapView={mapView} id={user_id} navigation={navigation}/>
     </View>
     </ScrollView>
   )
