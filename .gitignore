@@ -19,6 +19,7 @@ project.db-journal
 venv
 server/temp/
 __pycache__
+.env
 
 # macOS
 .DS_Store
