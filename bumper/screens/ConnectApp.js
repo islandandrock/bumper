@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import { DropdownSearch } from '../util/components'
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
-import { signIn, updateUser, isCode } from '../util/requests';
+import { signIn, updateUser, isCode, addConnection } from '../util/requests';
 import { storeData, getData } from '../util/storage';
 
 const TextBar = (props) => {
@@ -20,14 +20,28 @@ function BigButton (props) {
   )
 }
 
-export default function EditProfileScreen ({ navigation, route }) {
-  const [name, setName] = useState(route.params.name)
-  const [bio, setBio] = useState(route.params.bio)
-  const [plate, setPlate] = useState(route.params.plate.linked ? route.params.plate.plate : '')
-  const [plateState, setPlateState] = useState(route.params.plateState)
-  const [selected, setSelected] = useState(undefined);
+const connectApp = async (app_name, link) => {
+  try {
+    await addConnection(app_name, link);
+    Alert.alert("App connected!");
+  } catch (e) {
+    if (isCode(e, [422])) {
+    Alert.alert("Connection failed!", "Link a valid account.")
+    } else {
+    throw(e);
+    }
+  } 
+}
+
+function usernameToLink(app_name, username) {
+  let base_links = {instagram:"instagram.com", facebook:"facebook.com", twitter:"twitter.com", youtube:"youtube.com"};
+  return "https://www." + app_name + ".com/" + username
+}
+
+export default function ConnectApp ({ navigation, route }) {
+  const [username, setUsername] = useState()
+  const [app, setApp] = useState()
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [isChangingPlate, setIsChangingPlate] = useState(false);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -49,13 +63,12 @@ export default function EditProfileScreen ({ navigation, route }) {
     };
   }, [])
 
-    
   const data = [
-    { label: 'Classic Oregon', value: '1' },
-    { label: 'Crater Lake', value: '3' },
-    { label: 'Blue & Yellow', value: '2' },
+    { label: 'Instagram', value: 'instagram' },
+    { label: 'Twitter', value: 'twitter' },
+    { label: 'Facebook', value: 'facebook' }
   ];
-  
+
   const renderItem = item => {
     return (
       <View style={styles.item}>
@@ -74,26 +87,17 @@ export default function EditProfileScreen ({ navigation, route }) {
 
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Name</Text>
-      <TextBar inputText={name} setInputText={setName} placeholder="Your name"/>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Bio</Text>
-      <TextBar inputText={bio} setInputText={setBio} placeholder="Your bio"/>
-      <Text style={{fontWeight: 'bold', fontSize: 20}}>Plate</Text>
-      <TextBar inputText={plate} setInputText={setPlate} placeholder="Your license plate"/>
-      <View style={{ width:'100%', alignItems:'center'}}>
-        {/*
-        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('oregon')}><Text style={{fontSize: 20}}>Oregon</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
-        */}
-        <DropdownSearch placeholder="Plate Style" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
-      </View>
+      <Text style={{fontWeight: 'bold', fontSize: 20, marginVertical:20}}>Link an external account so people can contact you elsewhere!</Text>
+      <Text style={{fontWeight: 'bold', fontSize: 20}}>App</Text>
+      <DropdownSearch placeholder="App" data={data} function={setApp} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
+      <Text style={{fontWeight: 'bold', fontSize: 20}}>Username</Text>
+      <TextBar inputText={username} setInputText={setUsername} placeholder="Your Username"/>
       
       <BigButton text="SAVE" onPress={
         async () => {
           try { 
-            await updateUser(name, bio, plate, plateState);
-            Alert.alert("Updated your profile!");
+            await connectApp(app, usernameToLink(app, username));
+            Alert.alert("Linked Connections!");
             navigation.pop();
           } catch (e) {
             if (isCode(e, [409])) {

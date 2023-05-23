@@ -86,7 +86,7 @@ export default function EditProfileScreen ({ navigation, route }) {
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
         */}
-        <DropdownSearch placeholder="Plate Style" data={data} setPlateState={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
+        <DropdownSearch placeholder="Plate Style" data={data} function={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
       </View>
       
       <BigButton text="SAVE" onPress={

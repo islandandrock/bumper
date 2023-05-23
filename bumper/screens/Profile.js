@@ -27,7 +27,7 @@ const ConnectionList = React.memo(function ConnectionList(props) {
     
     <ScrollView style={{width: "100%"}} contentContainerStyle={{alignItems:"center"}} nestedScrollEnabled = {true}>
       {props.isOwnProfile ?  <TouchableOpacity style={{width:props.dimensions.width-40, marginTop:6, alignItems:'center', backgroundColor:"#ee5d97", borderRadius:10, height:30}} onPress={async () => {
-        props.setModalVisible(true);
+        props.navigation.push("ConnectApp")
       }}>
         <Text style={[{textAlignVertical: "center", height:"100%", fontWeight:"bold", fontSize:15, paddingVertical:0}]}>Connect new app</Text>
       </TouchableOpacity> : null}
@@ -78,15 +78,16 @@ const SwipeTabs = React.memo((props) => {
   let connectedApps = props.connectedApps
   let myID = props.id
   let isOwnProfile = props.isOwnProfile
-  let setModalVisible = props.setModalVisible
   let friends = props.friends
   let navigation = props.navigation
   let dimensions = props.dimensions
+  let username = props.username
+  let app = props.app
   return (
     <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
    }}>
       <Tab.Screen name={`Connections${myID}`} options={{gestureEnabled: false, title:"Connections"}}>
-        {(props) => <ConnectionList connectedApps={connectedApps} dimensions={dimensions} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/>}
+        {(props) => <ConnectionList connectedApps={connectedApps} dimensions={dimensions} isOwnProfile={isOwnProfile} navigation={navigation}/>}
       </Tab.Screen>
       <Tab.Screen name={`Friends${myID}`} options={{gestureEnabled: false, title:"Friends"}} initialParams={{ friends:friends }} component={FriendList}/>
     </Tab.Navigator>
@@ -376,7 +377,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       </TouchableOpacity>
       : null }
       {loaded ? 
-      <SwipeTabs id={userId} dimensions={dimensions} connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
+      <SwipeTabs id={userId} dimensions={dimensions} connectedApps={connectedApps} isOwnProfile={isOwnProfile} friends={friends} navigation={navigation}/> :
       null}
     </View>
     </ScrollView>
