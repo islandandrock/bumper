@@ -35,12 +35,6 @@ const Map = React.memo(function Map(props) {
   })
   return (
     <View style={{justifyContent: 'center', flexDirection: 'column'}}>
-          {props.latitude && props.longitude?           
-          <View style={{position:'absolute', zIndex:1, top:10, right:10}}>
-            <TouchableOpacity style={{width:80, height:40, backgroundColor:'pink', borderRadius:10, justifyContent:'center', alignItems:'center'}} onPress={() => {forceRefresh(!refresh)}}>
-              <Text style={{fontWeight:'bold', fontSize:18}}>Reload</Text>
-            </TouchableOpacity>
-          </View>: null}
           {props.latitude && props.longitude?    
         <MapView  initialRegion={{
                   latitude: props.latitude,
