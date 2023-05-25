@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth:1,
     borderColor: 'pink',
-    width:"80%"
+    width:"50%"
   },
   changePlateState: {
     padding: 10,
