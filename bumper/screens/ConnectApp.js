@@ -95,19 +95,9 @@ export default function ConnectApp ({ navigation, route }) {
       
       <BigButton text="SAVE" onPress={
         async () => {
-          try { 
-            await connectApp(app, usernameToLink(app, username));
-            Alert.alert("Linked Connections!");
-            navigation.pop();
-          } catch (e) {
-            if (isCode(e, [409])) {
-              Alert.alert("Plate update failed!", "Someone has already linked this license plate.")
-            } else if (isCode(e, [422])) {
-              Alert.alert("Profile update failed!", e.description)
-            } else {
-              throw(e);
-            }
-          }
+          await connectApp(app, usernameToLink(app, username));
+          Alert.alert("Linked Connections!");
+          navigation.pop();
         }
       }/>
     </View>
