@@ -14,6 +14,7 @@ import EditProfileScreen from './screens/EditProfile';
 import NotificationScreen from './screens/Notification';
 import SettingsScreen from './screens/Settings';
 import ConnectApp from './screens/ConnectApp';
+import RemoveApp from './screens/RemoveApp';
 
 const Tab = createBottomTabNavigator();
 const BaseStack = createNativeStackNavigator();
@@ -87,6 +88,10 @@ function ProfileStackScreen() {
       }}/>
       <ProfileStack.Screen name="ConnectApp" component={ConnectApp} options={{
         title: "Connect App",
+        headerShown: true
+      }}/>
+      <ProfileStack.Screen name="RemoveApp" component={RemoveApp} options={{
+        title: "Remove App",
         headerShown: true
       }}/>
       <ProfileStack.Screen name="Settings" component={SettingsScreen} options={{
