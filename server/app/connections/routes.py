@@ -48,4 +48,17 @@ def remove_connection():
 @connections_bp.route('/connections/edit')
 @login_required
 def edit_connection():
-    pass
+    connection_id = request.json['connection_id']
+    app_name = request.json['app_name']
+    link = request.json['link']
+
+    connection = Connection.query.get(connection_id)
+    if connection:
+        if not (link and app):
+            raise UnprocessableEntity("Missing parameters.")
+        connection.app_name = app_name
+        connection.link = link
+        db.session.commit()
+    else:
+        raise NotFound("Couldn't find this connection")
+    return {}, 200
