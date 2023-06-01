@@ -44,7 +44,8 @@ const ConnectionList = React.memo(function ConnectionList(props) {
         user_name={
           connection.link.split("/").pop()
         }
-        navigation={props.navigation}/>) :  
+        navigation={props.navigation}
+        isOwnProfile={props.isOwnProfile}/>) :  
       <Text>This user hasn't linked any apps yet!</Text>
       }
      
@@ -103,6 +104,7 @@ const SocialMedia = (props) => {
   let selectable = props.selectable?true:false
   let app = props.app;
   let navigation = props.navigation
+  let isOwnProfile = props.isOwnProfile
   //console.log("init", app,props.selectedApp)
   return (
     <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, 
@@ -128,10 +130,11 @@ const SocialMedia = (props) => {
       <View>
         <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
       </View>
+      {isOwnProfile ? 
       <TouchableOpacity style={{backgroundColor: '#ee5d97', width:56, height:48, marginLeft:'auto', margin:10, borderRadius:10, justifyContent:'center', alignItems:'center', flexDirection:'row'}} onPress={async () => {
         navigation.push("EditApps", {id: props.id, name:props.user_name, app:app})}}>
         <Text style={{fontSize:18, alignSelf:'center', fontWeight:'bold'}}>Edit</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> : null}
     </TouchableOpacity>
   )
 }
