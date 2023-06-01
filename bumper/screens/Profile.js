@@ -125,7 +125,7 @@ const SocialMedia = (props) => {
         <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
       </View>
       <TouchableOpacity style={{backgroundColor: '#ee5d97', width:56, height:48, marginLeft:'auto', margin:10, borderRadius:10, justifyContent:'center', alignItems:'center', flexDirection:'row'}} onPress={async () => {
-        navigation.push("RemoveApp")}}>
+        navigation.push("EditApps")}}>
         <Text style={{fontSize:18, alignSelf:'center', fontWeight:'bold'}}>Edit</Text>
       </TouchableOpacity>
     </TouchableOpacity>
