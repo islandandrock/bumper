@@ -67,7 +67,7 @@ export const LicensePlate = (props) => {
 }
 
 export const DropdownSearch = (props) => {
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(props.defaultValue);
 
   const renderItem = item => {
     return (

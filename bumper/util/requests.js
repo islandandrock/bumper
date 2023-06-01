@@ -86,7 +86,7 @@ export const getConnections = async (user_id) => {
 
 export const removeConnection = async (connection_id) => {
   await handledFetch(server + "/connections/remove", {
-    methoid: 'POST',
+    method: 'POST',
     body: JSON.stringify({
       connection_id:connection_id
     })
@@ -95,7 +95,7 @@ export const removeConnection = async (connection_id) => {
 
 export const editConnection = async (connection_id, app_name, link) => {
   await handledFetch(server + "/connections/edit", {
-    methoid: 'POST',
+    method: 'POST',
     body: JSON.stringify({
       connection_id:connection_id,
       app_name: app_name,

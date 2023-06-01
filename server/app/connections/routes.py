@@ -45,7 +45,7 @@ def remove_connection():
         raise NotFound("Couldn't find this connection")
     return {}, 200
 
-@connections_bp.route('/connections/edit')
+@connections_bp.route('/connections/edit', methods=['POST'])
 @login_required
 def edit_connection():
     connection_id = request.json['connection_id']

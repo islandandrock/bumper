@@ -40,6 +40,10 @@ const ConnectionList = React.memo(function ConnectionList(props) {
         app={connection.app_name}
         link={connection.link}
         key={connection.id}
+        id={connection.id}
+        user_name={
+          connection.link.split("/").pop()
+        }
         navigation={props.navigation}/>) :  
       <Text>This user hasn't linked any apps yet!</Text>
       }
@@ -125,7 +129,7 @@ const SocialMedia = (props) => {
         <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
       </View>
       <TouchableOpacity style={{backgroundColor: '#ee5d97', width:56, height:48, marginLeft:'auto', margin:10, borderRadius:10, justifyContent:'center', alignItems:'center', flexDirection:'row'}} onPress={async () => {
-        navigation.push("EditApps")}}>
+        navigation.push("EditApps", {id: props.id, name:props.user_name, app:app})}}>
         <Text style={{fontSize:18, alignSelf:'center', fontWeight:'bold'}}>Edit</Text>
       </TouchableOpacity>
     </TouchableOpacity>

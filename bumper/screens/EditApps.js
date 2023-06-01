@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import { DropdownSearch } from '../util/components'
 import { View, Text, TextInput, Alert, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
-import { signIn, updateUser, isCode, addConnection } from '../util/requests';
+import { signIn, updateUser, isCode, addConnection, removeConnection, editConnection } from '../util/requests';
 import { storeData, getData } from '../util/storage';
 
 const TextBar = (props) => {
@@ -20,13 +20,20 @@ function BigButton (props) {
   )
 }
 
-const connectApp = async (app_name, link) => {
+const removeApp = async (id, navigation) => {
+  await removeConnection(id);
+  Alert.alert("Connection removed!");
+  navigation.pop()
+}
+
+const editApp = async (id, app_name, link, navigation) => {
   try {
-    await addConnection(app_name, link);
-    Alert.alert("App connected!");
+    await editConnection(id, app_name, link);
+    Alert.alert("Connection edited!");
+    navigation.pop()
   } catch (e) {
     if (isCode(e, [422])) {
-    Alert.alert("Connection failed!", "Link a valid account.")
+    Alert.alert("Edit failed!", "Select an app to connect, and make sure a username is entered for that app.")
     } else {
     throw(e);
     }
@@ -39,8 +46,8 @@ function usernameToLink(app_name, username) {
 }
 
 export default function EditApps ({ navigation, route }) {
-  const [username, setUsername] = useState()
-  const [app, setApp] = useState()
+  const [username, setUsername] = useState(route.params.name)
+  const [app, setApp] = useState(route.params.app)
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -73,23 +80,19 @@ export default function EditApps ({ navigation, route }) {
   return (
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>App</Text>
-      <DropdownSearch placeholder="App" data={data} function={setApp} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
+      <DropdownSearch placeholder="App" data={data} function={setApp} dropdownPos={isKeyboardVisible? 'top' : 'bottom'} defaultValue={route.params.app}/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Username</Text>
       <TextBar inputText={username} setInputText={setUsername} placeholder="Your Username"/>
       
       <View style={{flexDirection:'row', width:'50%', justifyContent:'center'}}>
         <BigButton style={styles.bigButtonStyle} text="REMOVE" onPress={
           async () => {
-            //theo do your stuff
-            Alert.alert("Removed Connections!");
-            navigation.pop();
+            await removeApp(route.params.id, navigation)
           }
         }/>
         <BigButton style={styles.bigButtonStyle} text="SAVE" onPress={
           async () => {
-            await connectApp(app, usernameToLink(app, username));
-            Alert.alert("Linked Connections!");
-            navigation.pop();
+            await editApp(route.params.id, app, usernameToLink(app, username), navigation);
           }
         }/>
       </View>

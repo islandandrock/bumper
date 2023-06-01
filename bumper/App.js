@@ -91,7 +91,7 @@ function ProfileStackScreen() {
         headerShown: true
       }}/>
       <ProfileStack.Screen name="EditApps" component={EditApps} options={{
-        title: "Edit App",
+        title: "Edit Connection",
         headerShown: true
       }}/>
       <ProfileStack.Screen name="Settings" component={SettingsScreen} options={{
