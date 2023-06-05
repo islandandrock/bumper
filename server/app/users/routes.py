@@ -66,6 +66,13 @@ def updateuser():
 
 
     if plate:
+        plate = plate.upper()
+        if len(plate) > 7:
+            raise UnprocessableEntity("Plate is too long!")
+        if bio and len(bio) > 200:
+            raise UnprocessableEntity("Bio is too long!")
+        if name and len(name) > 30:
+            raise UnprocessableEntity("Name is too long!")
         temp = User.query.filter_by(plate=plate).first()
         if temp and temp.id != current_user.id:
             raise Conflict("Plate is already linked with an account")

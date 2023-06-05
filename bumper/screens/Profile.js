@@ -24,11 +24,12 @@ const TextBar = (props) => {
 const ConnectionList = React.memo(function ConnectionList(props) {
   //console.log("BBBB", props.connectedApps, props.isOwnProfile, props.setModalVisible)
   return (
-    <ScrollView style={{width: "100%"}} nestedScrollEnabled = {true}>
-      {props.isOwnProfile ?  <TouchableOpacity style={{alignItems:'center', backgroundColor:"pink", borderRadius:10}} onPress={async () => {
-        props.setModalVisible(true);
+    
+    <ScrollView style={{width: "100%"}} contentContainerStyle={{alignItems:"center"}} nestedScrollEnabled = {true}>
+      {props.isOwnProfile ?  <TouchableOpacity style={{width:props.dimensions.width-40, marginTop:6, alignItems:'center', backgroundColor:"#ee5d97", borderRadius:10, height:30}} onPress={async () => {
+        props.navigation.push("ConnectApp")
       }}>
-        <Text style={styles.mediumText}>Connect new app</Text>
+        <Text style={[{textAlignVertical: "center", height:"100%", fontWeight:"bold", fontSize:15, paddingVertical:0}]}>Connect new app</Text>
       </TouchableOpacity> : null}
       {props.connectedApps.length ? 
       props.connectedApps.map(
@@ -38,10 +39,18 @@ const ConnectionList = React.memo(function ConnectionList(props) {
         }
         app={connection.app_name}
         link={connection.link}
-        key={connection.id}/>) :  
+        key={connection.id}
+        id={connection.id}
+        user_name={
+          connection.link.split("/").pop()
+        }
+        navigation={props.navigation}
+        isOwnProfile={props.isOwnProfile}/>) :  
       <Text>This user hasn't linked any apps yet!</Text>
       }
      
+
+
 
   </ScrollView>
 );
@@ -66,7 +75,7 @@ const FriendList = React.memo(function FriendList({navigation, route}) {
     return unsubscribe;
   }, [navigation]);
   return (
-    <UserList users={route.params.friends} navigation={navigation}/>
+    <UserList users={route.params.friends} navigation={navigation} emptyText={"No friends :("}/>
   );
 })
 
@@ -75,14 +84,16 @@ const SwipeTabs = React.memo((props) => {
   let connectedApps = props.connectedApps
   let myID = props.id
   let isOwnProfile = props.isOwnProfile
-  let setModalVisible = props.setModalVisible
   let friends = props.friends
   let navigation = props.navigation
+  let dimensions = props.dimensions
+  let username = props.username
+  let app = props.app
   return (
     <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
    }}>
       <Tab.Screen name={`Connections${myID}`} options={{gestureEnabled: false, title:"Connections"}}>
-        {(props) => <ConnectionList connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible}/>}
+        {(props) => <ConnectionList connectedApps={connectedApps} dimensions={dimensions} isOwnProfile={isOwnProfile} navigation={navigation}/>}
       </Tab.Screen>
       <Tab.Screen name={`Friends${myID}`} options={{gestureEnabled: false, title:"Friends"}} initialParams={{ friends:friends }} component={FriendList}/>
     </Tab.Navigator>
@@ -92,9 +103,21 @@ const SwipeTabs = React.memo((props) => {
 const SocialMedia = (props) => {
   let selectable = props.selectable?true:false
   let app = props.app;
+  let navigation = props.navigation
+  let isOwnProfile = props.isOwnProfile
   //console.log("init", app,props.selectedApp)
   return (
-    <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, width: '100%', justifyContent: 'flex-start', alignItems:'center', flexDirection: 'row', paddingHorizontal: 10, paddingVertical: 10}} onPress={() => {
+    <TouchableOpacity style={{backgroundColor: props.selectedApp==app?"pink":null, 
+      width: '100%',
+      padding:0,
+      paddingLeft:10,
+      backgroundColor: '#FFDADA',
+      borderBottomColor: 'black',
+      flexDirection:'row',
+      alignItems:'center',
+      marginTop:6,
+      borderRadius:10
+    }} onPress={() => {
       if (selectable) {
         //console.log("clicked", app)
         props.setSelectedApp(app)
@@ -107,6 +130,11 @@ const SocialMedia = (props) => {
       <View>
         <Text style={{fontSize: 18, fontStyle:'bold', padding:20}}>{props.name}</Text>
       </View>
+      {isOwnProfile ? 
+      <TouchableOpacity style={{backgroundColor: '#ee5d97', width:56, height:48, marginLeft:'auto', margin:10, borderRadius:10, justifyContent:'center', alignItems:'center', flexDirection:'row'}} onPress={async () => {
+        navigation.push("EditApps", {id: props.id, name:props.user_name, app:app})}}>
+        <Text style={{fontSize:18, alignSelf:'center', fontWeight:'bold'}}>Edit</Text>
+      </TouchableOpacity> : null}
     </TouchableOpacity>
   )
 }
@@ -362,7 +390,7 @@ export default function ProfileScreen ( {navigation, route} ) {
       </TouchableOpacity>
       : null }
       {loaded ? 
-      <SwipeTabs id={userId} connectedApps={connectedApps} isOwnProfile={isOwnProfile} setModalVisible={setModalVisible} friends={friends} navigation={navigation}/> :
+      <SwipeTabs id={userId} dimensions={dimensions} connectedApps={connectedApps} isOwnProfile={isOwnProfile} friends={friends} navigation={navigation}/> :
       null}
     </View>
     </ScrollView>

@@ -191,6 +191,7 @@ export default function FriendScreen ( {navigation} ) {
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
+
       <SwipeTabs listMode={ListMode} setListMode={SetListMode} searchFriends={SearchFriends} searchID={searchID} friends={friends} longitude={longitude} latitude={latitude} mapView={mapView} id={user_id} navigation={navigation}/>
     </View>
     </ScrollView>

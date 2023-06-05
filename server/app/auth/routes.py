@@ -6,6 +6,7 @@ from flask import current_app as app
 from flask_login import login_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict, NotFound
+import re
 
 from ..models import db, User
 
@@ -23,6 +24,9 @@ def signup():
 
     if User.query.filter_by(email=email).first():
         raise Conflict("Email is already registered.")
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        raise Conflict("Enter a valid email!")
 
     new_user = User(
         email=email,

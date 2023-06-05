@@ -86,23 +86,7 @@ export default function EditProfileScreen ({ navigation, route }) {
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('california')}><Text style={{fontSize: 20}}>California</Text></TouchableOpacity>
         <TouchableOpacity style={styles.changePlateState} onPress={() => setPlateState('unlinked')}><Text style={{fontSize: 20}}>Unlinked</Text></TouchableOpacity>
         */}
-        <DropdownSearch placeholder="Plate State" data={data} function={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'} style={{
-          margin: 16,
-          height: 50,
-          width: '50%',
-          backgroundColor: 'white',
-          borderRadius: 12,
-          padding: 12,
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 1.41,
-
-          elevation: 2,
-        }}/>
+        <DropdownSearch placeholder="Plate Style" data={data} function={setPlateState} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
       </View>
       
       <BigButton text="SAVE" onPress={
@@ -114,6 +98,8 @@ export default function EditProfileScreen ({ navigation, route }) {
           } catch (e) {
             if (isCode(e, [409])) {
               Alert.alert("Plate update failed!", "Someone has already linked this license plate.")
+            } else if (isCode(e, [422])) {
+              Alert.alert("Profile update failed!", e.description)
             } else {
               throw(e);
             }
