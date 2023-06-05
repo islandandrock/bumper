@@ -56,7 +56,8 @@ class User(UserMixin, db.Model):
             'admin':self.admin,
             'id':self.id,
             'numConnections':len(self.connections),
-            'numFriends':len(self.friends)
+            'numFriends':len(self.friends),
+            'location':self.location
         }
 
     def __repr__(self):

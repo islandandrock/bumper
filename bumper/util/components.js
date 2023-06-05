@@ -79,7 +79,7 @@ export const DropdownSearch = (props) => {
 
   return (
     <Dropdown
-        style={styles.dropdown}
+        style={props.style}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}

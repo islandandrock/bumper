@@ -44,10 +44,10 @@ def usersearch():
 
 @users_bp.route('/users/location', methods=['POST'])
 def setlocation():
-    location = json.dumps(request.json['location'])
+    location = request.json['location']
 
     current_user.location = location
-    
+    print(current_user.location)
     db.session.commit()  # Commits all changes
 
     return "", 201
