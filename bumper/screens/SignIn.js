@@ -25,9 +25,14 @@ export default function SignInScreen ({ navigation }) {
   const [password, setPassword] = useState("")
   useEffect (() => {
     const asyncFunc = async () => {
-      let temp_email = await getData("saved_email")
-      let temp_password = await getData("saved_password")
-      let auto_login = await getData("auto_login")
+      let temp_email = ""
+      let temp_password = ""
+      let auto_login = false
+      try {
+        temp_email = await getData("saved_email")
+        temp_password = await getData("saved_password")
+        auto_login = await getData("auto_login")
+      } catch (e) {}
       if (temp_email && temp_password) {
         if (auto_login == "true") {
           try {

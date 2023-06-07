@@ -29,6 +29,7 @@ const UnderlineExample = () => {
   return (
     <SafeAreaView style={styles.root}>
       <Text style={styles.title}>Enter Verification Code</Text>
+      <Text style={[styles.title, {fontSize: 25}]}>Check your spam folders for the email if you can't find it!</Text>
       <CodeField
         ref={ref}
         {...props}
@@ -50,16 +51,22 @@ const UnderlineExample = () => {
           </View>
         )}
       />
+      <View style={{height:100}}/>
+      <View style={{width:"100%", alignItems:"center"}}>
       <BigButton onPress={async () => {
           try {
             await checkVerification(value);
             Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
             navigation.pop(2);
           } catch (e) {
-            
-              throw(e);
+            if (isCode(e, 400)){
+              Alert.alert("Verification failed!", "Make sure you entered the code from your email correctly!")
+            } else {
+              throw(e)
+            }
           }
         }} text={"VERIFY"}/>
+      </View>
     </SafeAreaView>
   );
 };
@@ -109,7 +116,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#aaa',
     borderBottomWidth: 1,
   },
   cellText: {
