@@ -22,10 +22,6 @@ def add_connection():
     if not (link and app):
         raise UnprocessableEntity("Missing parameters.")
 
-    print(link, requests.get(link).text)
-    #if requests.get("https://www.hsfdajhfjhf.com/").status_code == 404:
-    #    raise NotFound("Account does not exist.")
-
 
     new_connection = Connection(user_id=current_user.id, link=link, app_name=app_name)
     
