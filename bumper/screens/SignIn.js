@@ -46,6 +46,9 @@ export default function SignInScreen ({ navigation }) {
               Alert.alert("Automatic sign in failed!", "Enter your email and password.")
             } else if (isCode(e, [401])) {
               Alert.alert("Automatic sign in failed!", "Please re-enter your email and password.");
+            } else if (isCode(e, [400])) {
+              Alert.alert("Account not activated yet!", "Please enter the activation code from your email.");
+              navigation.navigate("Verify Email");
             } else {
               throw(e);
             }
@@ -82,6 +85,9 @@ export default function SignInScreen ({ navigation }) {
               Alert.alert("Sign in failed!", "Enter an email and password.")
             } else if (isCode(e, [401])) {
               Alert.alert("Sign in failed!", "Check your email and password.");
+            } else if (isCode(e, [400])) {
+              Alert.alert("Account not activated yet!", "Please enter the activation code from your email.");
+              navigation.navigate("Verify Email");
             } else {
               throw(e);
             }

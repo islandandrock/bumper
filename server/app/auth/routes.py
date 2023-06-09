@@ -57,6 +57,8 @@ def signin():
         raise UnprocessableEntity("Missing parameters!")
     user = User.query.filter_by(email=email).first()
     if user and check_password_hash(user.password, password):
+        if not user.email_verified:
+            raise BadRequest("Account not activated yet!")
         login_user(user)
         return {"name":user.name, "user_id":user.id}, 200
     raise Unauthorized("Email or Password doesn't match.")
@@ -74,9 +76,11 @@ def checkcode():
     to_email = session['to_email']
     #verification_code = request.form['verificationcode']
     if check_verification_token(to_email, verification_code):
+        current_user.email_verified = True
+        db.session.commit()
         return {"successful":True}, 200
     else:
-        raise BadRequest("Invalid verification code. Please try again.")
+        raise BadRequest("Invalid activation code. Please try again.")
 
 def send_verification(to_email):
     verification = app.twilio_client.verify \

@@ -33,7 +33,7 @@ export default function SignUpScreen ({ navigation }) {
         async () => {
           try {
             await signUp(email, password);
-            Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
+            Alert.alert("Account created!", "Now, enter the code from your email to activate your account!");
             navigation.navigate("Verify Email");
           } catch (e) {
             if (isCode(e, [422])) {

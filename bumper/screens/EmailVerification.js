@@ -11,10 +11,10 @@ import {
 
 const CELL_COUNT = 6;
 
-const UnderlineExample = () => {
+const UnderlineExample = (props) => {
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+  const [props1, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
     setValue,
   });
@@ -24,15 +24,15 @@ const UnderlineExample = () => {
       await sendVerification()
     }
     asyncFunc();
-  })
+  }, [])
 
   return (
     <SafeAreaView style={styles.root}>
       <Text style={styles.title}>Enter Verification Code</Text>
-      <Text style={[styles.title, {fontSize: 25}]}>Check your spam folders for the email if you can't find it!</Text>
+      <Text style={[styles.title, {fontSize: 25}]}>You still need to verify your email... Check your spam folders for the email if you can't find it!</Text>
       <CodeField
         ref={ref}
-        {...props}
+        {...props1}
         value={value}
         onChangeText={setValue}
         cellCount={CELL_COUNT}
@@ -57,9 +57,9 @@ const UnderlineExample = () => {
           try {
             await checkVerification(value);
             Alert.alert("Sign up was successful!", "Enter your new info and get started with Bumper!");
-            navigation.pop(2);
+            props.navigation.pop(2);
           } catch (e) {
-            if (isCode(e, 400)){
+            if (isCode(e, [400])){
               Alert.alert("Verification failed!", "Make sure you entered the code from your email correctly!")
             } else {
               throw(e)
@@ -90,7 +90,7 @@ export default function EmailVerificationScreen ({ navigation }) {
   const [code, setCode] = useState("")
 
   return (
-    <UnderlineExample/>
+    <UnderlineExample navigation={navigation}/>
   )
 }
 
