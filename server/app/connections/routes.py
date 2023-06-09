@@ -3,7 +3,7 @@ from datetime import datetime as dt
 from flask import Blueprint, request, render_template, make_response, abort, make_response
 from flask import current_app as app
 from flask_login import current_user, login_required
-from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict
+from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict, NotFound
 
 from ..models import db, User, Connection
 
@@ -33,12 +33,32 @@ def get_connections(user_id):
     data = [{"id":connection.id, "app_name":connection.app_name, "link":connection.link} for connection in connections]
     return data, 200
 
-@connections_bp.route('/connections/remove')
+@connections_bp.route('/connections/remove', methods=['POST'])
 @login_required
 def remove_connection():
-    pass
+    connection_id = request.json['connection_id']
+    connection = Connection.query.get(connection_id)
+    if connection:
+        db.session.delete(connection)
+        db.session.commit()
+    else:
+        raise NotFound("Couldn't find this connection")
+    return {}, 200
 
-@connections_bp.route('/connections/edit')
+@connections_bp.route('/connections/edit', methods=['POST'])
 @login_required
 def edit_connection():
-    pass
+    connection_id = request.json['connection_id']
+    app_name = request.json['app_name']
+    link = request.json['link']
+
+    connection = Connection.query.get(connection_id)
+    if connection:
+        if not (link and app):
+            raise UnprocessableEntity("Missing parameters.")
+        connection.app_name = app_name
+        connection.link = link
+        db.session.commit()
+    else:
+        raise NotFound("Couldn't find this connection")
+    return {}, 200

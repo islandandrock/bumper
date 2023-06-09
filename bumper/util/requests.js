@@ -84,6 +84,26 @@ export const getConnections = async (user_id) => {
   return data
 }
 
+export const removeConnection = async (connection_id) => {
+  await handledFetch(server + "/connections/remove", {
+    method: 'POST',
+    body: JSON.stringify({
+      connection_id:connection_id
+    })
+  })
+}
+
+export const editConnection = async (connection_id, app_name, link) => {
+  await handledFetch(server + "/connections/edit", {
+    method: 'POST',
+    body: JSON.stringify({
+      connection_id:connection_id,
+      app_name: app_name,
+      link: link
+    })
+  })
+}
+
 export const addFriend = async (friend_id) => {
   await handledFetch(server + '/friends/add', {
     method: 'POST',

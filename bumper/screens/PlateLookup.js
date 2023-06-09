@@ -101,7 +101,7 @@ export default function PlateLookupScreen ({ navigation }) {
           </View>
 
         ) : (
-          <UserList users={SearchUsers} navigation={navigation}/>
+          <UserList users={SearchUsers} navigation={navigation} emptyText={"No results... Try a different search term!"}/>
         )}
       </View>
     </View>

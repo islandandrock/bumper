@@ -67,7 +67,7 @@ export const LicensePlate = (props) => {
 }
 
 export const DropdownSearch = (props) => {
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState(props.defaultValue);
 
   const renderItem = item => {
     return (
@@ -79,7 +79,7 @@ export const DropdownSearch = (props) => {
 
   return (
     <Dropdown
-        style={styles.dropdown}
+        style={props.style}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -94,7 +94,7 @@ export const DropdownSearch = (props) => {
         value={value}
         dropdownPosition={props.dropdownPos}
         onChange={item => {
-          props.setPlateState(item.value);
+          props.function(item.value);
           setValue(item.value);
         }}
         renderItem={renderItem}
@@ -106,8 +106,8 @@ export const DropdownSearch = (props) => {
 export const UserList = (props) => {
   return (
   <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
-    <ScrollView style={{width: "100%"}} nestedScrollEnabled={true}>
-      {props.users.map((user) =>
+    <ScrollView style={{width: "100%", backgroundColor: "#FFEAEA"}} nestedScrollEnabled={true}>
+      {props.users.length > 0 ? props.users.map((user) =>
         <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.profileList? props.navigation.push("Profile", {id:user.id}) : props.navigation.navigate("Profile", {id:user.id})}>
           <LicensePlate width={90} plate={user.plate} name={user.plate_state} linked={user.linked} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
@@ -138,7 +138,12 @@ export const UserList = (props) => {
           </View>
           }
         </TouchableOpacity>
-      )}
+      ) : <TouchableOpacity style={[styles.userList]} key={0}>
+      <View style={{flexGrow:1, flexShrink:1}}>
+        <Text style={[styles.user, {fontStyle:"italic", fontWeight:'normal'}]}>{props.emptyText}</Text>
+      </View>
+      
+    </TouchableOpacity>}
     </ScrollView>
   </View>)
 }
