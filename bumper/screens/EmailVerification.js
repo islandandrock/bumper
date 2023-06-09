@@ -61,6 +61,8 @@ const UnderlineExample = (props) => {
           } catch (e) {
             if (isCode(e, [400])){
               Alert.alert("Verification failed!", "Make sure you entered the code from your email correctly!")
+            } else if (isCode(e, [500])){
+              Alert.alert("Verification failed!", "Our verify app is overloaded, try again later...")
             } else {
               throw(e)
             }
