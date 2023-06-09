@@ -170,7 +170,7 @@ export default function FriendScreen ( {navigation} ) {
     <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       } nestedScrollEnabled = {true}>
-    <View style={{width:'100%', height:'100%', backgroundColor:"#FFF9F9"}}>
+    <View style={{width:'100%', height:'100%', backgroundColor:"#fff0f6"}}>
       <View style={{position:'absolute', zIndex:1, bottom:10, right:10}}>
       </View>
       <View style={styles.container}>
@@ -183,11 +183,11 @@ export default function FriendScreen ( {navigation} ) {
             padding:10,
             backgroundColor: '#fff',
             borderWidth:1,
-            borderColor: 'pink',
+            borderColor: '#ee5d97',
             width: '70%'
           }}/>
         )}
-        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>{ListMode ? forceRefresh(!refresh) : focusMap(searchID)}}>
+        <TouchableOpacity style={{width:'30%', backgroundColor:"#ee5d97", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={()=>{ListMode ? forceRefresh(!refresh) : focusMap(searchID)}}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     padding:10,
     backgroundColor: '#fff',
     borderWidth:1,
-    borderColor: 'pink',
+    borderColor: '#ee5d97',
     width: '70%'
   },
 

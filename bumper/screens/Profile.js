@@ -25,7 +25,7 @@ const ConnectionList = React.memo(function ConnectionList(props) {
   //console.log("BBBB", props.connectedApps, props.isOwnProfile, props.setModalVisible)
   return (
     
-    <ScrollView style={{width: "100%"}} contentContainerStyle={{alignItems:"center"}} nestedScrollEnabled = {true}>
+    <ScrollView style={{width: "100%", backgroundColor:"#fff0f6"}} contentContainerStyle={{alignItems:"center"}} nestedScrollEnabled = {true}>
       {props.isOwnProfile ?  <TouchableOpacity style={{width:props.dimensions.width-40, marginTop:6, alignItems:'center', backgroundColor:"#ee5d97", borderRadius:10, height:30}} onPress={async () => {
         props.navigation.push("ConnectApp")
       }}>
@@ -345,13 +345,13 @@ export default function ProfileScreen ( {navigation, route} ) {
           <View style={{width:2*(dimensions.width-40)/3}}>
             <LicensePlate width={2*(dimensions.width-40)/3} plate={plate.plate} name={plateState} linked={linked}/>
             <TouchableOpacity onPress={() => setDesBig(!desBig)}>            
-              <View style={{backgroundColor:'#d3c9cd', marginTop:10, borderRadius:10, padding:5}}>
+              <View style={{backgroundColor:'#FFDADA', marginTop:10, borderRadius:10, padding:5}}>
                 <Text style={[styles.bigText, {textAlign:"left", fontSize: 17, marginTop: 0, marginBottom: 0, width:"100%"}]}>{name}</Text>
                 <Text numberOfLines={desBig ? 100 : 4} style={[styles.bigText, {textAlign:"left", fontSize: 17, fontWeight:'normal', marginTop: 0, marginBottom: 0, marginLeft:0, width:"100%"}]}>{bio}</Text>
               </View>
             </TouchableOpacity>
           </View>
-          <View style={{flexGrow:1, backgroundColor:'#d3c9cd', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
+          <View style={{flexGrow:1, backgroundColor:'#FFDADA', borderRadius:10, justifyContent:'center', alignItems:'center', marginLeft:10}}>
             <TouchableOpacity onPress={() => navigation.navigate(`Friends${userId}`)} style={{width:80, flexGrow:1, justifyContent:"center", alignItems:"center"}}>
               <Text style={{fontWeight:"bold", fontSize:24, alignItems:'center'}}>{friends.length}</Text>
               <Text style={{marginTop:-5}}>Friends</Text>
