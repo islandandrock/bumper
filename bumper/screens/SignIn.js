@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 const TextBar = (props) => {
   return (
     <View style={{width:"100%", alignItems:"center", marginBottom:20, marginTop:5}}>
-      <TextInput style={styles.input} placeholder={props.placeholder} value={props.inputText} onChangeText={(text)=>props.setInputText(text)}/>
+      <TextInput secureTextEntry={props.hidden} style={styles.input} placeholder={props.placeholder} value={props.inputText} onChangeText={(text)=>props.setInputText(text)}/>
     </View>
   )
 }
@@ -59,7 +59,7 @@ export default function SignInScreen ({ navigation }) {
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Email</Text>
       <TextBar inputText={email} setInputText={setEmail} placeholder="Your email"/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Password</Text>
-      <TextBar inputText={password} setInputText={setPassword} placeholder="Your password"/>
+      <TextBar inputText={password} hidden={true} setInputText={setPassword} placeholder="Your password"/>
       
       <BigButton text="SIGN IN" onPress={
         async () => {
