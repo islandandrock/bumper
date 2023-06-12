@@ -108,7 +108,7 @@ export const UserList = (props) => {
   <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1}}>
     <ScrollView style={{width: "100%", backgroundColor: "#fff0f6"}} nestedScrollEnabled={true}>
       {props.users.length > 0 ? props.users.map((user) =>
-        <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.navigation.navigate("Profile", {id:user.id})}>
+        <TouchableOpacity style={[styles.userList]} key={user.id} onPress={() => props.profileList? props.navigation.push("Profile", {id:user.id}) : props.navigation.navigate("Profile", {id:user.id})}>
           <LicensePlate width={90} plate={user.plate} name={user.plate_state} linked={user.linked} style={{marginRight:20}}/>
           <View style={{flexGrow:1, flexShrink:1}}>
             <Text style={[styles.user, user.name ? {} : {fontStyle:"italic", fontWeight:'normal'}]} numberOfLines={1}>{user.name ? user.name : "[unnamed]"}</Text>

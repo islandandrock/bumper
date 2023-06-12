@@ -25,7 +25,7 @@ const FriendList = React.memo(function FriendList(props) {
     props.setListMode(true)
   })
   return (
-    <UserList users={props.users} navigation={props.navigation}/>
+    <UserList users={props.users} navigation={props.navigation} emptyText={"No friends :( Go add some!"}/>
   )
 })
 
@@ -62,7 +62,7 @@ const SwipeTabs = React.memo((props) => {
   let listMode = props.listMode
   let setListMode = props.setListMode
   return (
-    <Tab.Navigator style={{width:"100%", flexGrow:1, backgroundColor:'red', height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
+    <Tab.Navigator style={{width:"100%", flexGrow:1, height:10}} screenOptions={{gestureEnabled: false, "tabBarStyle": {"backgroundColor": "#fff0f6"}
    }}>
       <Tab.Screen name={`FriendList${myID}`} options={{gestureEnabled: false, title:"FriendList"}}>
         {(props) => <FriendList users={SearchFriends} navigation={navigation} listMode={listMode} setListMode={setListMode}/>}

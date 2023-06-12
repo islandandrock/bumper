@@ -25,9 +25,14 @@ export default function SignInScreen ({ navigation }) {
   const [password, setPassword] = useState("")
   useEffect (() => {
     const asyncFunc = async () => {
-      let temp_email = await getData("saved_email")
-      let temp_password = await getData("saved_password")
-      let auto_login = await getData("auto_login")
+      let temp_email = ""
+      let temp_password = ""
+      let auto_login = false
+      try {
+        temp_email = await getData("saved_email")
+        temp_password = await getData("saved_password")
+        auto_login = await getData("auto_login")
+      } catch (e) {}
       if (temp_email && temp_password) {
         if (auto_login == "true") {
           try {
@@ -41,6 +46,9 @@ export default function SignInScreen ({ navigation }) {
               Alert.alert("Automatic sign in failed!", "Enter your email and password.")
             } else if (isCode(e, [401])) {
               Alert.alert("Automatic sign in failed!", "Please re-enter your email and password.");
+            } else if (isCode(e, [400])) {
+              Alert.alert("Account not activated yet!", "Please enter the activation code from your email.");
+              navigation.navigate("Verify Email");
             } else {
               throw(e);
             }
@@ -77,6 +85,9 @@ export default function SignInScreen ({ navigation }) {
               Alert.alert("Sign in failed!", "Enter an email and password.")
             } else if (isCode(e, [401])) {
               Alert.alert("Sign in failed!", "Check your email and password.");
+            } else if (isCode(e, [400])) {
+              Alert.alert("Account not activated yet!", "Please enter the activation code from your email.");
+              navigation.navigate("Verify Email");
             } else {
               throw(e);
             }

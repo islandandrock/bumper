@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from .extensions import db
 from .models import User
 from datetime import datetime as dt
+from twilio.rest import Client
+from dotenv import dotenv_values
 
 login_manager = LoginManager()
 
@@ -16,6 +18,14 @@ def init_app():
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    secrets = dotenv_values(".env")
+    app.config['TWILIO_ACCOUNT_SID'] = secrets['TWILIO_ACCOUNT_SID']
+    app.config['TWILIO_AUTH_TOKEN'] = secrets['TWILIO_AUTH_TOKEN']
+    app.config['SENDGRID_API_KEY'] = secrets['SENDGRID_API_KEY']
+    app.config['TWILIO_VERIFY_SERVICE'] = secrets['TWILIO_VERIFY_SERVICE']
+
+    
+    app.twilio_client = Client(secrets['TWILIO_ACCOUNT_SID'], secrets['TWILIO_AUTH_TOKEN'])
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):
