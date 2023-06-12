@@ -42,8 +42,8 @@ const Map = React.memo(function Map(props) {
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                     }} ref={props.mapView} style={styles.map}>
-                {props.friends.map((friend) => <Marker onPress={() => props.navigation.push("Profile", {id:friend.id})} key={props.friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
-  <Text style={[styles.friendPin, {backgroundColor:(friend.id == props.searchID ? '#ee5d97' : 'pink'), padding:(friend.id == props.searchID ? 10 : 5), zIndex:(friend.id == props.searchID ? 1000 : 0), elevation:(friend.id == props.searchID ? 50 : 0)}]}>{friend.plate}</Text></Marker>)}
+                {props.friends.map((friend) => friend.location ? <Marker onPress={() => props.navigation.push("Profile", {id:friend.id})} key={props.friends.indexOf(friend)} coordinate={{latitude: parseFloat(friend.location.split(" ")[0]), longitude: parseFloat(friend.location.split(" ")[1])}} pinColor={'pink'}>
+  <Text style={[styles.friendPin, {backgroundColor:(friend.id == props.searchID ? '#ee5d97' : 'pink'), padding:(friend.id == props.searchID ? 10 : 5), zIndex:(friend.id == props.searchID ? 1000 : 0), elevation:(friend.id == props.searchID ? 50 : 0)}]}>{friend.plate}</Text></Marker> : null)}
                 <Marker coordinate={{latitude : props.latitude, longitude : props.longitude}}><Text style={styles.friendPin}>You</Text></Marker>
           </MapView> : null}
         </View>

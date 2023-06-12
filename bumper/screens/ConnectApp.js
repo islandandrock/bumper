@@ -89,7 +89,23 @@ export default function ConnectApp ({ navigation, route }) {
     <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
       <Text style={{fontWeight: 'bold', fontSize: 20, marginVertical:20}}>Link an external account so people can contact you elsewhere!</Text>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>App</Text>
-      <DropdownSearch placeholder="App" data={data} function={setApp} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
+      <DropdownSearch placeholder="App" data={data} function={setApp} style={{
+          margin: 16,
+          height: 50,
+          width: '50%',
+          backgroundColor: 'white',
+          borderRadius: 12,
+          padding: 12,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1.41,
+
+          elevation: 2,
+        }} dropdownPos={isKeyboardVisible? 'top' : 'bottom'}/>
       <Text style={{fontWeight: 'bold', fontSize: 20}}>Username</Text>
       <TextBar inputText={username} setInputText={setUsername} placeholder="Your Username"/>
       
@@ -120,7 +136,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
   dropDownStyle: {
-    backgroundColor: 'red',
     height:50,
     width: 100
   }
