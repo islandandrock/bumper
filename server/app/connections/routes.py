@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 
 from flask import Blueprint, request, render_template, make_response, abort, make_response
+import requests
 from flask import current_app as app
 from flask_login import current_user, login_required
 from werkzeug.exceptions import Unauthorized, UnprocessableEntity, Conflict, NotFound
@@ -20,6 +21,7 @@ def add_connection():
     
     if not (link and app):
         raise UnprocessableEntity("Missing parameters.")
+
 
     new_connection = Connection(user_id=current_user.id, link=link, app_name=app_name)
     

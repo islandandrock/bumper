@@ -78,18 +78,18 @@ export default function PlateLookupScreen ({ navigation }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={{width:"100%", height:"100%"}} refreshControl={
+    <ScrollView contentContainerStyle={{width:"100%", height:"100%", backgroundColor:'#fff0f6'}} refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       } nestedScrollEnabled = {true}>
     <View style={{flexDirection: 'column', justifyContent: 'flex-start', flex:1, flexGrow:1}}>
       <View style={styles.container}>
         <SearchBar SearchText={SearchText} SetSearchText={SetSearchText}/>       
-        <TouchableOpacity style={{width:'30%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
+        <TouchableOpacity style={{width:'30%', backgroundColor:"#ee5d97", borderColor:'pink', borderWidth:1, borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async ()=>SetSearchUsers(await userSearch(SearchText))}>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Search</Text>
         </TouchableOpacity>
       </View>
       <View style={{flexDirection:'row', justifyContent:'flex-end', height:60, padding:10}}>
-        <TouchableOpacity style={{width:'40%', height:'100%', backgroundColor:"pink", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async () => await takePicture() }>
+        <TouchableOpacity style={{width:'40%', height:'100%', backgroundColor:"#ee5d97", borderRadius:10, justifyContent:'center', marginLeft:5}} onPress={async () => await takePicture() }>
           <Text style={{fontWeight:"bold", fontSize:20, textAlign:"center"}}>Take Picture</Text>
         </TouchableOpacity>
       </View>
@@ -97,7 +97,7 @@ export default function PlateLookupScreen ({ navigation }) {
         {Loading  ? 
         (
           <View style={{alignSelf: 'center', height:"100%", width:"100%", justifyContent:"center"}}>        
-            <ActivityIndicator style={{transform:[{scale:2}]}} size='large' color='#F4CBCB'/>
+            <ActivityIndicator style={{transform:[{scale:2}]}} size='large' color='pink'/>
           </View>
 
         ) : (
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     padding:10,
     backgroundColor: '#fff',
     borderWidth:1,
-    borderColor: 'pink',
+    borderColor: '#ee5d97',
     width: '70%'
 
   },
