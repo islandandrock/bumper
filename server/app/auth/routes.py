@@ -80,7 +80,8 @@ def checkcode():
     to_email = session['to_email']
     #verification_code = request.form['verificationcode']
     if check_verification_token(to_email, verification_code):
-        current_user.email_verified = True
+        user = User.query.filter_by(email=to_email).first()
+        user.email_verified = True
         db.session.commit()
         return {"successful":True}, 200
     else:
